@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments :: head (titulo='Lista de Equipos')"></head>
+
+<body>
+<div th:replace="fragments::menuBar"></div>
+<div class="container mt-4">
+    <h2>Lista de Equipos</h2>
+
+    <!-- Formulario de filtrado -->
+    <form action="#" method="get" class="mb-3">
+        <div class="row">
+            <div class="col-md-4">
+                <label for="tipo" class="form-label">Filtrar por Tipo de Equipo</label>
+                <select name="tipo" id="tipo" class="form-select" onchange="this.form.submit()">
+                    <option value="Todos" th:selected="${tipoFiltrado == 'Todos'}">Todos</option>
+                    <option th:value="'Desarrollo'" th:selected="${tipoFiltrado == 'Desarrollo'}">Desarrollo</option>
+                    <option th:value="'Marketing'" th:selected="${tipoFiltrado == 'Marketing'}">Marketing</option>
+                    <option th:value="'Diseño'" th:selected="${tipoFiltrado == 'Diseño'}">Diseño</option>
+                    <option th:value="'Técnico'" th:selected="${tipoFiltrado == 'Técnico'}">Técnico</option>
+                </select>
+            </div>
+        </div>
+    </form>
+
+    <!-- Flash Messages -->
+    <div th:if="${mensaje}" class="alert alert-success" role="alert">
+        <span th:text="${mensaje}"></span>
+    </div>
+
+
+
+    <table class="table table-striped mt-3">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Tipo</th>
+            <th>Ver Miembros del Equipo</th>
+            <th>Acción</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="equipo, iStat : ${equipos}">
+            <td th:text="${equipo.id}"></td>
+            <td th:text="${equipo.nombre}"></td>
+            <td th:text="${equipo.tipo}"></td>
+            <td>
+                <a th:href="@{'/logeados/equipos/' + ${equipo.id} + '/miembros'}">Ver Miembros del Equipo</a>
+            </td>
+            <td>
+
+                <form th:action="@{'/logeados/equipos/' + ${equipo.id} + '/agrega-usuario-logeado/' + ${usuario.id} }"
+                      method="post"
+                      th:if="${!equiposPertenecientes[iStat.index]}"
+                      class="d-inline me-2">
+                    <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+                    <button type="submit" class="btn btn-sm btn-success">
+                        <span th:text="'Agregarme al Equipo'"></span>
+                    </button>
+                </form>
+                <form th:action="@{'/logeados/equipos/' + ${equipo.id} + '/elimina-usuario-logeado/' + ${usuario.id} }"
+                      method="post"
+                      th:if="${equiposPertenecientes[iStat.index]}"
+                      class="d-inline me-2">
+                    <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+                    <button type="submit" class="btn btn-sm btn-danger">
+                        <span th:text="'Eliminarme del Equipo'"></span>
+                    </button>
+                </form>
+
+                <a th:if="${usuario != null and usuario.admin}" th:href="@{'/admin/auth/equipos/' + ${equipo.id} + '/editar'}" class="btn btn-primary btn-sm">Editar</a>
+
+                <form th:if="${usuario != null and usuario.admin}" th:action="@{'/admin/auth/equipos/' + ${equipo.id} + '/borrar'}" method="post" style="display:inline;">
+                    <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+                    <button type="submit" class="btn btn-danger btn-sm"
+                            onclick="return confirm('¿Estás seguro de que quieres borrar este equipo?');">
+                        Borrar
+                    </button>
+                </form>
+
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <a th:href="@{'/logeados/equipos/nuevo-equipo'}" class="btn btn-success">Nuevo Equipo</a>
+
+</div>
+
+<div th:replace="fragments::javascript"></div>
+</body>
+</html>
