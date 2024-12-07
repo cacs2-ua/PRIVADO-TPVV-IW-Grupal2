@@ -29,8 +29,8 @@ public class Usuario implements Serializable {
 
     // Relación Many-to-One con Comercio
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "c_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "comercio_id", nullable = false)
     private Comercio comercio;
 
     public Usuario() {}

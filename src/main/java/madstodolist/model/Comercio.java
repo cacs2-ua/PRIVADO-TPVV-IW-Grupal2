@@ -45,7 +45,7 @@ public class Comercio implements Serializable {
     private String url_back;
 
     // Relación One-to-Many con Usuario
-    @OneToMany(mappedBy = "comercio", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "comercio")
     private Set<Usuario> usuarios = new HashSet<>();
 
     public Comercio() {}
@@ -172,6 +172,8 @@ public class Comercio implements Serializable {
         // Si no hay ID, comparamos por la clave alternativa (CIF)
         return Objects.equals(cif, comercio.cif);
     }
+
+
 
     @Override
     public int hashCode() {
