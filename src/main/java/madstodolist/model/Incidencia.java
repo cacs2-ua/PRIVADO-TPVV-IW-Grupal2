@@ -28,6 +28,11 @@ public class Incidencia implements Serializable {
     @NotNull
     private String descripcion;
 
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usuario_comercio_id", nullable = false)
+    private Usuario usuario_comercio;
+
     private int valoracion;
 
     private String razon_valoracion;
@@ -78,6 +83,20 @@ public class Incidencia implements Serializable {
 
     public void setRazon_valoracion(String razon_valoracion) {
         this.razon_valoracion = razon_valoracion;
+    }
+
+    public Usuario getUsuario_comercio() {
+        return usuario_comercio;
+    }
+
+    public void setUsuario_comercio(Usuario usuario_comercio) {
+        if (this.usuario_comercio != null) {
+            this.usuario_comercio.getIncidencias_comercio().remove(this);
+        }
+        this.usuario_comercio = usuario_comercio;
+        if (usuario_comercio != null && !usuario_comercio.getIncidencias_comercio().contains(this)) {
+            usuario_comercio.getIncidencias_comercio().add(this);
+        }
     }
 
     @Override
