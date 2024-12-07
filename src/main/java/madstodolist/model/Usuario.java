@@ -1,5 +1,7 @@
 package madstodolist.model;
 
+import org.hibernate.validator.constraints.UniqueElements;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -9,7 +11,7 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "usuario")
+@Table(name = "usuarios")
 public class Usuario implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -19,6 +21,7 @@ public class Usuario implements Serializable {
     private Long id;
 
     @NotNull
+    @Column(unique = true)
     private String email;
 
     @NotNull
@@ -68,9 +71,6 @@ public class Usuario implements Serializable {
     public void setContrasenya(String contrasenya) {
         this.contrasenya = contrasenya;
     }
-
-
-
 
 
 }
