@@ -120,4 +120,18 @@ public class Comercio implements Serializable {
         return url_back;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Comercio comercio = (Comercio) o;
+        return Objects.equals(id, comercio.id) ||
+                Objects.equals(cif, comercio.cif);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(cif, nombre, pais, provincia, direccion, iban, api_key, url_back);
+    }
+
 }
