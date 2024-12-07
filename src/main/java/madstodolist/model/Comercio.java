@@ -177,6 +177,6 @@ public class Comercio implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(cif, nombre, pais, provincia, direccion, iban, api_key, url_back);
+        return Objects.hash(id, cif);
     }
 }
