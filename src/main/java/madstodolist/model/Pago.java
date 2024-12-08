@@ -1,0 +1,92 @@
+package madstodolist.model;
+
+
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.xml.crypto.Data;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
+@Entity
+@Table(name = "pagos")
+public class Pago implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @NotNull
+    private  String ticketExt;
+
+    @NotNull
+    private Date fecha;
+
+    @NotNull
+    private double importe;
+
+    @NotNull
+    private String tarjeta;
+
+    public Pago() {}
+
+    public Pago(String ticketExt) {
+        this.ticketExt = ticketExt;
+        this.fecha = new Date();
+        this.importe = 0.0;
+        this.tarjeta = "default";
+    }
+
+    public Pago(String ticketExt, Date fecha, double importe, String tarjeta) {
+        this.ticketExt = ticketExt;
+        this.fecha = fecha;
+        this.importe = importe;
+        this.tarjeta = tarjeta;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTicketExt() {
+        return ticketExt;
+    }
+
+    public void setTicketExt(String ticketExt) {
+        this.ticketExt = ticketExt;
+    }
+
+    public Date getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
+    }
+
+    public double getImporte() {
+        return importe;
+    }
+
+    public void setImporte(double importe) {
+        this.importe = importe;
+    }
+
+    public String getTarjeta() {
+        return tarjeta;
+    }
+
+    public void setTarjeta(String tarjeta) {
+        this.tarjeta = tarjeta;
+    }
+
+}
