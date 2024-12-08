@@ -6,7 +6,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 
 @Entity
@@ -22,20 +24,19 @@ public class Tipo_Usuario implements Serializable {
     @NotNull
     private String nombre;
 
-    @NotNull
-    @OneToOne(mappedBy = "tipo")
-    private Usuario usuario;
+    @OneToMany(mappedBy = "tipo", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<Usuario> usuarios = new HashSet<>();
 
     public Tipo_Usuario() {}
 
     public Tipo_Usuario(String nombre) {
         this.nombre = nombre;
-        this.usuario = new Usuario("default");
+
     }
 
     public Tipo_Usuario(String nombre, Usuario usuario) {
         this.nombre = nombre;
-        this.usuario = usuario;
+
     }
 
     public Long getId() {
@@ -54,12 +55,16 @@ public class Tipo_Usuario implements Serializable {
         this.nombre = nombre;
     }
 
-    public Usuario getUsuario() {
-        return usuario;
+    public Set<Usuario> getUsuarios() {
+        return  usuarios;
     }
 
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
+    public void addUsuario(Usuario usuario) {
+        if (usuarios.contains(usuario)) return;
+        usuarios.add(usuario);
+        if (usuario.getTipo() != this) {
+            usuario.setTipo(this);
+        }
     }
 
 

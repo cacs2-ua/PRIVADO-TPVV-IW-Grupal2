@@ -45,8 +45,8 @@ public class Usuario implements Serializable {
     private Set<Mensaje> mensajes = new HashSet<>();
 
     @NotNull
-    @OneToOne
-    @JoinColumn(name = "tipo_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tipo_id", nullable = false)
     private Tipo_Usuario tipo;
 
     public Usuario() {}
