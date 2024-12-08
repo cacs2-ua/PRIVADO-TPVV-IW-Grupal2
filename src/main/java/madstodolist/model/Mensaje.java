@@ -25,6 +25,40 @@ public class Mensaje implements Serializable  {
     @NotNull
     String contenido;
 
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario usuario;
+
+    public Mensaje() {}
+
+    public  Mensaje(String contenido) {
+        this.contenido = contenido;
+        Usuario usuario = new Usuario("email");
+        this.setUsuario(usuario);
+        this.fecha = new Date("2000-12-12");
+    }
+
+    public Mensaje(String contenido, Usuario usuario) {
+        this.contenido = contenido;
+        this.setUsuario(usuario);
+        this.fecha = new Date("2000-12-12");
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        if (this.usuario != null) {
+            this.usuario.getMensajes().remove(this);
+        }
+        this.usuario = usuario;
+        if (usuario != null && !usuario.getMensajes().contains(this)) {
+            usuario.getMensajes().add(this);
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

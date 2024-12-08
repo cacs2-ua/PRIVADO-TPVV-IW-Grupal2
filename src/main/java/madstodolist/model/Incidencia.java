@@ -38,6 +38,26 @@ public class Incidencia implements Serializable {
     @JoinColumn(name = "usuario_tecnico_id", nullable = false)
     private Usuario usuario_tecnico;
 
+    public Incidencia() {}
+
+    public Incidencia(String titulo) {
+        this.titulo = titulo;
+        this.descripcion = "default";
+        Usuario usuario_comercio = new Usuario("email", "nombre", "contrasenya", new Comercio("nombre"));
+        this.setUsuario_comercio(usuario_comercio);
+        Usuario usuario_tecnico = new Usuario("email", "nombre", "contrasenya", new Comercio("nombre"));
+        this.setUsuario_tecnico(usuario_tecnico);
+        this.fecha = new Date("2000-12-12");
+    }
+
+    public Incidencia(String titulo, String descripcion, Usuario usuario_comercio, Usuario usuario_tecnico) {
+        this.titulo = titulo;
+        this.descripcion = descripcion;
+        this.setUsuario_comercio(usuario_comercio);
+        this.setUsuario_tecnico(usuario_tecnico);
+        this.fecha = new Date("2000-12-12");
+    }
+
     private int valoracion;
 
     private String razon_valoracion;

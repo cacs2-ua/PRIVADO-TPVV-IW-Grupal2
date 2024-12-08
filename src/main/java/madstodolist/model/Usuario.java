@@ -41,15 +41,20 @@ public class Usuario implements Serializable {
     @OneToMany(mappedBy = "usuario_tecnico")
     private Set<Incidencia> incidencias_tecnico = new HashSet<>();
 
+    @OneToMany(mappedBy = "usuario")
+    private Set<Mensaje> mensajes = new HashSet<>();
+
     public Usuario() {}
 
-    public Usuario(String email, String nombre, String contrasenya) {
+    public Usuario(String email) {
         this.email = email;
-        this.nombre = nombre;
-        this.contrasenya = contrasenya;
+        this.nombre = "default";
+        this.contrasenya = "default";
+        Comercio comercio = new Comercio("default");
+        this.setComercio(comercio);
     }
 
-    public Usuario(String email, String nombre, String contrasenya, Comercio comercio) {
+    public  Usuario (String email, String nombre, String contrasenya, Comercio comercio) {
         this.email = email;
         this.nombre = nombre;
         this.contrasenya = contrasenya;
@@ -127,6 +132,18 @@ public class Usuario implements Serializable {
         incidencias_tecnico.add(incidencia);
         if (incidencia.getUsuario_tecnico() != this) {
             incidencia.setUsuario_tecnico(this);
+        }
+    }
+
+    public Set<Mensaje> getMensajes() {
+        return mensajes;
+    }
+
+    public void addMensaje(Mensaje mensaje) {
+        if (mensajes.contains(mensaje)) return;
+        mensajes.add(mensaje);
+        if (mensaje.getUsuario() != this) {
+            mensaje.setUsuario(this);
         }
     }
 
