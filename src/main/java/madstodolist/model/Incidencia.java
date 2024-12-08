@@ -43,6 +43,11 @@ public class Incidencia implements Serializable {
     @OneToMany(mappedBy = "incidencia", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Mensaje> mensajes = new HashSet<>();
 
+
+    @OneToOne
+    @JoinColumn(name = "pago_id")
+    private Pago pago;
+
     public Incidencia() {}
 
     public Incidencia(String titulo) {
@@ -175,6 +180,29 @@ public class Incidencia implements Serializable {
         mensajes.add(mensaje);
         if (mensaje.getIncidencia() != this) {
             mensaje.setIncidencia(this);
+        }
+    }
+
+    public Pago getPago() {
+        return pago;
+    }
+
+    public void setPago(Pago pago) {
+        if (this.pago == pago) {
+            return; // No hacer nada si es el mismo pago
+        }
+
+        // Desvincular el pago anterior si existe
+        if (this.pago != null) {
+            this.pago.setIncidencia(null);
+        }
+
+        // Asignar el nuevo pago
+        this.pago = pago;
+
+        // Vincular la relación inversa
+        if (pago != null && pago.getIncidencia() != this) {
+            pago.setIncidencia(this);
         }
     }
 

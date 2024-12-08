@@ -38,6 +38,9 @@ public class Pago implements Serializable {
     @JoinColumn(name = "comercio_id", nullable = false)
     private Comercio comercio;
 
+    @OneToOne(mappedBy = "pago", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Incidencia incidencia;
+
     public Pago() {}
 
     public Pago(String ticketExt) {
@@ -117,6 +120,20 @@ public class Pago implements Serializable {
         // Si el comercio no es nulo, lo añade a la lista de pagos de ese comercio
         if (comercio != null && !comercio.getPagos().contains(this)) {
             comercio.addPago(this);
+        }
+    }
+
+    public Incidencia getIncidencia() {
+        return incidencia;
+    }
+
+    public void setIncidencia(Incidencia incidencia) {
+        if (this.incidencia != null) {
+            this.incidencia.setPago(null);
+        }
+        this.incidencia = incidencia;
+        if (incidencia != null && incidencia.getPago() != this) {
+            incidencia.setPago(this);
         }
     }
 
