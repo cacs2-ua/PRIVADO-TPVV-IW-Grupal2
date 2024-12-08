@@ -50,6 +50,17 @@ public class Comercio implements Serializable {
 
     public Comercio() {}
 
+    public Comercio(String nif) {
+        this.cif = nif;
+        this.nombre = "default-name";
+        this.pais = "default-country";
+        this.provincia = "default-province";
+        this.direccion = "default-address";
+        this.iban = "default-iban";
+        this.api_key = "default-api_key";
+        this.url_back = "default-url_back";
+    }
+
     public Comercio(String nombre, String cif, String pais, String provincia, String direccion, String iban, String api_key, String url_back) {
         this.nombre = nombre;
         this.cif = cif;

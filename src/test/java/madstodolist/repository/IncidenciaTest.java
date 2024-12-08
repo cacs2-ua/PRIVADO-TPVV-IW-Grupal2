@@ -36,16 +36,7 @@ public class IncidenciaTest {
     @Test
     public void crearIncidencia() {
         // GIVEN
-        Comercio comercio = new Comercio(
-                "Comercio Ejemplo",     // nombre
-                "B12345678",            // cif
-                "España",               // país
-                "Madrid",               // provincia
-                "Calle Ejemplo 123",    // dirección
-                "ES9121000418450200051332", // IBAN
-                "clave-api-ejemplo",    // api_key
-                "https://mi-comercio.com/backend" // url_back
-        );
+        Comercio comercio = new Comercio("default-nif");
         Usuario usuario = new Usuario("user@comercio.com", "Usuario Uno", "password1", comercio);
         Incidencia incidencia = new Incidencia();
         incidencia.setFecha(new Date());
@@ -144,16 +135,7 @@ public class IncidenciaTest {
     @Transactional
     public void crearIncidenciaBaseDatos() {
         // GIVEN
-        Comercio comercio = new Comercio(
-                "Comercio Ejemplo",     // nombre
-                "B12345678",            // cif
-                "España",               // país
-                "Madrid",               // provincia
-                "Calle Ejemplo 123",    // dirección
-                "ES9121000418450200051332", // IBAN
-                "clave-api-ejemplo",    // api_key
-                "https://mi-comercio.com/backend" // url_back
-        );
+        Comercio comercio = new Comercio("default-nif");
         comercioRepository.save(comercio);
         Usuario usuario = new Usuario("user@comercio.com", "Usuario Uno", "password1", comercio);
         usuarioRepository.save(usuario);
@@ -184,19 +166,11 @@ public class IncidenciaTest {
     @Transactional
     public void buscarIncidenciaEnBaseDatos() {
         // GIVEN
-        Comercio comercio = new Comercio(
-                "Comercio Ejemplo",     // nombre
-                "B12345678",            // cif
-                "España",               // país
-                "Madrid",               // provincia
-                "Calle Ejemplo 123",    // dirección
-                "ES9121000418450200051332", // IBAN
-                "clave-api-ejemplo",    // api_key
-                "https://mi-comercio.com/backend" // url_back
-        );
+        Comercio comercio = new Comercio("default-nif");
         comercioRepository.save(comercio);
         Usuario usuario = new Usuario("user@comercio.com", "Usuario Uno", "password1", comercio);
         usuarioRepository.save(usuario);
+
         Incidencia incidencia = new Incidencia();
         incidencia.setFecha(new Date());
         incidencia.setTitulo("Incidencia 1");
@@ -220,16 +194,7 @@ public class IncidenciaTest {
     @Transactional
     public void unUsuarioTieneUnaListaDeIncidencias() {
         // GIVEN
-        Comercio comercio = new Comercio(
-                "Comercio Ejemplo",     // nombre
-                "B12345678",            // cif
-                "España",               // país
-                "Madrid",               // provincia
-                "Calle Ejemplo 123",    // dirección
-                "ES9121000418450200051332", // IBAN
-                "clave-api-ejemplo",    // api_key
-                "https://mi-comercio.com/backend" // url_back
-        );
+        Comercio comercio = new Comercio("default-nif");
         comercioRepository.save(comercio);
         Usuario usuario = new Usuario("user@comercio.com", "Usuario Uno", "password1", comercio);
         usuarioRepository.save(usuario);
@@ -265,16 +230,7 @@ public class IncidenciaTest {
     @Transactional
     public void añadirUnaIncidenciaAUnUsuarioEnBD() {
         // GIVEN
-        Comercio comercio = new Comercio(
-                "Comercio Ejemplo",     // nombre
-                "B12345678",            // cif
-                "España",               // país
-                "Madrid",               // provincia
-                "Calle Ejemplo 123",    // dirección
-                "ES9121000418450200051332", // IBAN
-                "clave-api-ejemplo",    // api_key
-                "https://mi-comercio.com/backend" // url_back
-        );
+        Comercio comercio = new Comercio("default-nif");
         comercioRepository.save(comercio);
         Usuario usuario = new Usuario("user@comercio.com", "Usuario Uno", "password1", comercio);
         usuarioRepository.save(usuario);
@@ -306,16 +262,7 @@ public class IncidenciaTest {
     @Transactional
     public void cambioEnLaEntidadEnTransactionalModificaLaBD() {
         // GIVEN
-        Comercio comercio = new Comercio(
-                "Comercio Ejemplo",     // nombre
-                "B12345678",            // cif
-                "España",               // país
-                "Madrid",               // provincia
-                "Calle Ejemplo 123",    // dirección
-                "ES9121000418450200051332", // IBAN
-                "clave-api-ejemplo",    // api_key
-                "https://mi-comercio.com/backend" // url_back
-        );
+        Comercio comercio = new Comercio("default-nif");
         comercioRepository.save(comercio);
         Usuario usuario = new Usuario("user@comercio.com", "Usuario Uno", "password1", comercio);
         usuarioRepository.save(usuario);
