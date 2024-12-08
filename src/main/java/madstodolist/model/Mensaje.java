@@ -30,6 +30,11 @@ public class Mensaje implements Serializable  {
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "incidencia_id", nullable = false)
+    private Incidencia incidencia;
+
     public Mensaje() {}
 
     public  Mensaje(String contenido) {
@@ -56,6 +61,20 @@ public class Mensaje implements Serializable  {
         this.usuario = usuario;
         if (usuario != null && !usuario.getMensajes().contains(this)) {
             usuario.getMensajes().add(this);
+        }
+    }
+
+    public Incidencia getIncidencia() {
+        return incidencia;
+    }
+
+    public void setIncidencia(Incidencia incidencia) {
+        if (this.incidencia != null) {
+            this.incidencia.getMensajes().remove(this);
+        }
+        this.incidencia = incidencia;
+        if (incidencia != null && !incidencia.getMensajes().contains(this)) {
+            incidencia.getMensajes().add(this);
         }
     }
 

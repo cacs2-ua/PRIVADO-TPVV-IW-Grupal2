@@ -6,7 +6,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 
 @Entity
@@ -37,6 +39,9 @@ public class Incidencia implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_tecnico_id", nullable = false)
     private Usuario usuario_tecnico;
+
+    @OneToMany(mappedBy = "incidencia", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<Mensaje> mensajes = new HashSet<>();
 
     public Incidencia() {}
 
@@ -135,6 +140,18 @@ public class Incidencia implements Serializable {
         this.usuario_tecnico = usuario_tecnico;
         if (usuario_tecnico != null && !usuario_tecnico.getIncidencias_tecnico().contains(this)) {
             usuario_tecnico.getIncidencias_tecnico().add(this);
+        }
+    }
+
+    public Set<Mensaje> getMensajes() {
+        return mensajes;
+    }
+
+    public void addMensaje(Mensaje mensaje) {
+        if (mensajes.contains(mensaje)) return;
+        mensajes.add(mensaje);
+        if (mensaje.getIncidencia() != this) {
+            mensaje.setIncidencia(this);
         }
     }
 
