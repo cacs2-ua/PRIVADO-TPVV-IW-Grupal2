@@ -160,14 +160,6 @@ public class Comercio implements Serializable {
         }
     }
 
-    public void removeUsuario(Usuario usuario) {
-        if (!usuarios.contains(usuario)) return;
-        usuarios.remove(usuario);
-        if (usuario.getComercio() == this) {
-            usuario.setComercio(null);
-        }
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -183,8 +175,6 @@ public class Comercio implements Serializable {
         // Si no hay ID, comparamos por la clave alternativa (CIF)
         return Objects.equals(cif, comercio.cif);
     }
-
-
 
     @Override
     public int hashCode() {
