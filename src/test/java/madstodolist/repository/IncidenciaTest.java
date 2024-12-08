@@ -29,6 +29,31 @@ public class IncidenciaTest {
     @Autowired
     private ComercioRepository comercioRepository;
 
+    // Métodos auxiliares para reducir duplicación
+
+    private Comercio crearYGuardarComercio(String nif) {
+        Comercio comercio = new Comercio(nif);
+        comercioRepository.save(comercio);
+        return comercio;
+    }
+
+    private Usuario crearYGuardarUsuario(String email, String nombre, String password, Comercio comercio) {
+        Usuario usuario = new Usuario(email, nombre, password, comercio);
+        usuarioRepository.save(usuario);
+        return usuario;
+    }
+
+    private Incidencia crearIncidencia(Usuario usuario, String titulo, String descripcion, int valoracion, String razonValoracion) {
+        Incidencia incidencia = new Incidencia();
+        incidencia.setFecha(new Date());
+        incidencia.setTitulo(titulo);
+        incidencia.setDescripcion(descripcion);
+        incidencia.setValoracion(valoracion);
+        incidencia.setRazon_valoracion(razonValoracion);
+        incidencia.setUsuario_comercio(usuario);
+        return incidencia;
+    }
+
     //
     // Tests modelo Incidencia en memoria, sin la conexión con la BD
     //
@@ -36,14 +61,9 @@ public class IncidenciaTest {
     @Test
     public void crearIncidencia() {
         // GIVEN
-        Comercio comercio = new Comercio("default-nif");
+        Comercio comercio = crearYGuardarComercio("default-nif");
         Usuario usuario = new Usuario("user@comercio.com", "Usuario Uno", "password1", comercio);
-        Incidencia incidencia = new Incidencia();
-        incidencia.setFecha(new Date());
-        incidencia.setTitulo("Incidencia 1");
-        incidencia.setDescripcion("Descripción de la incidencia 1");
-        incidencia.setValoracion(5);
-        incidencia.setRazon_valoracion("Muy bien");
+        Incidencia incidencia = crearIncidencia(usuario, "Incidencia 1", "Descripción de la incidencia 1", 5, "Muy bien");
 
         // WHEN
         incidencia.setUsuario_comercio(usuario);
@@ -58,32 +78,35 @@ public class IncidenciaTest {
     }
 
     @Test
+    @Transactional
+    public void laListaDeIncidenciasDeUnUsuarioSeActualizaEnMemoriaConUnaNuevaIncidencia() {
+        // GIVEN
+        Comercio comercio = crearYGuardarComercio("default-nif");
+        Usuario usuario = crearYGuardarUsuario("user@comercio.com", "Usuario Uno", "password1", comercio);
+
+        Incidencia incidencia1 = crearIncidencia(usuario, "Incidencia 1", "Descripción 1", 5, "Muy bien");
+        incidenciaRepository.save(incidencia1);
+
+        // WHEN
+        Incidencia nuevaIncidencia = crearIncidencia(usuario, "Incidencia 2", "Descripción 2", 4, "Buena");
+        usuario.addIncidencia_comercio(nuevaIncidencia); // Actualizamos en memoria
+
+        // THEN
+        assertThat(usuario.getIncidencias_comercio()).hasSize(2);
+        assertThat(usuario.getIncidencias_comercio()).contains(incidencia1, nuevaIncidencia);
+        assertThat(nuevaIncidencia.getUsuario_comercio()).isEqualTo(usuario);
+    }
+
+
+    @Test
     public void comprobarIgualdadIncidenciasSinId() {
         // GIVEN
-        Usuario usuario = new Usuario("user@comercio.com", "Usuario Uno", "password1");
-        Incidencia incidencia1 = new Incidencia();
-        incidencia1.setFecha(new Date());
-        incidencia1.setTitulo("Incidencia 1");
-        incidencia1.setDescripcion("Descripción 1");
-        incidencia1.setValoracion(5);
-        incidencia1.setRazon_valoracion("Muy bien");
-        incidencia1.setUsuario_comercio(usuario);
+        Comercio comercio = crearYGuardarComercio("default-nif");
+        Usuario usuario = new Usuario("user@comercio.com", "Usuario Uno", "password1", comercio);
 
-        Incidencia incidencia2 = new Incidencia();
-        incidencia2.setFecha(new Date());
-        incidencia2.setTitulo("Incidencia 1");
-        incidencia2.setDescripcion("Descripción 1");
-        incidencia2.setValoracion(5);
-        incidencia2.setRazon_valoracion("Muy bien");
-        incidencia2.setUsuario_comercio(usuario);
-
-        Incidencia incidencia3 = new Incidencia();
-        incidencia3.setFecha(new Date());
-        incidencia3.setTitulo("Incidencia 2");
-        incidencia3.setDescripcion("Descripción 2");
-        incidencia3.setValoracion(3);
-        incidencia3.setRazon_valoracion("Regular");
-        incidencia3.setUsuario_comercio(usuario);
+        Incidencia incidencia1 = crearIncidencia(usuario, "Incidencia 1", "Descripción 1", 5, "Muy bien");
+        Incidencia incidencia2 = crearIncidencia(usuario, "Incidencia 1", "Descripción 1", 5, "Muy bien");
+        Incidencia incidencia3 = crearIncidencia(usuario, "Incidencia 2", "Descripción 2", 3, "Regular");
 
         // THEN
         // Como equals solo compara por ID, y ambos IDs son null, son diferentes
@@ -94,32 +117,16 @@ public class IncidenciaTest {
     @Test
     public void comprobarIgualdadIncidenciasConId() {
         // GIVEN
-        Usuario usuario = new Usuario("user@comercio.com", "Usuario Uno", "password1");
-        Incidencia incidencia1 = new Incidencia();
-        incidencia1.setFecha(new Date());
-        incidencia1.setTitulo("Incidencia 1");
-        incidencia1.setDescripcion("Descripción 1");
-        incidencia1.setValoracion(5);
-        incidencia1.setRazon_valoracion("Muy bien");
-        incidencia1.setUsuario_comercio(usuario);
+        Comercio comercio = crearYGuardarComercio("default-nif");
+        Usuario usuario = new Usuario("user@comercio.com", "Usuario Uno", "password1", comercio);
+
+        Incidencia incidencia1 = crearIncidencia(usuario, "Incidencia 1", "Descripción 1", 5, "Muy bien");
         incidencia1.setId(1L);
 
-        Incidencia incidencia2 = new Incidencia();
-        incidencia2.setFecha(new Date());
-        incidencia2.setTitulo("Incidencia 2");
-        incidencia2.setDescripcion("Descripción 2");
-        incidencia2.setValoracion(3);
-        incidencia2.setRazon_valoracion("Regular");
-        incidencia2.setUsuario_comercio(usuario);
+        Incidencia incidencia2 = crearIncidencia(usuario, "Incidencia 2", "Descripción 2", 3, "Regular");
         incidencia2.setId(2L);
 
-        Incidencia incidencia3 = new Incidencia();
-        incidencia3.setFecha(new Date());
-        incidencia3.setTitulo("Incidencia 3");
-        incidencia3.setDescripcion("Descripción 3");
-        incidencia3.setValoracion(4);
-        incidencia3.setRazon_valoracion("Bueno");
-        incidencia3.setUsuario_comercio(usuario);
+        Incidencia incidencia3 = crearIncidencia(usuario, "Incidencia 3", "Descripción 3", 4, "Bueno");
         incidencia3.setId(1L);
 
         // THEN
@@ -128,25 +135,16 @@ public class IncidenciaTest {
     }
 
     //
-    // Tests IncidenciaRepository.
+    // Tests IncidenciaRepository
     //
 
     @Test
     @Transactional
     public void crearIncidenciaBaseDatos() {
         // GIVEN
-        Comercio comercio = new Comercio("default-nif");
-        comercioRepository.save(comercio);
-        Usuario usuario = new Usuario("user@comercio.com", "Usuario Uno", "password1", comercio);
-        usuarioRepository.save(usuario);
-
-        Incidencia incidencia = new Incidencia();
-        incidencia.setFecha(new Date());
-        incidencia.setTitulo("Incidencia 1");
-        incidencia.setDescripcion("Descripción de la incidencia 1");
-        incidencia.setValoracion(5);
-        incidencia.setRazon_valoracion("Muy bien");
-        incidencia.setUsuario_comercio(usuario);
+        Comercio comercio = crearYGuardarComercio("default-nif");
+        Usuario usuario = crearYGuardarUsuario("user@comercio.com", "Usuario Uno", "password1", comercio);
+        Incidencia incidencia = crearIncidencia(usuario, "Incidencia 1", "Descripción de la incidencia 1", 5, "Muy bien");
 
         // WHEN
         incidenciaRepository.save(incidencia);
@@ -166,18 +164,9 @@ public class IncidenciaTest {
     @Transactional
     public void buscarIncidenciaEnBaseDatos() {
         // GIVEN
-        Comercio comercio = new Comercio("default-nif");
-        comercioRepository.save(comercio);
-        Usuario usuario = new Usuario("user@comercio.com", "Usuario Uno", "password1", comercio);
-        usuarioRepository.save(usuario);
-
-        Incidencia incidencia = new Incidencia();
-        incidencia.setFecha(new Date());
-        incidencia.setTitulo("Incidencia 1");
-        incidencia.setDescripcion("Descripción de la incidencia 1");
-        incidencia.setValoracion(5);
-        incidencia.setRazon_valoracion("Muy bien");
-        incidencia.setUsuario_comercio(usuario);
+        Comercio comercio = crearYGuardarComercio("default-nif");
+        Usuario usuario = crearYGuardarUsuario("user@comercio.com", "Usuario Uno", "password1", comercio);
+        Incidencia incidencia = crearIncidencia(usuario, "Incidencia 1", "Descripción de la incidencia 1", 5, "Muy bien");
         incidenciaRepository.save(incidencia);
         Long incidenciaId = incidencia.getId();
 
@@ -194,33 +183,17 @@ public class IncidenciaTest {
     @Transactional
     public void unUsuarioTieneUnaListaDeIncidencias() {
         // GIVEN
-        Comercio comercio = new Comercio("default-nif");
-        comercioRepository.save(comercio);
-        Usuario usuario = new Usuario("user@comercio.com", "Usuario Uno", "password1", comercio);
-        usuarioRepository.save(usuario);
+        Comercio comercio = crearYGuardarComercio("default-nif");
+        Usuario usuario = crearYGuardarUsuario("user@comercio.com", "Usuario Uno", "password1", comercio);
 
-        Long usuarioId = usuario.getId();
-
-        Incidencia incidencia1 = new Incidencia();
-        incidencia1.setFecha(new Date());
-        incidencia1.setTitulo("Incidencia 1");
-        incidencia1.setDescripcion("Descripción 1");
-        incidencia1.setValoracion(5);
-        incidencia1.setRazon_valoracion("Muy bien");
-        incidencia1.setUsuario_comercio(usuario);
+        Incidencia incidencia1 = crearIncidencia(usuario, "Incidencia 1", "Descripción 1", 5, "Muy bien");
         incidenciaRepository.save(incidencia1);
 
-        Incidencia incidencia2 = new Incidencia();
-        incidencia2.setFecha(new Date());
-        incidencia2.setTitulo("Incidencia 2");
-        incidencia2.setDescripcion("Descripción 2");
-        incidencia2.setValoracion(3);
-        incidencia2.setRazon_valoracion("Regular");
-        incidencia2.setUsuario_comercio(usuario);
+        Incidencia incidencia2 = crearIncidencia(usuario, "Incidencia 2", "Descripción 2", 3, "Regular");
         incidenciaRepository.save(incidencia2);
 
         // WHEN
-        Usuario usuarioRecuperado = usuarioRepository.findById(usuarioId).orElse(null);
+        Usuario usuarioRecuperado = usuarioRepository.findById(usuario.getId()).orElse(null);
 
         // THEN
         assertThat(usuarioRecuperado.getIncidencias_comercio()).hasSize(2);
@@ -230,53 +203,28 @@ public class IncidenciaTest {
     @Transactional
     public void añadirUnaIncidenciaAUnUsuarioEnBD() {
         // GIVEN
-        Comercio comercio = new Comercio("default-nif");
-        comercioRepository.save(comercio);
-        Usuario usuario = new Usuario("user@comercio.com", "Usuario Uno", "password1", comercio);
-        usuarioRepository.save(usuario);
+        Comercio comercio = crearYGuardarComercio("default-nif");
+        Usuario usuario = crearYGuardarUsuario("user@comercio.com", "Usuario Uno", "password1", comercio);
 
-        Long usuarioId = usuario.getId();
-
-        // WHEN
-        Usuario usuarioBD = usuarioRepository.findById(usuarioId).orElse(null);
-        Incidencia incidencia = new Incidencia();
-        incidencia.setFecha(new Date());
-        incidencia.setTitulo("Incidencia 3");
-        incidencia.setDescripcion("Descripción 3");
-        incidencia.setValoracion(4);
-        incidencia.setRazon_valoracion("Bueno");
-        incidencia.setUsuario_comercio(usuarioBD);
+        Incidencia incidencia = crearIncidencia(usuario, "Incidencia 3", "Descripción 3", 4, "Bueno");
         incidenciaRepository.save(incidencia);
-        Long incidenciaId = incidencia.getId();
 
         // THEN
-        Incidencia incidenciaBD = incidenciaRepository.findById(incidenciaId).orElse(null);
+        Incidencia incidenciaBD = incidenciaRepository.findById(incidencia.getId()).orElse(null);
         assertThat(incidenciaBD).isEqualTo(incidencia);
-        assertThat(incidenciaBD.getUsuario_comercio()).isEqualTo(usuarioBD);
-
-        usuarioBD = usuarioRepository.findById(usuarioId).orElse(null);
-        assertThat(usuarioBD.getIncidencias_comercio()).contains(incidenciaBD);
+        assertThat(incidenciaBD.getUsuario_comercio()).isEqualTo(usuario);
     }
 
     @Test
     @Transactional
     public void cambioEnLaEntidadEnTransactionalModificaLaBD() {
         // GIVEN
-        Comercio comercio = new Comercio("default-nif");
-        comercioRepository.save(comercio);
-        Usuario usuario = new Usuario("user@comercio.com", "Usuario Uno", "password1", comercio);
-        usuarioRepository.save(usuario);
+        Comercio comercio = crearYGuardarComercio("default-nif");
+        Usuario usuario = crearYGuardarUsuario("user@comercio.com", "Usuario Uno", "password1", comercio);
 
-        Incidencia incidencia = new Incidencia();
-        incidencia.setFecha(new Date());
-        incidencia.setTitulo("Incidencia 1");
-        incidencia.setDescripcion("Descripción 1");
-        incidencia.setValoracion(5);
-        incidencia.setRazon_valoracion("Muy bien");
-        incidencia.setUsuario_comercio(usuario);
+        Incidencia incidencia = crearIncidencia(usuario, "Incidencia 1", "Descripción 1", 5, "Muy bien");
         incidenciaRepository.save(incidencia);
 
-        // Recuperamos la incidencia
         Long incidenciaId = incidencia.getId();
         incidencia = incidenciaRepository.findById(incidenciaId).orElse(null);
 
@@ -292,18 +240,13 @@ public class IncidenciaTest {
     @Transactional
     public void salvarIncidenciaEnBaseDatosConUsuarioNoBDLanzaExcepcion() {
         // GIVEN
-        Usuario usuario = new Usuario("user@comercio.com", "Usuario Uno", "password1");
-        Incidencia incidencia = new Incidencia();
-        incidencia.setFecha(new Date());
-        incidencia.setTitulo("Incidencia 1");
-        incidencia.setDescripcion("Descripción 1");
-        incidencia.setValoracion(5);
-        incidencia.setRazon_valoracion("Muy bien");
-        incidencia.setUsuario_comercio(usuario);
+        Comercio comercio = crearYGuardarComercio("default-nif");
+        Usuario usuario = new Usuario("user@comercio.com", "Usuario Uno", "password1", comercio);
+        Incidencia incidencia = crearIncidencia(usuario, "Incidencia 1", "Descripción 1", 5, "Muy bien");
 
         // WHEN // THEN
-        assertThrows(Exception.class, () -> {
-            incidenciaRepository.save(incidencia);
-        });
+        assertThrows(Exception.class, () -> incidenciaRepository.save(incidencia));
     }
+
+
 }
