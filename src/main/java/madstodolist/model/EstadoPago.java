@@ -3,6 +3,9 @@ package madstodolist.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 
 @Entity
@@ -19,6 +22,9 @@ public class EstadoPago implements Serializable {
     private String nombre;
 
     private String razonEstado;
+
+    @OneToMany(mappedBy = "estado", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<Pago> pagos = new HashSet<>();
 
     public EstadoPago() {}
 
@@ -53,6 +59,40 @@ public class EstadoPago implements Serializable {
 
     public void setRazonEstado(String razonEstado) {
         this.razonEstado = razonEstado;
+    }
+
+    public Set<Pago> getPagos() {
+        return pagos;
+    }
+
+    public void addPago(Pago pago) {
+        if (pagos.contains(pago)) return;
+        pagos.add(pago);
+        if (pago.getEstado() != this) {
+            pago.setEstado(this);
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        EstadoPago that = (EstadoPago) o;
+
+        // Si ambos objetos tienen un ID no nulo, comparamos por ID
+        if (this.id != null && that.id != null) {
+            return Objects.equals(this.id, that.id);
+        }
+
+        // Si no se pueden comparar por ID, consideramos que son diferentes
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        // Generamos el hashCode basado únicamente en el ID
+        return Objects.hash(id);
     }
 
 }

@@ -41,6 +41,11 @@ public class Pago implements Serializable {
     @OneToOne(mappedBy = "pago", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Incidencia incidencia;
 
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "estado_id", nullable = false)
+    private EstadoPago estado;
+
     public Pago() {}
 
     public Pago(String ticketExt) {
@@ -49,6 +54,7 @@ public class Pago implements Serializable {
         this.importe = 0.0;
         this.tarjeta = "default";
         this.comercio = new Comercio("default");
+        this.estado = new EstadoPago("default");
     }
 
     public Pago(String ticketExt, Date fecha, double importe, String tarjeta, Comercio comercio) {
@@ -57,6 +63,7 @@ public class Pago implements Serializable {
         this.importe = importe;
         this.tarjeta = tarjeta;
         this.comercio = comercio;
+        this.estado = new EstadoPago("default");
     }
 
     public Long getId() {
@@ -136,5 +143,52 @@ public class Pago implements Serializable {
             incidencia.setPago(this);
         }
     }
+
+    public EstadoPago getEstado() {
+        return estado;
+    }
+
+    public void setEstado(EstadoPago estado) {
+        // Si el nuevo estado es el mismo que el actual, no hace nada
+        if (this.estado == estado) {
+            return;
+        }
+
+        // Si ya tiene un estado, lo desvincula de la lista de pagos de ese estado
+        if (this.estado != null) {
+            this.estado.getPagos().remove(this);
+        }
+
+        // Asigna el nuevo estado
+        this.estado = estado;
+
+        // Si el estado no es nulo, lo añade a la lista de pagos de ese estado
+        if (estado != null && !estado.getPagos().contains(this)) {
+            estado.addPago(this);
+        }
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Pago that = (Pago) o;
+
+        // Si ambos objetos tienen un ID no nulo, comparamos por ID
+        if (this.id != null && that.id != null) {
+            return Objects.equals(this.id, that.id);
+        }
+
+        // Si no se pueden comparar por ID, consideramos que son diferentes
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
 
 }
