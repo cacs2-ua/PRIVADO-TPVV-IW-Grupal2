@@ -48,6 +48,11 @@ public class Comercio implements Serializable {
     @OneToMany(mappedBy = "comercio", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Usuario> usuarios = new HashSet<>();
 
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "pais_id", nullable = false)
+    private Pais pais_id;
+
     public Comercio() {}
 
     public Comercio(String nif) {
@@ -59,6 +64,7 @@ public class Comercio implements Serializable {
         this.iban = "default-iban";
         this.api_key = "default-api_key";
         this.url_back = "default-url_back";
+        this.pais_id = new Pais("default-country");
     }
 
     public Comercio(String nombre, String cif, String pais, String provincia, String direccion, String iban, String api_key, String url_back) {
@@ -70,6 +76,7 @@ public class Comercio implements Serializable {
         this.iban = iban;
         this.api_key = api_key;
         this.url_back = url_back;
+        this.pais_id = new Pais("default-country");
     }
 
     // Métodos Getter y Setter Correctos
@@ -144,6 +151,14 @@ public class Comercio implements Serializable {
 
     public void setUrl_back(String url_back) {
         this.url_back = url_back;
+    }
+
+    public Pais getPais_id() {
+        return pais_id;
+    }
+
+    public void setPais_id(Pais pais_id) {
+        this.pais_id = pais_id;
     }
 
     // Getter y Setter de la Relación One-to-Many

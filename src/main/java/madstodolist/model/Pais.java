@@ -6,7 +6,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 
 @Entity
@@ -21,6 +23,9 @@ public class Pais implements Serializable {
 
     @NotNull
     private String nombre;
+
+    @OneToMany(mappedBy = "pais_id")
+    private Set<Comercio> comercios = new HashSet<>();
 
     public  Pais() {}
 
@@ -43,4 +48,20 @@ public class Pais implements Serializable {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
+
+    public Set<Comercio> getComercios() {
+        return comercios;
+    }
+
+    // add Comercio
+    public void addComercio(Comercio comercio) {
+        if (comercios.contains(comercio)) return;
+        comercios.add(comercio);
+        if (comercio.getPais_id() != this) {
+            comercio.setPais_id(this);
+        }
+    }
+
+
+
 }

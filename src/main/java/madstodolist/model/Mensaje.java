@@ -37,17 +37,19 @@ public class Mensaje implements Serializable  {
 
     public Mensaje() {}
 
-    public  Mensaje(String contenido) {
+    public Mensaje(String contenido) {
         this.contenido = contenido;
         Usuario usuario = new Usuario("email");
         this.setUsuario(usuario);
         this.fecha = new Date("2000-12-12");
+        this.incidencia = new Incidencia("default");
     }
 
     public Mensaje(String contenido, Usuario usuario) {
         this.contenido = contenido;
         this.setUsuario(usuario);
         this.fecha = new Date("2000-12-12");
+        this.incidencia = new Incidencia("default");
     }
 
     public Usuario getUsuario() {
