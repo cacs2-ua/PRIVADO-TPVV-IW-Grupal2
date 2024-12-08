@@ -45,7 +45,7 @@ public class Comercio implements Serializable {
     private String url_back;
 
     // Relación One-to-Many con Usuario
-    @OneToMany(mappedBy = "comercio")
+    @OneToMany(mappedBy = "comercio", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Usuario> usuarios = new HashSet<>();
 
     public Comercio() {}
