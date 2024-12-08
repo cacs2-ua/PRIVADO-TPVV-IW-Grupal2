@@ -33,6 +33,11 @@ public class Pago implements Serializable {
     @NotNull
     private String tarjeta;
 
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "comercio_id", nullable = false)
+    private Comercio comercio;
+
     public Pago() {}
 
     public Pago(String ticketExt) {
@@ -40,13 +45,15 @@ public class Pago implements Serializable {
         this.fecha = new Date();
         this.importe = 0.0;
         this.tarjeta = "default";
+        this.comercio = new Comercio("default");
     }
 
-    public Pago(String ticketExt, Date fecha, double importe, String tarjeta) {
+    public Pago(String ticketExt, Date fecha, double importe, String tarjeta, Comercio comercio) {
         this.ticketExt = ticketExt;
         this.fecha = fecha;
         this.importe = importe;
         this.tarjeta = tarjeta;
+        this.comercio = comercio;
     }
 
     public Long getId() {
@@ -87,6 +94,30 @@ public class Pago implements Serializable {
 
     public void setTarjeta(String tarjeta) {
         this.tarjeta = tarjeta;
+    }
+
+    public Comercio getComercio() {
+        return comercio;
+    }
+
+    public void setComercio(Comercio comercio) {
+        // Si el nuevo comercio es el mismo que el actual, no hace nada
+        if (this.comercio == comercio) {
+            return;
+        }
+
+        // Si ya tiene un comercio, lo desvincula de la lista de pagos de ese comercio
+        if (this.comercio != null) {
+            this.comercio.getPagos().remove(this);
+        }
+
+        // Asigna el nuevo comercio
+        this.comercio = comercio;
+
+        // Si el comercio no es nulo, lo añade a la lista de pagos de ese comercio
+        if (comercio != null && !comercio.getPagos().contains(this)) {
+            comercio.addPago(this);
+        }
     }
 
 }

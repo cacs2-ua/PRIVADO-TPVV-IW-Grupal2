@@ -56,6 +56,9 @@ public class Comercio implements Serializable {
     @OneToOne(mappedBy = "comercio", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private PersonaContacto personaContacto;
 
+    @OneToMany(mappedBy = "comercio", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<Pago> pagos = new HashSet<>();
+
     public Comercio() {}
 
     public Comercio(String nif) {
@@ -212,6 +215,17 @@ public class Comercio implements Serializable {
         }
     }
 
+    public Set<Pago> getPagos() {
+        return pagos;
+    }
+
+    public void addPago(Pago pago) {
+        if (pagos.contains(pago)) return;
+        pagos.add(pago);
+        if (pago.getComercio() != this) {
+            pago.setComercio(this);
+        }
+    }
 
     @Override
     public boolean equals(Object o) {
