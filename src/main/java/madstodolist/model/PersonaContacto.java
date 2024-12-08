@@ -18,7 +18,7 @@ public class PersonaContacto implements Serializable {
     private Long id;
 
     @NotNull
-    private  String telefono;
+    private String telefono;
 
     @NotNull
     private String nombre;
@@ -27,15 +27,20 @@ public class PersonaContacto implements Serializable {
     @Column(unique = true)
     private String email;
 
-    public PersonaContacto() {}
+    @OneToOne
+    @JoinColumn(name = "comercio_id", nullable = false)
+    private Comercio comercio;
 
-    public PersonaContacto (String email_ext) {
+    public PersonaContacto() {
+    }
+
+    public PersonaContacto(String email_ext) {
         this.email = email_ext;
         this.nombre = "default-name";
         this.telefono = "default-phone";
     }
 
-    public PersonaContacto (String email_ext, String nombre_ext, String telefono_ext) {
+    public PersonaContacto(String email_ext, String nombre_ext, String telefono_ext) {
         this.email = email_ext;
         this.nombre = nombre_ext;
         this.telefono = telefono_ext;
@@ -69,4 +74,28 @@ public class PersonaContacto implements Serializable {
         this.email = email;
     }
 
+    public Comercio getComercio() {
+        return comercio;
+    }
+
+
+    public void setComercio(Comercio comercio) {
+        if (this.comercio == comercio) {
+            return; // No hacer nada si es el mismo comercio
+        }
+
+        // Desvincular el comercio anterior si existe
+        if (this.comercio != null) {
+            this.comercio.setPersonaContacto(null);
+        }
+
+        // Asignar el nuevo comercio
+        this.comercio = comercio;
+
+        // Vincular la relación inversa
+        if (comercio != null && comercio.getPersonaContacto() != this) {
+            comercio.setPersonaContacto(this);
+        }
+
+    }
 }

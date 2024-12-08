@@ -56,11 +56,22 @@ public class Mensaje implements Serializable  {
         return usuario;
     }
 
+
     public void setUsuario(Usuario usuario) {
+        // Si el nuevo usuario es el mismo que el actual, no hace nada
+        if (this.usuario == usuario) {
+            return;
+        }
+
+        // Si ya tiene un usuario, lo desvincula de la lista de mensajes de ese usuario
         if (this.usuario != null) {
             this.usuario.getMensajes().remove(this);
         }
+
+        // Asigna el nuevo usuario
         this.usuario = usuario;
+
+        // Si el usuario no es nulo, lo añade a la lista de mensajes de ese usuario
         if (usuario != null && !usuario.getMensajes().contains(this)) {
             usuario.getMensajes().add(this);
         }
@@ -70,13 +81,24 @@ public class Mensaje implements Serializable  {
         return incidencia;
     }
 
+
     public void setIncidencia(Incidencia incidencia) {
+        // Si la nueva incidencia es la misma que la actual, no hace nada
+        if (this.incidencia == incidencia) {
+            return;
+        }
+
+        // Si ya tiene una incidencia, lo desvincula de la lista de mensajes de esa incidencia
         if (this.incidencia != null) {
             this.incidencia.getMensajes().remove(this);
         }
+
+        // Asigna la nueva incidencia
         this.incidencia = incidencia;
+
+        // Si la incidencia no es nula, lo añade a la lista de mensajes de esa incidencia
         if (incidencia != null && !incidencia.getMensajes().contains(this)) {
-            incidencia.getMensajes().add(this);
+            incidencia.addMensaje(this);
         }
     }
 

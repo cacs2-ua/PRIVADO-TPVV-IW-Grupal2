@@ -111,15 +111,27 @@ public class Usuario implements Serializable {
         return comercio;
     }
 
+
     public void setComercio(Comercio comercio) {
+        // Si el nuevo comercio es el mismo que el actual, no hace nada
+        if (this.comercio == comercio) {
+            return;
+        }
+
+        // Si ya tiene un comercio, lo desvincula de la lista de usuarios de ese comercio
         if (this.comercio != null) {
             this.comercio.getUsuarios().remove(this);
         }
+
+        // Asigna el nuevo comercio
         this.comercio = comercio;
+
+        // Si el comercio no es nulo, lo añade a la lista de usuarios de ese comercio
         if (comercio != null && !comercio.getUsuarios().contains(this)) {
-            comercio.getUsuarios().add(this);
+            comercio.addUsuario(this);
         }
     }
+
 
     public Set<Incidencia> getIncidencias_comercio() {
         return incidencias_comercio;
@@ -162,7 +174,23 @@ public class Usuario implements Serializable {
     }
 
     public void setTipo(TipoUsuario tipo) {
+        // Si el nuevo tipo es el mismo que el actual, no hace nada
+        if (this.tipo == tipo) {
+            return;
+        }
+
+        // Si ya tiene un tipo, lo desvincula de la lista de usuarios de ese tipo
+        if (this.tipo != null) {
+            this.tipo.getUsuarios().remove(this);
+        }
+
+        // Asigna el nuevo tipo
         this.tipo = tipo;
+
+        // Si el tipo no es nulo, lo añade a la lista de usuarios de ese tipo
+        if (tipo != null && !tipo.getUsuarios().contains(this)) {
+            tipo.addUsuario(this);
+        }
     }
 
     public ValoracionTecnico getValoracionTecnico() {

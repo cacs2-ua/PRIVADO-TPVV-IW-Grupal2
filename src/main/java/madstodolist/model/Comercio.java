@@ -53,6 +53,9 @@ public class Comercio implements Serializable {
     @JoinColumn(name = "pais_id", nullable = false)
     private Pais pais_id;
 
+    @OneToOne(mappedBy = "comercio", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private PersonaContacto personaContacto;
+
     public Comercio() {}
 
     public Comercio(String nif) {
@@ -158,8 +161,25 @@ public class Comercio implements Serializable {
     }
 
     public void setPais_id(Pais pais_id) {
+        // Si el nuevo pais_id es el mismo que el actual, no hace nada
+        if (this.pais_id == pais_id) {
+            return;
+        }
+
+        // Si ya tiene un pais_id, lo desvincula de la lista de comercios de ese pais_id
+        if (this.pais_id != null) {
+            this.pais_id.getComercios().remove(this);
+        }
+
+        // Asigna el nuevo pais_id
         this.pais_id = pais_id;
+
+        // Si el pais_id no es nulo, lo añade a la lista de comercios de ese pais_id
+        if (pais_id != null && !pais_id.getComercios().contains(this)) {
+            pais_id.addComercio(this);
+        }
     }
+
 
     // Getter y Setter de la Relación One-to-Many
 
@@ -174,6 +194,24 @@ public class Comercio implements Serializable {
             usuario.setComercio(this);
         }
     }
+
+    public PersonaContacto getPersonaContacto() {
+        return personaContacto;
+    }
+
+    public void setPersonaContacto(PersonaContacto personaContacto) {
+        // Si ya existe una persona de contacto, elimina la referencia inversa
+        if (this.personaContacto != null) {
+            this.personaContacto.setComercio(null);
+        }
+        // Establece la nueva persona de contacto
+        this.personaContacto = personaContacto;
+        // Si la nueva persona de contacto no tiene esta relación, establécela
+        if (personaContacto != null && personaContacto.getComercio() != this) {
+            personaContacto.setComercio(this);
+        }
+    }
+
 
     @Override
     public boolean equals(Object o) {

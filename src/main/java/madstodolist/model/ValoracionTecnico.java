@@ -18,7 +18,7 @@ public class ValoracionTecnico implements Serializable {
     @NotNull
     private float valoracion;
 
-    @NotNull
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tecnico_id", nullable = false)
     private Usuario tecnico;
@@ -56,8 +56,24 @@ public class ValoracionTecnico implements Serializable {
     }
 
     public void setTecnico(Usuario tecnico) {
+        if (this.tecnico == tecnico) {
+            return; // No hacer nada si es el mismo técnico
+        }
+
+        // Desvincular el técnico anterior si existe
+        if (this.tecnico != null) {
+            this.tecnico.setValoracionTecnico(null);
+        }
+
+        // Asignar el nuevo técnico
         this.tecnico = tecnico;
+
+        // Vincular la relación inversa
+        if (tecnico != null && tecnico.getValoracionTecnico() != this) {
+            tecnico.setValoracionTecnico(this);
+        }
     }
+
 }
 
 
