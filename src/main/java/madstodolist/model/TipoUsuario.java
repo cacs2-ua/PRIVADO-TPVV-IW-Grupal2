@@ -1,19 +1,15 @@
 package madstodolist.model;
 
-import org.w3c.dom.Text;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.Date;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 
 @Entity
 @Table(name = "tipos_usuario")
-public class Tipo_Usuario implements Serializable {
+public class TipoUsuario implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -27,14 +23,14 @@ public class Tipo_Usuario implements Serializable {
     @OneToMany(mappedBy = "tipo", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Usuario> usuarios = new HashSet<>();
 
-    public Tipo_Usuario() {}
+    public TipoUsuario() {}
 
-    public Tipo_Usuario(String nombre) {
+    public TipoUsuario(String nombre) {
         this.nombre = nombre;
 
     }
 
-    public Tipo_Usuario(String nombre, Usuario usuario) {
+    public TipoUsuario(String nombre, Usuario usuario) {
         this.nombre = nombre;
 
     }

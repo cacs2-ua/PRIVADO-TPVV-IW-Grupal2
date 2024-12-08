@@ -47,7 +47,7 @@ public class Usuario implements Serializable {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tipo_id", nullable = false)
-    private Tipo_Usuario tipo;
+    private TipoUsuario tipo;
 
     public Usuario() {}
 
@@ -57,7 +57,7 @@ public class Usuario implements Serializable {
         this.contrasenya = "default";
         Comercio comercio = new Comercio("default");
         this.setComercio(comercio);
-        this.tipo = new Tipo_Usuario("default");
+        this.tipo = new TipoUsuario("default");
     }
 
     public  Usuario (String email, String nombre, String contrasenya, Comercio comercio) {
@@ -65,7 +65,7 @@ public class Usuario implements Serializable {
         this.nombre = nombre;
         this.contrasenya = contrasenya;
         this.setComercio(comercio);
-        this.tipo = new Tipo_Usuario("default");
+        this.tipo = new TipoUsuario("default");
     }
 
     // Getters y Setters básicos
@@ -154,11 +154,11 @@ public class Usuario implements Serializable {
         }
     }
 
-    public Tipo_Usuario getTipo() {
+    public TipoUsuario getTipo() {
         return tipo;
     }
 
-    public void setTipo(Tipo_Usuario tipo) {
+    public void setTipo(TipoUsuario tipo) {
         this.tipo = tipo;
     }
 
