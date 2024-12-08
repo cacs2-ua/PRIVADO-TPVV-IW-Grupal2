@@ -44,6 +44,11 @@ public class Usuario implements Serializable {
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Mensaje> mensajes = new HashSet<>();
 
+    @NotNull
+    @OneToOne
+    @JoinColumn(name = "tipo_id")
+    private Tipo_Usuario tipo;
+
     public Usuario() {}
 
     public Usuario(String email) {
@@ -52,6 +57,7 @@ public class Usuario implements Serializable {
         this.contrasenya = "default";
         Comercio comercio = new Comercio("default");
         this.setComercio(comercio);
+        this.tipo = new Tipo_Usuario("default");
     }
 
     public  Usuario (String email, String nombre, String contrasenya, Comercio comercio) {
@@ -59,6 +65,7 @@ public class Usuario implements Serializable {
         this.nombre = nombre;
         this.contrasenya = contrasenya;
         this.setComercio(comercio);
+        this.tipo = new Tipo_Usuario("default");
     }
 
     // Getters y Setters básicos
@@ -145,6 +152,14 @@ public class Usuario implements Serializable {
         if (mensaje.getUsuario() != this) {
             mensaje.setUsuario(this);
         }
+    }
+
+    public Tipo_Usuario getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(Tipo_Usuario tipo) {
+        this.tipo = tipo;
     }
 
 
