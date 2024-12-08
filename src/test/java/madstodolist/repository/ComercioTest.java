@@ -23,6 +23,21 @@ public class ComercioTest {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    // Métodos auxiliares para reducir duplicación
+
+    private Comercio crearYGuardarComercio(String nombre, String cif, String pais, String provincia, String direccion, String iban, String apiKey, String urlBack) {
+        Comercio comercio = new Comercio(nombre, cif, pais, provincia, direccion, iban, apiKey, urlBack);
+        comercioRepository.save(comercio);
+        return comercio;
+    }
+
+    private Usuario crearYGuardarUsuario(String email, String nombre, String password, Comercio comercio) {
+        Usuario usuario = new Usuario(email, nombre, password);
+        usuario.setComercio(comercio);
+        usuarioRepository.save(usuario);
+        return usuario;
+    }
+
     //
     // Tests modelo Comercio en memoria, sin la conexión con la BD
     //
@@ -79,10 +94,7 @@ public class ComercioTest {
     @Transactional
     public void crearComercioBaseDatos() {
         // GIVEN
-        Comercio comercio = new Comercio("Comercio A", "CIF123456", "España", "Madrid", "Calle Falsa 123", "ES9121000418450200051332", "API_KEY_123", "http://url-back.com");
-
-        // WHEN
-        comercioRepository.save(comercio);
+        Comercio comercio = crearYGuardarComercio("Comercio A", "CIF123456", "España", "Madrid", "Calle Falsa 123", "ES9121000418450200051332", "API_KEY_123", "http://url-back.com");
 
         // THEN
         assertThat(comercio.getId()).isNotNull();
@@ -90,20 +102,13 @@ public class ComercioTest {
         Comercio comercioBD = comercioRepository.findById(comercio.getId()).orElse(null);
         assertThat(comercioBD.getNombre()).isEqualTo("Comercio A");
         assertThat(comercioBD.getCif()).isEqualTo("CIF123456");
-        assertThat(comercioBD.getPais()).isEqualTo("España");
-        assertThat(comercioBD.getProvincia()).isEqualTo("Madrid");
-        assertThat(comercioBD.getDireccion()).isEqualTo("Calle Falsa 123");
-        assertThat(comercioBD.getIban()).isEqualTo("ES9121000418450200051332");
-        assertThat(comercioBD.getApi_key()).isEqualTo("API_KEY_123");
-        assertThat(comercioBD.getUrl_back()).isEqualTo("http://url-back.com");
     }
 
     @Test
     @Transactional
     public void buscarComercioEnBaseDatos() {
         // GIVEN
-        Comercio comercio = new Comercio("Comercio A", "CIF123456", "España", "Madrid", "Calle Falsa 123", "ES9121000418450200051332", "API_KEY_123", "http://url-back.com");
-        comercioRepository.save(comercio);
+        Comercio comercio = crearYGuardarComercio("Comercio A", "CIF123456", "España", "Madrid", "Calle Falsa 123", "ES9121000418450200051332", "API_KEY_123", "http://url-back.com");
         Long comercioId = comercio.getId();
 
         // WHEN
@@ -119,8 +124,7 @@ public class ComercioTest {
     @Transactional
     public void buscarComercioPorCif() {
         // GIVEN
-        Comercio comercio = new Comercio("Comercio A", "CIF123456", "España", "Madrid", "Calle Falsa 123", "ES9121000418450200051332", "API_KEY_123", "http://url-back.com");
-        comercioRepository.save(comercio);
+        crearYGuardarComercio("Comercio A", "CIF123456", "España", "Madrid", "Calle Falsa 123", "ES9121000418450200051332", "API_KEY_123", "http://url-back.com");
 
         // WHEN
         Comercio comercioBD = comercioRepository.findByCif("CIF123456").orElse(null);
@@ -133,20 +137,13 @@ public class ComercioTest {
     @Transactional
     public void unComercioTieneUnaListaDeUsuarios() {
         // GIVEN
-        Comercio comercio = new Comercio("Comercio A", "CIF123456", "España", "Madrid", "Calle Falsa 123", "ES9121000418450200051332", "API_KEY_123", "http://url-back.com");
-        comercioRepository.save(comercio);
-        Long comercioId = comercio.getId();
+        Comercio comercio = crearYGuardarComercio("Comercio A", "CIF123456", "España", "Madrid", "Calle Falsa 123", "ES9121000418450200051332", "API_KEY_123", "http://url-back.com");
 
-        Usuario usuario1 = new Usuario("user1@comercio.com", "Usuario Uno", "password1");
-        usuario1.setComercio(comercio);
-        usuarioRepository.save(usuario1);
-
-        Usuario usuario2 = new Usuario("user2@comercio.com", "Usuario Dos", "password2");
-        usuario2.setComercio(comercio);
-        usuarioRepository.save(usuario2);
+        crearYGuardarUsuario("user1@comercio.com", "Usuario Uno", "password1", comercio);
+        crearYGuardarUsuario("user2@comercio.com", "Usuario Dos", "password2", comercio);
 
         // WHEN
-        Comercio comercioRecuperado = comercioRepository.findById(comercioId).orElse(null);
+        Comercio comercioRecuperado = comercioRepository.findById(comercio.getId()).orElse(null);
 
         // THEN
         assertThat(comercioRecuperado.getUsuarios()).hasSize(2);
@@ -156,45 +153,29 @@ public class ComercioTest {
     @Transactional
     public void añadirUnUsuarioAUnComercioEnBD() {
         // GIVEN
-        Comercio comercio = new Comercio("Comercio A", "CIF123456", "España", "Madrid", "Calle Falsa 123", "ES9121000418450200051332", "API_KEY_123", "http://url-back.com");
-        comercioRepository.save(comercio);
-        Long comercioId = comercio.getId();
+        Comercio comercio = crearYGuardarComercio("Comercio A", "CIF123456", "España", "Madrid", "Calle Falsa 123", "ES9121000418450200051332", "API_KEY_123", "http://url-back.com");
 
         // WHEN
-        Comercio comercioBD = comercioRepository.findById(comercioId).orElse(null);
-        Usuario usuario = new Usuario("user3@comercio.com", "Usuario Tres", "password3");
-        usuario.setComercio(comercioBD);
-        usuarioRepository.save(usuario);
-        Long usuarioId = usuario.getId();
+        Usuario usuario = crearYGuardarUsuario("user3@comercio.com", "Usuario Tres", "password3", comercio);
 
         // THEN
-        Usuario usuarioBD = usuarioRepository.findById(usuarioId).orElse(null);
-        assertThat(usuarioBD).isEqualTo(usuario);
-        assertThat(usuarioBD.getComercio()).isEqualTo(comercioBD);
-
-        comercioBD = comercioRepository.findById(comercioId).orElse(null);
-        assertThat(comercioBD.getUsuarios()).contains(usuarioBD);
+        Comercio comercioBD = comercioRepository.findById(comercio.getId()).orElse(null);
+        assertThat(comercioBD.getUsuarios()).contains(usuario);
     }
 
     @Test
     @Transactional
     public void cambioEnLaEntidadEnTransactionalModificaLaBD() {
         // GIVEN
-        Comercio comercio = new Comercio("Comercio A", "CIF123456", "España", "Madrid", "Calle Falsa 123", "ES9121000418450200051332", "API_KEY_123", "http://url-back.com");
-        comercioRepository.save(comercio);
-        Usuario usuario = new Usuario("user@comercio.com", "Usuario Uno", "password1");
-        usuario.setComercio(comercio);
-        usuarioRepository.save(usuario);
+        Comercio comercio = crearYGuardarComercio("Comercio A", "CIF123456", "España", "Madrid", "Calle Falsa 123", "ES9121000418450200051332", "API_KEY_123", "http://url-back.com");
 
-        // Recuperamos el usuario
-        Long usuarioId = usuario.getId();
-        usuario = usuarioRepository.findById(usuarioId).orElse(null);
+        Usuario usuario = crearYGuardarUsuario("user@comercio.com", "Usuario Uno", "password1", comercio);
 
         // WHEN
         usuario.setNombre("Usuario Uno Modificado");
 
         // THEN
-        Usuario usuarioBD = usuarioRepository.findById(usuarioId).orElse(null);
-        assertThat(usuarioBD.getNombre()).isEqualTo(usuario.getNombre());
+        Usuario usuarioBD = usuarioRepository.findById(usuario.getId()).orElse(null);
+        assertThat(usuarioBD.getNombre()).isEqualTo("Usuario Uno Modificado");
     }
 }

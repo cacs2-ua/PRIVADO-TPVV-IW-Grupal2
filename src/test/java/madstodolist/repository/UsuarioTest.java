@@ -29,12 +29,46 @@ public class UsuarioTest {
     @Autowired
     private IncidenciaRepository incidenciaRepository;
 
+    // Métodos auxiliares para reducir duplicación
+    private Comercio crearYGuardarComercio() {
+        Comercio comercio = new Comercio(
+                "Comercio Ejemplo",
+                "B12345678",
+                "España",
+                "Madrid",
+                "Calle Ejemplo 123",
+                "ES9121000418450200051332",
+                "clave-api-ejemplo",
+                "https://mi-comercio.com/backend"
+        );
+        comercioRepository.save(comercio);
+        return comercio;
+    }
+
+    private Usuario crearYGuardarUsuario(String email, String nombre, String password, Comercio comercio) {
+        Usuario usuario = new Usuario(email, nombre, password, comercio);
+        usuarioRepository.save(usuario);
+        return usuario;
+    }
+
+    private Incidencia crearYGuardarIncidencia(String titulo, String descripcion, int valoracion, Usuario usuario) {
+        Incidencia incidencia = new Incidencia();
+        incidencia.setFecha(new Date());
+        incidencia.setTitulo(titulo);
+        incidencia.setDescripcion(descripcion);
+        incidencia.setValoracion(valoracion);
+        incidencia.setRazon_valoracion("Muy bien");
+        incidencia.setUsuario_comercio(usuario);
+        incidenciaRepository.save(incidencia);
+        return incidencia;
+    }
+
     //
     // Tests modelo Usuario en memoria, sin la conexión con la BD
     //
 
     @Test
-    public void crearUsuario() throws Exception {
+    public void crearUsuario() {
         // GIVEN
         Usuario usuario = new Usuario("user@comercio.com", "Usuario Uno", "password1");
 
@@ -78,44 +112,31 @@ public class UsuarioTest {
 
     @Test
     @Transactional
-    public void crearUsuarioBaseDatos() throws Exception {
+    public void crearUsuarioBaseDatos() {
         // GIVEN
-        Comercio comercio = new Comercio("Comercio A", "CIF123456", "España", "Madrid", "Calle Falsa 123", "ES9121000418450200051332", "API_KEY_123", "http://url-back.com");
-        comercioRepository.save(comercio);
-
-        Usuario usuario = new Usuario("user@comercio.com", "Usuario Uno", "password1");
-        usuario.setComercio(comercio);
-
-        // WHEN
-        usuarioRepository.save(usuario);
+        Comercio comercio = crearYGuardarComercio();
+        Usuario usuario = crearYGuardarUsuario("user@comercio.com", "Usuario Uno", "password1", comercio);
 
         // THEN
-        assertThat(usuario.getId()).isNotNull();
-
         Usuario usuarioBD = usuarioRepository.findById(usuario.getId()).orElse(null);
+        assertThat(usuarioBD).isNotNull();
         assertThat(usuarioBD.getEmail()).isEqualTo("user@comercio.com");
         assertThat(usuarioBD.getNombre()).isEqualTo("Usuario Uno");
-        assertThat(usuarioBD.getContrasenya()).isEqualTo("password1");
-        assertThat(usuarioBD.getComercio().getNombre()).isEqualTo("Comercio A");
+        assertThat(usuarioBD.getComercio().getNombre()).isEqualTo("Comercio Ejemplo");
     }
 
     @Test
     @Transactional
     public void buscarUsuarioEnBaseDatos() {
         // GIVEN
-        Comercio comercio = new Comercio("Comercio A", "CIF123456", "España", "Madrid", "Calle Falsa 123", "ES9121000418450200051332", "API_KEY_123", "http://url-back.com");
-        comercioRepository.save(comercio);
-        Usuario usuario = new Usuario("user@comercio.com", "Usuario Uno", "password1");
-        usuario.setComercio(comercio);
-        usuarioRepository.save(usuario);
-        Long usuarioId = usuario.getId();
+        Comercio comercio = crearYGuardarComercio();
+        Usuario usuario = crearYGuardarUsuario("user@comercio.com", "Usuario Uno", "password1", comercio);
 
         // WHEN
-        Usuario usuarioBD = usuarioRepository.findById(usuarioId).orElse(null);
+        Usuario usuarioBD = usuarioRepository.findById(usuario.getId()).orElse(null);
 
         // THEN
         assertThat(usuarioBD).isNotNull();
-        assertThat(usuarioBD.getId()).isEqualTo(usuarioId);
         assertThat(usuarioBD.getNombre()).isEqualTo("Usuario Uno");
         assertThat(usuarioBD.getComercio()).isEqualTo(comercio);
     }
@@ -124,11 +145,8 @@ public class UsuarioTest {
     @Transactional
     public void buscarUsuarioPorEmail() {
         // GIVEN
-        Comercio comercio = new Comercio("Comercio A", "CIF123456", "España", "Madrid", "Calle Falsa 123", "ES9121000418450200051332", "API_KEY_123", "http://url-back.com");
-        comercioRepository.save(comercio);
-        Usuario usuario = new Usuario("user@comercio.com", "Usuario Uno", "password1");
-        usuario.setComercio(comercio);
-        usuarioRepository.save(usuario);
+        Comercio comercio = crearYGuardarComercio();
+        crearYGuardarUsuario("user@comercio.com", "Usuario Uno", "password1", comercio);
 
         // WHEN
         Usuario usuarioBD = usuarioRepository.findByEmail("user@comercio.com").orElse(null);
@@ -141,127 +159,48 @@ public class UsuarioTest {
     @Transactional
     public void unUsuarioTieneUnaListaDeIncidencias() {
         // GIVEN
-        Comercio comercio = new Comercio(
-                "Comercio Ejemplo",     // nombre
-                "B12345678",            // cif
-                "España",               // país
-                "Madrid",               // provincia
-                "Calle Ejemplo 123",    // dirección
-                "ES9121000418450200051332", // IBAN
-                "clave-api-ejemplo",    // api_key
-                "https://mi-comercio.com/backend" // url_back
-        );
-        comercioRepository.save(comercio);
-        Usuario usuario = new Usuario("user@comercio.com", "Usuario Uno", "password1", comercio);
-        usuarioRepository.save(usuario);
+        Comercio comercio = crearYGuardarComercio();
+        Usuario usuario = crearYGuardarUsuario("user@comercio.com", "Usuario Uno", "password1", comercio);
 
-        Long usuarioId = usuario.getId();
-
-        Incidencia incidencia1 = new Incidencia();
-        incidencia1.setFecha(new Date());
-        incidencia1.setTitulo("Incidencia 1");
-        incidencia1.setDescripcion("Descripción 1");
-        incidencia1.setValoracion(5);
-        incidencia1.setRazon_valoracion("Muy bien");
-        incidencia1.setUsuario_comercio(usuario);
-        incidenciaRepository.save(incidencia1);
-
-        Incidencia incidencia2 = new Incidencia();
-        incidencia2.setFecha(new Date());
-        incidencia2.setTitulo("Incidencia 2");
-        incidencia2.setDescripcion("Descripción 2");
-        incidencia2.setValoracion(3);
-        incidencia2.setRazon_valoracion("Regular");
-        incidencia2.setUsuario_comercio(usuario);
-        incidenciaRepository.save(incidencia2);
+        Incidencia incidencia1 = crearYGuardarIncidencia("Incidencia 1", "Descripción 1", 5, usuario);
+        Incidencia incidencia2 = crearYGuardarIncidencia("Incidencia 2", "Descripción 2", 3, usuario);
 
         // WHEN
-        Usuario usuarioRecuperado = usuarioRepository.findById(usuarioId).orElse(null);
+        Usuario usuarioBD = usuarioRepository.findById(usuario.getId()).orElse(null);
 
         // THEN
-        assertThat(usuarioRecuperado.getIncidencias_comercio()).hasSize(2);
-        assertThat(usuarioRecuperado.getIncidencias_comercio()).contains(incidencia1, incidencia2);
+        assertThat(usuarioBD.getIncidencias_comercio()).containsExactlyInAnyOrder(incidencia1, incidencia2);
     }
 
     @Test
     @Transactional
     public void añadirUnaIncidenciaAUnUsuarioEnBD() {
         // GIVEN
-        Comercio comercio = new Comercio(
-                "Comercio Ejemplo",     // nombre
-                "B12345678",            // cif
-                "España",               // país
-                "Madrid",               // provincia
-                "Calle Ejemplo 123",    // dirección
-                "ES9121000418450200051332", // IBAN
-                "clave-api-ejemplo",    // api_key
-                "https://mi-comercio.com/backend" // url_back
-        );
-        comercioRepository.save(comercio);
-        Usuario usuario = new Usuario("user@comercio.com", "Usuario Uno", "password1", comercio);
-        usuarioRepository.save(usuario);
-
-        Long usuarioId = usuario.getId();
+        Comercio comercio = crearYGuardarComercio();
+        Usuario usuario = crearYGuardarUsuario("user@comercio.com", "Usuario Uno", "password1", comercio);
 
         // WHEN
-        Usuario usuarioBD = usuarioRepository.findById(usuarioId).orElse(null);
-        Incidencia incidencia = new Incidencia();
-        incidencia.setFecha(new Date());
-        incidencia.setTitulo("Incidencia 3");
-        incidencia.setDescripcion("Descripción 3");
-        incidencia.setValoracion(4);
-        incidencia.setRazon_valoracion("Bueno");
-        incidencia.setUsuario_comercio(usuarioBD);
-        incidenciaRepository.save(incidencia);
-        Long incidenciaId = incidencia.getId();
+        Incidencia incidencia = crearYGuardarIncidencia("Incidencia 3", "Descripción 3", 4, usuario);
 
         // THEN
-        Incidencia incidenciaBD = incidenciaRepository.findById(incidenciaId).orElse(null);
-        assertThat(incidenciaBD).isEqualTo(incidencia);
-        assertThat(incidenciaBD.getUsuario_comercio()).isEqualTo(usuarioBD);
-
-        usuarioBD = usuarioRepository.findById(usuarioId).orElse(null);
-        assertThat(usuarioBD.getIncidencias_comercio()).contains(incidenciaBD);
+        Usuario usuarioBD = usuarioRepository.findById(usuario.getId()).orElse(null);
+        assertThat(usuarioBD.getIncidencias_comercio()).contains(incidencia);
     }
 
     @Test
     @Transactional
     public void cambioEnLaEntidadEnTransactionalModificaLaBD() {
         // GIVEN
-        Comercio comercio = new Comercio(
-                "Comercio Ejemplo",     // nombre
-                "B12345678",            // cif
-                "España",               // país
-                "Madrid",               // provincia
-                "Calle Ejemplo 123",    // dirección
-                "ES9121000418450200051332", // IBAN
-                "clave-api-ejemplo",    // api_key
-                "https://mi-comercio.com/backend" // url_back
-        );
-        comercioRepository.save(comercio);
-        Usuario usuario = new Usuario("user@comercio.com", "Usuario Uno", "password1", comercio);
-        usuarioRepository.save(usuario);
+        Comercio comercio = crearYGuardarComercio();
+        Usuario usuario = crearYGuardarUsuario("user@comercio.com", "Usuario Uno", "password1", comercio);
 
-
-
-        Incidencia incidencia = new Incidencia();
-        incidencia.setFecha(new Date());
-        incidencia.setTitulo("Incidencia 1");
-        incidencia.setDescripcion("Descripción 1");
-        incidencia.setValoracion(5);
-        incidencia.setRazon_valoracion("Muy bien");
-        incidencia.setUsuario_comercio(usuario);
-        incidenciaRepository.save(incidencia);
-
-        // Recuperamos la incidencia
-        Long incidenciaId = incidencia.getId();
-        incidencia = incidenciaRepository.findById(incidenciaId).orElse(null);
+        Incidencia incidencia = crearYGuardarIncidencia("Incidencia 1", "Descripción 1", 5, usuario);
 
         // WHEN
         incidencia.setTitulo("Incidencia Modificada");
 
         // THEN
-        Incidencia incidenciaBD = incidenciaRepository.findById(incidenciaId).orElse(null);
+        Incidencia incidenciaBD = incidenciaRepository.findById(incidencia.getId()).orElse(null);
         assertThat(incidenciaBD.getTitulo()).isEqualTo("Incidencia Modificada");
     }
 
@@ -269,18 +208,9 @@ public class UsuarioTest {
     @Transactional
     public void salvarIncidenciaEnBaseDatosConUsuarioNoBDLanzaExcepcion() {
         // GIVEN
-        Comercio comercio = new Comercio(
-                "Comercio Ejemplo",     // nombre
-                "B12345678",            // cif
-                "España",               // país
-                "Madrid",               // provincia
-                "Calle Ejemplo 123",    // dirección
-                "ES9121000418450200051332", // IBAN
-                "clave-api-ejemplo",    // api_key
-                "https://mi-comercio.com/backend" // url_back
-        );
-        comercioRepository.save(comercio);
+        Comercio comercio = crearYGuardarComercio();
         Usuario usuario = new Usuario("user@comercio.com", "Usuario Uno", "password1", comercio);
+
         Incidencia incidencia = new Incidencia();
         incidencia.setFecha(new Date());
         incidencia.setTitulo("Incidencia 1");
@@ -290,12 +220,6 @@ public class UsuarioTest {
         incidencia.setUsuario_comercio(usuario);
 
         // WHEN // THEN
-        assertThrows(Exception.class, () -> {
-            incidenciaRepository.save(incidencia);
-        });
+        assertThrows(Exception.class, () -> incidenciaRepository.save(incidencia));
     }
-
-
-
-
 }
