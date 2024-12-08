@@ -35,10 +35,10 @@ public class Usuario implements Serializable {
     @JoinColumn(name = "comercio_id", nullable = false)
     private Comercio comercio;
 
-    @OneToMany(mappedBy = "usuario_comercio", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "usuario_comercio")
     private Set<Incidencia> incidencias_comercio = new HashSet<>();
 
-    @OneToMany(mappedBy = "usuario_tecnico", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "usuario_tecnico")
     private Set<Incidencia> incidencias_tecnico = new HashSet<>();
 
     public Usuario() {}
