@@ -28,7 +28,7 @@ public class PersonaContacto implements Serializable {
     private String email;
 
     @OneToOne
-    @JoinColumn(name = "comercio_id", nullable = false)
+    @JoinColumn(name = "comercio_id")
     private Comercio comercio;
 
     public PersonaContacto() {

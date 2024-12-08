@@ -20,7 +20,7 @@ public class ValoracionTecnico implements Serializable {
 
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tecnico_id", nullable = false)
+    @JoinColumn(name = "tecnico_id")
     private Usuario tecnico;
 
     public ValoracionTecnico() {}
