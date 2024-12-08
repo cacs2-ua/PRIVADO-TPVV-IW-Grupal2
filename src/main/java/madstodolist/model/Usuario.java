@@ -118,14 +118,6 @@ public class Usuario implements Serializable {
         }
     }
 
-    public void removeIncidencia_comercio(Incidencia incidencia) {
-        if (!incidencias_comercio.contains(incidencia)) return;
-        incidencias_comercio.remove(incidencia);
-        if (incidencia.getUsuario_comercio() == this) {
-            incidencia.setUsuario_comercio(null);
-        }
-    }
-
     public Set<Incidencia> getIncidencias_tecnico() {
         return incidencias_tecnico;
     }
@@ -138,13 +130,6 @@ public class Usuario implements Serializable {
         }
     }
 
-    public void removeIncidencia_tecnico(Incidencia incidencia) {
-        if (!incidencias_tecnico.contains(incidencia)) return;
-        incidencias_tecnico.remove(incidencia);
-        if (incidencia.getUsuario_tecnico() == this) {
-            incidencia.setUsuario_tecnico(null);
-        }
-    }
 
     @Override
     public boolean equals(Object o) {
