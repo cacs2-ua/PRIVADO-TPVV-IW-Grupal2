@@ -38,6 +38,9 @@ public class Usuario implements Serializable {
     @OneToMany(mappedBy = "usuario_comercio", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Incidencia> incidencias_comercio = new HashSet<>();
 
+    @OneToMany(mappedBy = "usuario_tecnico", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<Incidencia> incidencias_tecnico = new HashSet<>();
+
     public Usuario() {}
 
     public Usuario(String email, String nombre, String contrasenya) {
@@ -120,6 +123,26 @@ public class Usuario implements Serializable {
         incidencias_comercio.remove(incidencia);
         if (incidencia.getUsuario_comercio() == this) {
             incidencia.setUsuario_comercio(null);
+        }
+    }
+
+    public Set<Incidencia> getIncidencias_tecnico() {
+        return incidencias_tecnico;
+    }
+
+    public void addIncidencia_tecnico(Incidencia incidencia) {
+        if (incidencias_tecnico.contains(incidencia)) return;
+        incidencias_tecnico.add(incidencia);
+        if (incidencia.getUsuario_tecnico() != this) {
+            incidencia.setUsuario_tecnico(this);
+        }
+    }
+
+    public void removeIncidencia_tecnico(Incidencia incidencia) {
+        if (!incidencias_tecnico.contains(incidencia)) return;
+        incidencias_tecnico.remove(incidencia);
+        if (incidencia.getUsuario_tecnico() == this) {
+            incidencia.setUsuario_tecnico(null);
         }
     }
 

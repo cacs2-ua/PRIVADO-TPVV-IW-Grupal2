@@ -33,6 +33,11 @@ public class Incidencia implements Serializable {
     @JoinColumn(name = "usuario_comercio_id", nullable = false)
     private Usuario usuario_comercio;
 
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usuario_tecnico_id", nullable = false)
+    private Usuario usuario_tecnico;
+
     private int valoracion;
 
     private String razon_valoracion;
@@ -96,6 +101,20 @@ public class Incidencia implements Serializable {
         this.usuario_comercio = usuario_comercio;
         if (usuario_comercio != null && !usuario_comercio.getIncidencias_comercio().contains(this)) {
             usuario_comercio.getIncidencias_comercio().add(this);
+        }
+    }
+
+    public Usuario getUsuario_tecnico() {
+        return usuario_tecnico;
+    }
+
+    public void setUsuario_tecnico(Usuario usuario_tecnico) {
+        if (this.usuario_tecnico != null) {
+            this.usuario_tecnico.getIncidencias_tecnico().remove(this);
+        }
+        this.usuario_tecnico = usuario_tecnico;
+        if (usuario_tecnico != null && !usuario_tecnico.getIncidencias_tecnico().contains(this)) {
+            usuario_tecnico.getIncidencias_tecnico().add(this);
         }
     }
 
