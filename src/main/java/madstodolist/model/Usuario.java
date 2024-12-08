@@ -49,6 +49,9 @@ public class Usuario implements Serializable {
     @JoinColumn(name = "tipo_id", nullable = false)
     private TipoUsuario tipo;
 
+    @OneToOne(mappedBy = "tecnico", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private ValoracionTecnico valoracionTecnico;
+
     public Usuario() {}
 
     public Usuario(String email) {
@@ -162,6 +165,20 @@ public class Usuario implements Serializable {
         this.tipo = tipo;
     }
 
+    public ValoracionTecnico getValoracionTecnico() {
+        return valoracionTecnico;
+    }
+
+
+    public void setValoracionTecnico(ValoracionTecnico valoracionTecnico) {
+        if (this.valoracionTecnico != null) {
+            this.valoracionTecnico.setTecnico(null);
+        }
+        this.valoracionTecnico = valoracionTecnico;
+        if (valoracionTecnico != null && valoracionTecnico.getTecnico() != this) {
+            valoracionTecnico.setTecnico(this);
+        }
+    }
 
     @Override
     public boolean equals(Object o) {
