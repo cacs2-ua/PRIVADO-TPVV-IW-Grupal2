@@ -20,6 +20,9 @@ public class EstadoIncidencia implements Serializable {
     @NotNull
     private String nombre;
 
+    @OneToMany(mappedBy = "estado", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<Incidencia> incidencias = new HashSet<>();
+
     public EstadoIncidencia() {}
 
     public EstadoIncidencia(String nombre) {
@@ -40,6 +43,18 @@ public class EstadoIncidencia implements Serializable {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public Set<Incidencia> getIncidencias() {
+        return incidencias;
+    }
+
+    public void addIncidencia(Incidencia incidencia) {
+        if (incidencias.contains(incidencia)) return;
+        incidencias.add(incidencia);
+        if (incidencia.getEstado() != this) {
+            incidencia.setEstado(this);
+        }
     }
 
     @Override

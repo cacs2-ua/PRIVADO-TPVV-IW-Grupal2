@@ -197,7 +197,6 @@ public class Usuario implements Serializable {
         return valoracionTecnico;
     }
 
-
     public void setValoracionTecnico(ValoracionTecnico valoracionTecnico) {
         if (this.valoracionTecnico != null) {
             this.valoracionTecnico.setTecnico(null);

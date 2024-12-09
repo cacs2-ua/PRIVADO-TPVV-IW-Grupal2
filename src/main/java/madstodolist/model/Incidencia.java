@@ -48,6 +48,11 @@ public class Incidencia implements Serializable {
     @JoinColumn(name = "pago_id")
     private Pago pago;
 
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "estado_id", nullable = false)
+    private EstadoIncidencia estado;
+
     public Incidencia() {}
 
     public Incidencia(String titulo) {
@@ -203,6 +208,29 @@ public class Incidencia implements Serializable {
         // Vincular la relación inversa
         if (pago != null && pago.getIncidencia() != this) {
             pago.setIncidencia(this);
+        }
+    }
+
+    public EstadoIncidencia getEstado() {
+        return estado;
+    }
+
+    public void setEstado(EstadoIncidencia estado) {
+        if (this.estado == estado) {
+            return; // No hacer nada si es el mismo estado
+        }
+
+        // Desvincular el estado anterior si existe
+        if (this.estado != null) {
+            this.estado.getIncidencias().remove(this);
+        }
+
+        // Asignar el nuevo estado
+        this.estado = estado;
+
+        // Vincular la relación inversa
+        if (estado != null && !estado.getIncidencias().contains(this)) {
+            estado.addIncidencia(this);
         }
     }
 
