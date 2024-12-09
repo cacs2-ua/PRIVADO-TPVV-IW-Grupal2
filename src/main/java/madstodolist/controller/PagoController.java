@@ -5,6 +5,7 @@ import madstodolist.model.Comercio;
 import madstodolist.model.Pago;
 import madstodolist.service.PagoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -42,48 +43,25 @@ public class PagoController {
         pagoData.setImporte(importe);
         pagoData.setTicketExt(ticketId);
         model.addAttribute("pagoData", pagoData); // Nota: Asegúrate de usar "pagoData" como th:object
-        return "paymentForm";
+        return "paymentForm"; // Esto devuelve la vista paymentForm.html
     }
 
     /**
      * Procesa el pago realizado.
      *
      * @param pagoData El formulario de pago enviado como DTO.
-     * @param result   El resultado de la validación.
-     * @param model    El modelo para la vista.
-     * @param comercio El comercio autenticado.
-     * @return La vista de confirmación o el formulario con errores.
+     * @return La respuesta de confirmación del pago en formato JSON.
      */
     @PostMapping("/realizar")
-    public String realizarPago(@Valid @ModelAttribute("pagoData") PagoData pagoData,
-                               BindingResult result,
-                               Model model,
-                               @ModelAttribute("comercio") Comercio comercio) {
-        if (result.hasErrors()) {
-            return "paymentForm";
+    @ResponseBody // Esto asegura que la respuesta se devuelva en formato JSON
+    public ResponseEntity<String> realizarPago(@Valid @RequestBody PagoData pagoData) {
+
+        // Validación simple: verificar si los campos necesarios están presentes
+        if (pagoData.getImporte() <= 0 || pagoData.getTicketExt() == null || pagoData.getTarjeta() == null) {
+            return ResponseEntity.badRequest().body("Error: Faltan datos requeridos (importe, ticketExt, tarjeta).");
         }
 
-        // Procesar el pago
-        Pago pago = pagoService.realizarPago(
-                comercio,
-                pagoData.getImporte(),
-                pagoData.getTicketExt(),
-                pagoData.getTarjeta()
-        );
-
-        // Mapear el objeto Pago a PagoData para la confirmación
-        PagoData pagoConfirmacion = new PagoData();
-        pagoConfirmacion.setId(pago.getId());
-        pagoConfirmacion.setTicketExt(pago.getTicketExt());
-        pagoConfirmacion.setFecha(pago.getFecha());
-        pagoConfirmacion.setImporte(pago.getImporte());
-        // Enmascarar los últimos 4 dígitos de la tarjeta
-        String tarjetaEnmascarada = "**** **** **** " + pago.getTarjeta().substring(pago.getTarjeta().length() - 4);
-        pagoConfirmacion.setTarjeta(tarjetaEnmascarada);
-        pagoConfirmacion.setEstadoPago(pago.getEstado().getNombre());
-        pagoConfirmacion.setComercioNombre(comercio.getNombre());
-
-        model.addAttribute("pago", pagoConfirmacion);
-        return "paymentConfirmation";
+        // Si todo está bien, responder con un "ok" en JSON
+        return ResponseEntity.ok("Pago procesado correctamente.");
     }
 }
