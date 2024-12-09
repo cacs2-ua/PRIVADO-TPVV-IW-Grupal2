@@ -46,6 +46,11 @@ public class Pago implements Serializable {
     @JoinColumn(name = "estado_id", nullable = false)
     private EstadoPago estado;
 
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "tarjeta_pago_id", nullable = false)
+    private TarjetaPago tarjetaPago;
+
     public Pago() {}
 
     public Pago(String ticketExt) {
@@ -165,6 +170,30 @@ public class Pago implements Serializable {
         // Si el estado no es nulo, lo añade a la lista de pagos de ese estado
         if (estado != null && !estado.getPagos().contains(this)) {
             estado.addPago(this);
+        }
+    }
+
+    public TarjetaPago getTarjetaPago() {
+        return tarjetaPago;
+    }
+
+    public void setTarjetaPago(TarjetaPago tarjetaPago) {
+        // Si la nueva tarjetaPago es la misma que la actual, no hace nada
+        if (this.tarjetaPago == tarjetaPago) {
+            return;
+        }
+
+        // Si ya tiene una tarjetaPago, lo desvincula de la lista de pagos de esa tarjetaPago
+        if (this.tarjetaPago != null) {
+            this.tarjetaPago.getPagos().remove(this);
+        }
+
+        // Asigna la nueva tarjetaPago
+        this.tarjetaPago = tarjetaPago;
+
+        // Si la tarjetaPago no es nulo, lo añade a la lista de pagos de esa tarjetaPago
+        if (tarjetaPago != null && !tarjetaPago.getPagos().contains(this)) {
+            tarjetaPago.addPago(this);
         }
     }
 

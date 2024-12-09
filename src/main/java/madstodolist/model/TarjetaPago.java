@@ -31,6 +31,10 @@ public class TarjetaPago implements Serializable {
     @NotNull
     private String nombre;
 
+    @OneToMany(mappedBy = "tarjetaPago", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<Pago> pagos = new HashSet<>();
+
+
     public TarjetaPago() {}
 
     public TarjetaPago(String numeroTarjeta) {
@@ -45,6 +49,58 @@ public class TarjetaPago implements Serializable {
         this.cvc = cvc;
         this.fechaCaducidad = fechaCaducidad;
         this.nombre = nombre;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNumeroTarjeta() {
+        return numeroTarjeta;
+    }
+
+    public void setNumeroTarjeta(String numeroTarjeta) {
+        this.numeroTarjeta = numeroTarjeta;
+    }
+
+    public int getCvc() {
+        return cvc;
+    }
+
+    public void setCvc(int cvc) {
+        this.cvc = cvc;
+    }
+
+    public Date getFechaCaducidad() {
+        return fechaCaducidad;
+    }
+
+    public void setFechaCaducidad(Date fechaCaducidad) {
+        this.fechaCaducidad = fechaCaducidad;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public Set<Pago> getPagos() {
+        return pagos;
+    }
+
+    public void addPago(Pago pago) {
+        if (pagos.contains(pago)) return;
+        pagos.add(pago);
+        if (pago.getTarjetaPago() != this) {
+            pago.setTarjetaPago(this);
+        }
     }
 
     @Override
