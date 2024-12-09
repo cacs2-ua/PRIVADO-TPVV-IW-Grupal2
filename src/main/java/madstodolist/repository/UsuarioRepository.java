@@ -2,7 +2,6 @@
 
 package madstodolist.repository;
 
-import madstodolist.model.Incidencia;
 import madstodolist.model.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 

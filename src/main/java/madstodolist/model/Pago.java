@@ -2,14 +2,12 @@ package madstodolist.model;
 
 
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.xml.crypto.Data;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
+
 
 @Entity
 @Table(name = "pagos")

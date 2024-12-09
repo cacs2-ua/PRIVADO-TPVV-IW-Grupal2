@@ -1,6 +1,5 @@
 package madstodolist.repository;
 
-import madstodolist.model.Comercio;
 import madstodolist.model.Pais;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;

@@ -2,8 +2,8 @@
 
 package madstodolist.model;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
@@ -39,7 +39,7 @@ public class Comercio implements Serializable {
     private String iban;
 
     @NotNull
-    private String api_key;
+    private String apiKey;
 
     @NotNull
     private String url_back;
@@ -68,19 +68,19 @@ public class Comercio implements Serializable {
         this.provincia = "default-province";
         this.direccion = "default-address";
         this.iban = "default-iban";
-        this.api_key = "default-api_key";
+        this.apiKey = "default-apiKey";
         this.url_back = "default-url_back";
         this.pais_id = new Pais("default-country");
     }
 
-    public Comercio(String nombre, String cif, String pais, String provincia, String direccion, String iban, String api_key, String url_back) {
+    public Comercio(String nombre, String cif, String pais, String provincia, String direccion, String iban, String apiKey, String url_back) {
         this.nombre = nombre;
         this.cif = cif;
         this.pais = pais;
         this.provincia = provincia;
         this.direccion = direccion;
         this.iban = iban;
-        this.api_key = api_key;
+        this.apiKey = apiKey;
         this.url_back = url_back;
         this.pais_id = new Pais("default-country");
     }
@@ -143,12 +143,12 @@ public class Comercio implements Serializable {
         this.iban = iban;
     }
 
-    public String getApi_key() {
-        return api_key;
+    public String getApiKey() {
+        return apiKey;
     }
 
-    public void setApi_key(String api_key) {
-        this.api_key = api_key;
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
     }
 
     public String getUrl_back() {
@@ -247,4 +247,6 @@ public class Comercio implements Serializable {
     public int hashCode() {
         return Objects.hash(id, cif);
     }
+
+
 }
