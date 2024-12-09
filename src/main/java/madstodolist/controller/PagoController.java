@@ -19,6 +19,13 @@ public class PagoController {
     @Autowired
     private PagoService pagoService;
 
+
+    @ModelAttribute("comercio")
+    public Comercio inicializarComercio() {
+        // Aquí recuperas el comercio de la base de datos por su CIF, o lo creas por defecto
+        return new Comercio("B12345678");
+    }
+
     /**
      * Muestra el formulario de pago.
      *
