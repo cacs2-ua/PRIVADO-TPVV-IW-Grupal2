@@ -60,15 +60,17 @@ public class Pago implements Serializable {
         this.tarjeta = "default";
         this.comercio = new Comercio("default");
         this.estado = new EstadoPago("default");
+        this.tarjetaPago = new TarjetaPago("default");
     }
 
-    public Pago(String ticketExt, Date fecha, double importe, String tarjeta, Comercio comercio) {
+    public Pago(String ticketExt, Date fecha, double importe, String tarjeta, Comercio comercio, TarjetaPago tarjetaPago) {
         this.ticketExt = ticketExt;
         this.fecha = fecha;
         this.importe = importe;
         this.tarjeta = tarjeta;
         this.comercio = comercio;
         this.estado = new EstadoPago("default");
+        this.tarjetaPago = tarjetaPago;
     }
 
     public Long getId() {
