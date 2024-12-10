@@ -9,11 +9,27 @@ Ofrecemos una solución confiable que se adapta a cualquier negocio,
 brindando una experiencia de pago moderna y fluida tanto para ti como para tus clientes.
 ¡Con TPVV, llevas tus transacciones al siguiente nivel!
 
+## 💪 Componentes del equipo
+
+---
+
+Somos el grupo **G15** de parácticas de la asignatura de **Ingeniería Web** de la **Universidad de Alicante**. Estos son nuestros datos por si necesitáis contactar con nosotros para resolver cualquier duda o problema:
+
+- Cristian Andrés Córdoba Silvestre (**cacs2@alu.ua.es**)
+- Daniel Ripoll Sánchez (**drs35@alu.ua.es**)
+- Luis Alfonso Jiménez Rodríguez (**lajr1@alu.ua.es**)
+
+## 📦 Explicación de la API
+
+---
+
+La API de TPVV-BoarDalo es una API REST que permite realizar pagos online de forma segura y sencilla.
+
 ## 🚀 Levantar el Proyecto en Local
 
 ---
 
-### Ejecutar la aplicación a partir del application.properties
+### 🔥 Ejecutar la aplicación a partir del application.properties
 
 ```sh
 ./mvnw spring-boot:run
