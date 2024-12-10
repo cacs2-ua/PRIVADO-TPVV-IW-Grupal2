@@ -48,9 +48,9 @@ Este comercio puede ser utilizado para realizar las pruebas de **integración**.
 ---
 
 - `GET /pago/form?importe=""&idTicket=""`: Este endpoint se encarga de mostrar el formulario de pago.
-  - Esta `URL` recibe dos parámetros **obligatorios**: `importe` y `idTicket`.
-  - Asimismo, la `API Key` es manejada por este endpoint.
-  - Para que el `GET` funcione correctamente, la `API Key` debe de venir incluida en la cabecera `HTTP` (explicado con más detalle abajo).
+    - Esta `URL` recibe dos parámetros **obligatorios**: `importe` y `idTicket`.
+    - Asimismo, la `API Key` es manejada por este endpoint.
+    - Para que el `GET` funcione correctamente, la `API Key` debe de venir incluida en la cabecera `HTTP` (explicado con más detalle abajo).
 
 
 - `POST ("/pago/realizar")`: Este endpoint se encarga de mostrar el formulario de pago.
@@ -59,21 +59,24 @@ Este comercio puede ser utilizado para realizar las pruebas de **integración**.
 ## 🟢 Cómo Probar los Endpoints desde Postman
 
 
-### 📌 GET /form
+### 📌 GET /pago/form?importe=""&idTicket=""
 
 ---
 
 1. Una vez abierto `Postman`, en el cuadro de texto de la `URL` elegir `GET` e ingresar la siguiente dirección URL (podéis elegir los valores de `importe` y de `idTicket` que queráis):
-   - `http://localhost:8123/pago/form?importe=100&idTicket=1`
-
+    - `http://localhost:8123/pago/form?importe=100&idTicket=1`
+    -
+![img.png](public-resources/doc-images/img.png)
 
 2. En la pestaña de `Headers`, agregar la siguiente clave-valor:
     - En la columna `Key`, poner: `X-API-KEY`
     - En la columna `Value`, poner: `mi-api-key-12345`
 
+![img_1.png](public-resources/doc-images/img_1.png)
+
 
 3. Ingresados todos estos datos, haced click en `Send`. Si todo está correcto, se mostrará el `HTML` del formulario de pago, el cual tendrá que ser similar al siguiente:
-    
+
 ```html
 <!DOCTYPE html>
 <html>
@@ -107,18 +110,22 @@ Este comercio puede ser utilizado para realizar las pruebas de **integración**.
 </html>
 ```
 
-### 📌 POST /realizar
+![img_2.png](public-resources/doc-images/img_2.png)
+
+### 📌 POST /pago/realizar
 
 ---
 
 1. En el cuadro de texto de la `URL`, elegir `POST` e ingresar la siguiente dirección (podéis elegir los valores de importe y de idTicket que queráis):
     - `http://localhost:8123/pago/realizar`
 
+![img_3.png](public-resources/doc-images/img_3.png)
 
 2. En la pestaña de `Headers`, agregar la siguiente clave-valor:
     - En la columna `Key`, poner: `X-API-KEY` en una fila y `Content-Type` en otra.
     - En la columna `Value`, poner: `mi-api-key-12345` en una fila y `application/json` en la otra.
 
+![img_4.png](public-resources/doc-images/img_4.png)
 
 3. En la pestaña `Body`, elegid `raw` y `JSON` e ingresad los siguientes datos (formato `JSON`) (Podéis elegir los valores de `importe`, `ticketExt` y `tarjeta` que queráis):
     ```json
@@ -128,14 +135,15 @@ Este comercio puede ser utilizado para realizar las pruebas de **integración**.
         "tarjeta": "1234567890123456"
     }
     ```
+![img_5.png](public-resources/doc-images/img_5.png)
 
-
-4. Ingresados todos estos datos, haced click en `Send`. 
+4. Ingresados todos estos datos, haced click en `Send`.
     - Si todo está correcto, se mostrará el siguiente mensaje:
-      - Pago procesado correctamente.
+        - Pago procesado correctamente.
     - Si hay algún error, se mostrará el siguiente mensaje:
         - Error: Faltan datos requeridos (`importe`, `ticketExt`, `tarjeta`).
 
+![img_6.png](public-resources/doc-images/img_6.png)
 
 ## ❗Nota Final
 
