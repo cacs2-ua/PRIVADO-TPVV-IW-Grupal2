@@ -31,7 +31,7 @@ public class TarjetaPago implements Serializable {
     @NotNull
     private String nombre;
 
-    @OneToMany(mappedBy = "tarjetaPago", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "tarjetaPago", cascade = CascadeType.ALL, orphanRemoval = true)
     Set<Pago> pagos = new HashSet<>();
 
 

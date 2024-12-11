@@ -41,15 +41,15 @@ public class Usuario implements Serializable {
     @OneToMany(mappedBy = "usuario_tecnico", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     Set<Incidencia> incidencias_tecnico = new HashSet<>();
 
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     Set<Mensaje> mensajes = new HashSet<>();
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "tipo_id", nullable = false)
     private TipoUsuario tipo;
 
-    @OneToOne(mappedBy = "tecnico", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "tecnico", cascade = CascadeType.ALL, orphanRemoval = true)
     private ValoracionTecnico valoracionTecnico;
 
     public Usuario() {}
@@ -175,7 +175,7 @@ public class Usuario implements Serializable {
 
     public void setTipo(TipoUsuario tipo) {
         // Si el nuevo tipo es el mismo que el actual, no hace nada
-        if (this.tipo == tipo) {
+        if (this.tipo == tipo || tipo == null) {
             return;
         }
 
@@ -188,7 +188,7 @@ public class Usuario implements Serializable {
         this.tipo = tipo;
 
         // Si el tipo no es nulo, lo añade a la lista de usuarios de ese tipo
-        if (tipo != null && !tipo.getUsuarios().contains(this)) {
+        if (!tipo.getUsuarios().contains(this)) {
             tipo.addUsuario(this);
         }
     }

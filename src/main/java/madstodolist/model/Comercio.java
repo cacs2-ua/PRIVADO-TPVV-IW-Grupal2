@@ -53,7 +53,7 @@ public class Comercio implements Serializable {
     @JoinColumn(name = "pais_id", nullable = false)
     private Pais pais_id;
 
-    @OneToOne(mappedBy = "comercio", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "comercio", cascade = CascadeType.ALL, orphanRemoval = true)
     private PersonaContacto personaContacto;
 
     @OneToMany(mappedBy = "comercio", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -165,7 +165,7 @@ public class Comercio implements Serializable {
 
     public void setPais_id(Pais pais_id) {
         // Si el nuevo pais_id es el mismo que el actual, no hace nada
-        if (this.pais_id == pais_id) {
+        if (this.pais_id == pais_id || pais_id == null) {
             return;
         }
 
@@ -178,7 +178,7 @@ public class Comercio implements Serializable {
         this.pais_id = pais_id;
 
         // Si el pais_id no es nulo, lo añade a la lista de comercios de ese pais_id
-        if (pais_id != null && !pais_id.getComercios().contains(this)) {
+        if (!pais_id.getComercios().contains(this)) {
             pais_id.addComercio(this);
         }
     }

@@ -23,7 +23,7 @@ public class EstadoPago implements Serializable {
 
     private String razonEstado;
 
-    @OneToMany(mappedBy = "estado", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "estado", cascade = CascadeType.ALL, orphanRemoval = true)
     Set<Pago> pagos = new HashSet<>();
 
     public EstadoPago() {}

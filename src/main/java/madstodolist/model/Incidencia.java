@@ -22,6 +22,7 @@ public class Incidencia implements Serializable {
     private Long id;
 
     @NotNull
+    @Temporal(TemporalType.DATE)
     private Date fecha;
 
     @NotNull
@@ -31,7 +32,7 @@ public class Incidencia implements Serializable {
     private String descripcion;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "usuario_comercio_id", nullable = false)
     private Usuario usuario_comercio;
 
@@ -40,7 +41,7 @@ public class Incidencia implements Serializable {
     @JoinColumn(name = "usuario_tecnico_id", nullable = false)
     private Usuario usuario_tecnico;
 
-    @OneToMany(mappedBy = "incidencia", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "incidencia", cascade = CascadeType.ALL, orphanRemoval = true)
     Set<Mensaje> mensajes = new HashSet<>();
 
 
@@ -132,7 +133,7 @@ public class Incidencia implements Serializable {
 
     public void setUsuario_comercio(Usuario usuario_comercio) {
         // Si el nuevo usuario_comercio es el mismo que el actual, no hace nada
-        if (this.usuario_comercio == usuario_comercio) {
+        if (this.usuario_comercio == usuario_comercio || usuario_comercio == null) {
             return;
         }
 
@@ -145,7 +146,7 @@ public class Incidencia implements Serializable {
         this.usuario_comercio = usuario_comercio;
 
         // Si el usuario_comercio no es nulo, lo añade a la lista de incidencias_comercio de ese usuario_comercio
-        if (usuario_comercio != null && !usuario_comercio.getIncidencias_comercio().contains(this)) {
+        if (!usuario_comercio.getIncidencias_comercio().contains(this)) {
             usuario_comercio.addIncidencia_comercio(this);
         }
     }
@@ -157,7 +158,7 @@ public class Incidencia implements Serializable {
 
     public void setUsuario_tecnico(Usuario usuario_tecnico) {
         // Si el nuevo usuario_tecnico es el mismo que el actual, no hace nada
-        if (this.usuario_tecnico == usuario_tecnico) {
+        if (this.usuario_tecnico == usuario_tecnico || usuario_tecnico == null) {
             return;
         }
 
@@ -170,7 +171,7 @@ public class Incidencia implements Serializable {
         this.usuario_tecnico = usuario_tecnico;
 
         // Si el usuario_tecnico no es nulo, lo añade a la lista de incidencias_tecnico de ese usuario_tecnico
-        if (usuario_tecnico != null && !usuario_tecnico.getIncidencias_tecnico().contains(this)) {
+        if (!usuario_tecnico.getIncidencias_tecnico().contains(this)) {
             usuario_tecnico.addIncidencia_tecnico(this);
         }
     }
@@ -216,7 +217,7 @@ public class Incidencia implements Serializable {
     }
 
     public void setEstado(EstadoIncidencia estado) {
-        if (this.estado == estado) {
+        if (this.estado == estado || estado == null) {
             return; // No hacer nada si es el mismo estado
         }
 
@@ -229,7 +230,7 @@ public class Incidencia implements Serializable {
         this.estado = estado;
 
         // Vincular la relación inversa
-        if (estado != null && !estado.getIncidencias().contains(this)) {
+        if (!estado.getIncidencias().contains(this)) {
             estado.addIncidencia(this);
         }
     }

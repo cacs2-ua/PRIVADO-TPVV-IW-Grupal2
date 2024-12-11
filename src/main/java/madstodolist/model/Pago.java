@@ -23,6 +23,7 @@ public class Pago implements Serializable {
     private  String ticketExt;
 
     @NotNull
+    @Temporal(TemporalType.DATE)
     private Date fecha;
 
     @NotNull
@@ -36,11 +37,11 @@ public class Pago implements Serializable {
     @JoinColumn(name = "comercio_id", nullable = false)
     private Comercio comercio;
 
-    @OneToOne(mappedBy = "pago", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "pago", cascade = CascadeType.ALL, orphanRemoval = true)
     private Incidencia incidencia;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "estado_id", nullable = false)
     private EstadoPago estado;
 
@@ -117,7 +118,7 @@ public class Pago implements Serializable {
 
     public void setComercio(Comercio comercio) {
         // Si el nuevo comercio es el mismo que el actual, no hace nada
-        if (this.comercio == comercio) {
+        if (this.comercio == comercio || comercio == null) {
             return;
         }
 
@@ -130,7 +131,7 @@ public class Pago implements Serializable {
         this.comercio = comercio;
 
         // Si el comercio no es nulo, lo añade a la lista de pagos de ese comercio
-        if (comercio != null && !comercio.getPagos().contains(this)) {
+        if (!comercio.getPagos().contains(this)) {
             comercio.addPago(this);
         }
     }
@@ -155,7 +156,7 @@ public class Pago implements Serializable {
 
     public void setEstado(EstadoPago estado) {
         // Si el nuevo estado es el mismo que el actual, no hace nada
-        if (this.estado == estado) {
+        if (this.estado == estado || estado == null) {
             return;
         }
 
@@ -168,7 +169,7 @@ public class Pago implements Serializable {
         this.estado = estado;
 
         // Si el estado no es nulo, lo añade a la lista de pagos de ese estado
-        if (estado != null && !estado.getPagos().contains(this)) {
+        if (!estado.getPagos().contains(this)) {
             estado.addPago(this);
         }
     }
@@ -179,7 +180,7 @@ public class Pago implements Serializable {
 
     public void setTarjetaPago(TarjetaPago tarjetaPago) {
         // Si la nueva tarjetaPago es la misma que la actual, no hace nada
-        if (this.tarjetaPago == tarjetaPago) {
+        if (this.tarjetaPago == tarjetaPago || tarjetaPago == null) {
             return;
         }
 
@@ -192,7 +193,7 @@ public class Pago implements Serializable {
         this.tarjetaPago = tarjetaPago;
 
         // Si la tarjetaPago no es nulo, lo añade a la lista de pagos de esa tarjetaPago
-        if (tarjetaPago != null && !tarjetaPago.getPagos().contains(this)) {
+        if (!tarjetaPago.getPagos().contains(this)) {
             tarjetaPago.addPago(this);
         }
     }

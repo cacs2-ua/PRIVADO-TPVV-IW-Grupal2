@@ -20,18 +20,19 @@ public class Mensaje implements Serializable  {
     private Long id;
 
     @NotNull
+    @Temporal(TemporalType.DATE)
     private Date fecha;
 
     @NotNull
     String contenido;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "incidencia_id", nullable = false)
     private Incidencia incidencia;
 
@@ -59,7 +60,7 @@ public class Mensaje implements Serializable  {
 
     public void setUsuario(Usuario usuario) {
         // Si el nuevo usuario es el mismo que el actual, no hace nada
-        if (this.usuario == usuario) {
+        if (this.usuario == usuario || usuario == null) {
             return;
         }
 
@@ -72,7 +73,7 @@ public class Mensaje implements Serializable  {
         this.usuario = usuario;
 
         // Si el usuario no es nulo, lo añade a la lista de mensajes de ese usuario
-        if (usuario != null && !usuario.getMensajes().contains(this)) {
+        if (!usuario.getMensajes().contains(this)) {
             usuario.getMensajes().add(this);
         }
     }
@@ -84,7 +85,7 @@ public class Mensaje implements Serializable  {
 
     public void setIncidencia(Incidencia incidencia) {
         // Si la nueva incidencia es la misma que la actual, no hace nada
-        if (this.incidencia == incidencia) {
+        if (this.incidencia == incidencia || incidencia == null) {
             return;
         }
 
@@ -97,7 +98,7 @@ public class Mensaje implements Serializable  {
         this.incidencia = incidencia;
 
         // Si la incidencia no es nula, lo añade a la lista de mensajes de esa incidencia
-        if (incidencia != null && !incidencia.getMensajes().contains(this)) {
+        if (!incidencia.getMensajes().contains(this)) {
             incidencia.addMensaje(this);
         }
     }
