@@ -10,4 +10,6 @@ public interface ComercioRepository extends JpaRepository<Comercio, Long> {
     Optional<Comercio> findById(Long id);
     Optional<Comercio> findByCif(String cif);
     Optional<Comercio> findByApiKey(String apiKey);
+
+    boolean existsByCif(String s);
 }
