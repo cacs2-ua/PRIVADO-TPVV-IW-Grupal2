@@ -114,7 +114,7 @@ public class Usuario implements Serializable {
 
     public void setComercio(Comercio comercio) {
         // Si el nuevo comercio es el mismo que el actual, no hace nada
-        if (this.comercio == comercio) {
+        if (this.comercio == comercio || comercio == null) {
             return;
         }
 
@@ -127,7 +127,7 @@ public class Usuario implements Serializable {
         this.comercio = comercio;
 
         // Si el comercio no es nulo, lo añade a la lista de usuarios de ese comercio
-        if (comercio != null && !comercio.getUsuarios().contains(this)) {
+        if (!comercio.getUsuarios().contains(this)) {
             comercio.addUsuario(this);
         }
     }
