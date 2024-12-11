@@ -31,18 +31,18 @@ public class Usuario implements Serializable {
 
     // Relación Many-to-One con Comercio
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "comercio_id", nullable = false)
     private Comercio comercio;
 
     @OneToMany(mappedBy = "usuario_comercio", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<Incidencia> incidencias_comercio = new HashSet<>();
+    Set<Incidencia> incidencias_comercio = new HashSet<>();
 
     @OneToMany(mappedBy = "usuario_tecnico", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<Incidencia> incidencias_tecnico = new HashSet<>();
+    Set<Incidencia> incidencias_tecnico = new HashSet<>();
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<Mensaje> mensajes = new HashSet<>();
+    Set<Mensaje> mensajes = new HashSet<>();
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)

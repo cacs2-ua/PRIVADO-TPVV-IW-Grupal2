@@ -25,7 +25,7 @@ public class Pais implements Serializable {
     private String nombre;
 
     @OneToMany(mappedBy = "pais_id")
-    private Set<Comercio> comercios = new HashSet<>();
+    Set<Comercio> comercios = new HashSet<>();
 
     public  Pais() {}
 

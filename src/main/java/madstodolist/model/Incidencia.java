@@ -41,7 +41,7 @@ public class Incidencia implements Serializable {
     private Usuario usuario_tecnico;
 
     @OneToMany(mappedBy = "incidencia", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<Mensaje> mensajes = new HashSet<>();
+    Set<Mensaje> mensajes = new HashSet<>();
 
 
     @OneToOne

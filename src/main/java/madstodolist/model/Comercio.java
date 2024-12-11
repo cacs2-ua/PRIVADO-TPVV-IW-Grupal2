@@ -46,7 +46,7 @@ public class Comercio implements Serializable {
 
     // Relación One-to-Many con Usuario
     @OneToMany(mappedBy = "comercio", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<Usuario> usuarios = new HashSet<>();
+    Set<Usuario> usuarios = new HashSet<>();
 
     @NotNull
     @ManyToOne
@@ -57,7 +57,7 @@ public class Comercio implements Serializable {
     private PersonaContacto personaContacto;
 
     @OneToMany(mappedBy = "comercio", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<Pago> pagos = new HashSet<>();
+    Set<Pago> pagos = new HashSet<>();
 
     public Comercio() {}
 

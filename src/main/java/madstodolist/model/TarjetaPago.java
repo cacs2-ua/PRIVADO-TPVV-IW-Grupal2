@@ -32,7 +32,7 @@ public class TarjetaPago implements Serializable {
     private String nombre;
 
     @OneToMany(mappedBy = "tarjetaPago", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<Pago> pagos = new HashSet<>();
+    Set<Pago> pagos = new HashSet<>();
 
 
     public TarjetaPago() {}

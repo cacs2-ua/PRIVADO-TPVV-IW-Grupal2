@@ -21,7 +21,7 @@ public class EstadoIncidencia implements Serializable {
     private String nombre;
 
     @OneToMany(mappedBy = "estado", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<Incidencia> incidencias = new HashSet<>();
+    Set<Incidencia> incidencias = new HashSet<>();
 
     public EstadoIncidencia() {}
 

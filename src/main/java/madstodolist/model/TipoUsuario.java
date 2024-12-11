@@ -21,7 +21,7 @@ public class TipoUsuario implements Serializable {
     private String nombre;
 
     @OneToMany(mappedBy = "tipo", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<Usuario> usuarios = new HashSet<>();
+    Set<Usuario> usuarios = new HashSet<>();
 
     public TipoUsuario() {}
 
