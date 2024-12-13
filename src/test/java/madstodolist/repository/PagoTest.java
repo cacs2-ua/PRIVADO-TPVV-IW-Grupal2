@@ -149,20 +149,38 @@ public class PagoTest {
         });
     }
 
+
     @Test
     @Transactional
-    public void salvarPagoEnBaseDatosConEstadoPagoNoBDLanzaExcepcion() {
+    public void salvarTarjetaPagoEnBaseDatosConTarjetaPagoNoBDLanzaExcepcion() {
         // GIVEN
-        // Un pago nuevo que no está en la BD y asociado a un comercio no persistente
+        // Un pago nuevo que no está en la BD y asociado a una TarjetaPago no persistente
         Pago pago = new Pago("nuevo-ticket");
-        EstadoPago estadoPago = new EstadoPago("default-state");
+        TarjetaPago tarjetaPago = new TarjetaPago("tarjeta-no-persistente");
+        // No se guarda tarjetaPago en la BD
 
+        pago.setTarjetaPago(tarjetaPago);
+
+        // Crear y guardar comercio para evitar violaciones de clave foránea
+        Pais pais = new Pais("pais-test");
+        paisRepository.save(pais);
+
+        Comercio comercio = new Comercio("cif-test");
+        comercio.setPais_id(pais);
+        comercioRepository.save(comercio);
+
+        pago.setComercio(comercio);
+
+        // Crear y guardar EstadoPago para evitar violaciones de clave foránea
+        EstadoPago estadoPago = new EstadoPago("estado-test");
+        estadoPagoRepository.save(estadoPago);
         pago.setEstado(estadoPago);
 
         // WHEN // THEN
-        // se lanza una excepción al intentar salvar el pago en la BD
+        // Se lanza una excepción al intentar salvar el pago en la BD debido a TarjetaPago no persistente
         Assertions.assertThrows(Exception.class, () -> {
             pagoRepository.save(pago);
         });
     }
+
 }
