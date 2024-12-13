@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 
@@ -63,6 +64,27 @@ public class TipoUsuario implements Serializable {
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TipoUsuario that = (TipoUsuario) o;
+
+        // Si ambos objetos tienen un ID no nulo, comparamos por ID
+        if (this.id != null && that.id != null) {
+            return Objects.equals(this.id, that.id);
+        }
+
+        // Si no se pueden comparar por ID, consideramos que son diferentes
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        // Generamos el hashCode basado únicamente en el ID
+        return Objects.hash(id);
+    }
 
 }
 

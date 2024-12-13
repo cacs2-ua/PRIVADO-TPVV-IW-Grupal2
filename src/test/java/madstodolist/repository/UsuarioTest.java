@@ -31,7 +31,7 @@ public class UsuarioTest {
     @Autowired
     private PaisRepository paisRepository;
 
-    private Usuario crearYGuardarUsuario(String email1, String email2, String email3) {
+    private Usuario crearYGuardarUsuario(String email1) {
         // Crear y guardar entidades dependientes
         Pais pais = new Pais("default-country");
         paisRepository.save(pais);
@@ -50,12 +50,12 @@ public class UsuarioTest {
         usuario.setComercio(comercio); // Asociar comercio al usuario
         usuarioRepository.save(usuario);
 
-        Usuario usuario2 = new Usuario(email2);
+        Usuario usuario2 = new Usuario("default-email2");
         usuario2.setTipo(tipoUsuario); // Asocia el tipo al usuario
         usuario2.setComercio(comercio); // Asociar comercio al usuario
         usuarioRepository.save(usuario2);
 
-        Usuario usuario3 = new Usuario(email3);
+        Usuario usuario3 = new Usuario("default-email3");
         usuario3.setTipo(tipoUsuario); // Asocia el tipo al usuario
         usuario3.setComercio(comercio); // Asociar comercio al usuario
         usuarioRepository.save(usuario3);
@@ -122,7 +122,7 @@ public class UsuarioTest {
     @Transactional
     public void crearYBuscarUsuarioBaseDatos() {
         // GIVEN
-        Usuario usuario = crearYGuardarUsuario("user@comercio.com", "user2@comercio.com", "user3@comercio.com");
+        Usuario usuario = crearYGuardarUsuario("user@comercio.com");
 
         // THEN
         Usuario usuarioBD = usuarioRepository.findById(usuario.getId()).orElse(null);
@@ -137,7 +137,7 @@ public class UsuarioTest {
     @Transactional
     public void buscarUsuarioPorEmail() {
         // GIVEN
-        crearYGuardarUsuario("user@comercio.com", "user2@comercio.com", "user3@comercio.com");
+        crearYGuardarUsuario("user@comercio.com");
 
         // WHEN
         Usuario usuarioBD = usuarioRepository.findByEmail("user@comercio.com").orElse(null);
@@ -155,6 +155,24 @@ public class UsuarioTest {
 
         Usuario usuario = new Usuario("juan.gutierrez@gmail.com");
         Comercio comercio = new Comercio("comercio 1");
+
+        // WHEN // THEN
+        // se lanza una excepción al intentar salvar la tarea en la BD
+
+        Assertions.assertThrows(Exception.class, () -> {
+            usuarioRepository.save(usuario);
+        });
+    }
+
+    @Test
+    @Transactional
+    public void salvarUsuarioEnBaseDatosConTipoUsuarioNoBDLanzaExcepcion() {
+        // GIVEN
+        // Un usuario nuevo que no está en la BD
+        // y una tarea asociada a ese usuario,
+
+        Usuario usuario = new Usuario("juan.gutierrez@gmail.com");
+        TipoUsuario tipoUsuario = new TipoUsuario("default");
 
         // WHEN // THEN
         // se lanza una excepción al intentar salvar la tarea en la BD

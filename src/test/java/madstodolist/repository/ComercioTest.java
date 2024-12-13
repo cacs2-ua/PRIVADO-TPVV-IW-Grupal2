@@ -178,6 +178,8 @@ public class ComercioTest {
         Usuario usuarioDB = comercioBD.getUsuarios().iterator().next();
         usuarioDB.setNombre("Usuario Uno Modificado");
 
+        usuarioDB = usuarioRepository.findById(usuarioDB.getId()).orElse(null);
+
         // THEN
         assertThat(usuarioDB.getNombre()).isEqualTo("Usuario Uno Modificado");
     }
