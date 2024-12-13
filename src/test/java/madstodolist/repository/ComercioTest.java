@@ -12,6 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Set;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -80,25 +82,25 @@ public class ComercioTest {
     @Test
     public void crearComercio() {
         // GIVEN
-        Comercio comercio = new Comercio("Comercio A", "CIF123456", "España", "Madrid", "Calle Falsa 123", "ES9121000418450200051332", "API_KEY_123", "http://url-back.com");
+        Comercio comercio = new Comercio("CIF123456");
 
         // THEN
-        assertThat(comercio.getNombre()).isEqualTo("Comercio A");
+        assertThat(comercio.getNombre()).isEqualTo("default-name");
         assertThat(comercio.getCif()).isEqualTo("CIF123456");
-        assertThat(comercio.getPais()).isEqualTo("España");
-        assertThat(comercio.getProvincia()).isEqualTo("Madrid");
-        assertThat(comercio.getDireccion()).isEqualTo("Calle Falsa 123");
-        assertThat(comercio.getIban()).isEqualTo("ES9121000418450200051332");
-        assertThat(comercio.getApiKey()).isEqualTo("API_KEY_123");
-        assertThat(comercio.getUrl_back()).isEqualTo("http://url-back.com");
+        assertThat(comercio.getPais()).isEqualTo("default-country");
+        assertThat(comercio.getProvincia()).isEqualTo("default-province");
+        assertThat(comercio.getDireccion()).isEqualTo("default-address");
+        assertThat(comercio.getIban()).isEqualTo("default-iban");
+        assertThat(comercio.getApiKey()).isEqualTo("default-apiKey");
+        assertThat(comercio.getUrl_back()).isEqualTo("default-url_back");
     }
 
     @Test
     public void comprobarIgualdadComerciosSinId() {
         // GIVEN
-        Comercio comercio1 = new Comercio("Comercio A", "CIF123456", "España", "Madrid", "Calle Falsa 123", "ES9121000418450200051332", "API_KEY_123", "http://url-back.com");
-        Comercio comercio2 = new Comercio("Comercio B", "CIF123456", "España", "Madrid", "Calle Falsa 123", "ES9121000418450200051332", "API_KEY_123", "http://url-back.com");
-        Comercio comercio3 = new Comercio("Comercio C", "CIF654321", "España", "Madrid", "Calle Verdadera 456", "ES9121000418450200051333", "API_KEY_456", "http://url-back2.com");
+        Comercio comercio1 = new Comercio("CIF123456");
+        Comercio comercio2 = new Comercio("CIF123456");
+        Comercio comercio3 = new Comercio("CIF654321");
 
         // THEN
         assertThat(comercio1).isEqualTo(comercio2);
@@ -108,9 +110,9 @@ public class ComercioTest {
     @Test
     public void comprobarIgualdadComerciosConId() {
         // GIVEN
-        Comercio comercio1 = new Comercio("Comercio A", "CIF123456", "España", "Madrid", "Calle Falsa 123", "ES9121000418450200051332", "API_KEY_123", "http://url-back.com");
-        Comercio comercio2 = new Comercio("Comercio B", "CIF654321", "España", "Madrid", "Calle Verdadera 456", "ES9121000418450200051333", "API_KEY_456", "http://url-back2.com");
-        Comercio comercio3 = new Comercio("Comercio C", "CIF123456", "España", "Madrid", "Calle Falsa 123", "ES9121000418450200051332", "API_KEY_123", "http://url-back.com");
+        Comercio comercio1 = new Comercio("CIF123456");
+        Comercio comercio2 = new Comercio("CIF654321");
+        Comercio comercio3 = new Comercio("CIF123433");
 
         comercio1.setId(1L);
         comercio2.setId(2L);
@@ -127,7 +129,7 @@ public class ComercioTest {
 
     @Test
     @Transactional
-    public void crearComercioBaseDatos() {
+    public void crearYBuscarComercioBaseDatos() {
         // GIVEN
         Comercio comercio = crearYGuardarComercio("CIF123456");
 
@@ -137,22 +139,6 @@ public class ComercioTest {
         Comercio comercioBD = comercioRepository.findById(comercio.getId()).orElse(null);
         assertThat(comercioBD.getNombre()).isEqualTo("default-name");
         assertThat(comercioBD.getCif()).isEqualTo("CIF123456");
-    }
-
-    @Test
-    @Transactional
-    public void buscarComercioEnBaseDatos() {
-        // GIVEN
-        Comercio comercio = crearYGuardarComercio("CIF123456");
-        Long comercioId = comercio.getId();
-
-        // WHEN
-        Comercio comercioBD = comercioRepository.findById(comercioId).orElse(null);
-
-        // THEN
-        assertThat(comercioBD).isNotNull();
-        assertThat(comercioBD.getId()).isEqualTo(comercioId);
-        assertThat(comercioBD.getNombre()).isEqualTo("default-name");
     }
 
     @Test
@@ -179,20 +165,6 @@ public class ComercioTest {
 
         // THEN
         assertThat(comercioRecuperado.getUsuarios()).hasSize(3);
-    }
-
-    @Test
-    @Transactional
-    public void añadirUnUsuarioAUnComercioEnBD() {
-        // GIVEN
-        Comercio comercio = crearYGuardarComercio("CIF123456");
-
-        // WHEN
-        Comercio comercioBD = comercioRepository.findById(comercio.getId()).orElse(null);
-        Usuario usuario = comercioBD.getUsuarios().iterator().next();
-
-        // THEN
-        assertThat(comercioBD.getUsuarios()).contains(usuario);
     }
 
     @Test

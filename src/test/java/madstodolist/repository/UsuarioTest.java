@@ -3,6 +3,7 @@
 package madstodolist.repository;
 
 import madstodolist.model.*;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -84,6 +85,7 @@ public class UsuarioTest {
         assertThat(usuario.getContrasenya()).isEqualTo("default");
     }
 
+
     @Test
     public void comprobarIgualdadUsuariosSinId() {
         // GIVEN
@@ -118,7 +120,7 @@ public class UsuarioTest {
 
     @Test
     @Transactional
-    public void crearUsuarioBaseDatos() {
+    public void crearYBuscarUsuarioBaseDatos() {
         // GIVEN
         Usuario usuario = crearYGuardarUsuario("user@comercio.com", "user2@comercio.com", "user3@comercio.com");
 
@@ -130,20 +132,6 @@ public class UsuarioTest {
         assertThat(usuarioBD.getComercio().getNombre()).isEqualTo("default-name");
     }
 
-    @Test
-    @Transactional
-    public void buscarUsuarioEnBaseDatos() {
-        // GIVEN
-        Usuario usuario = crearYGuardarUsuario("user@comercio.com", "user2@comercio.com", "user3@comercio.com");
-
-        // WHEN
-        Usuario usuarioBD = usuarioRepository.findById(usuario.getId()).orElse(null);
-
-        // THEN
-        assertThat(usuarioBD).isNotNull();
-        assertThat(usuarioBD.getNombre()).isEqualTo("default");
-        //assertThat(usuarioBD.getComercio()).isEqualTo(comercio);
-    }
 
     @Test
     @Transactional
@@ -158,22 +146,21 @@ public class UsuarioTest {
         assertThat(usuarioBD.getNombre()).isEqualTo("default");
     }
 
-    /*
     @Test
     @Transactional
-    public void cambioEnLaEntidadEnTransactionalModificaLaBD() {
+    public void salvarUsuarioEnBaseDatosConComercioNoBDLanzaExcepcion() {
         // GIVEN
-        Comercio comercio = crearYGuardarComercio();
-        Usuario usuario = crearYGuardarUsuario("user@comercio.com", "Usuario Uno", "password1", comercio);
+        // Un usuario nuevo que no está en la BD
+        // y una tarea asociada a ese usuario,
 
-        Incidencia incidencia = crearYGuardarIncidencia("Incidencia 1", "Descripción 1", 5, usuario);
+        Usuario usuario = new Usuario("juan.gutierrez@gmail.com");
+        Comercio comercio = new Comercio("comercio 1");
 
-        // WHEN
-        incidencia.setTitulo("Incidencia Modificada");
+        // WHEN // THEN
+        // se lanza una excepción al intentar salvar la tarea en la BD
 
-        // THEN
-        Incidencia incidenciaBD = incidenciaRepository.findById(incidencia.getId()).orElse(null);
-        assertThat(incidenciaBD.getTitulo()).isEqualTo("Incidencia Modificada");
+        Assertions.assertThrows(Exception.class, () -> {
+            usuarioRepository.save(usuario);
+        });
     }
-    */
 }
