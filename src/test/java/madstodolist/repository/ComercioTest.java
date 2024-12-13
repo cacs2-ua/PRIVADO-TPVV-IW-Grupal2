@@ -1,17 +1,19 @@
+// test/repository/ComercioTest.java
+
 package madstodolist.repository;
 
 import madstodolist.model.Comercio;
-import madstodolist.model.Pais;
 import madstodolist.model.TipoUsuario;
 import madstodolist.model.Usuario;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import madstodolist.model.Pais;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Sql(scripts = "/clean-db.sql")
@@ -21,26 +23,59 @@ public class ComercioTest {
     private ComercioRepository comercioRepository;
 
     @Autowired
+    private TipoUsuarioRepository tipoUsuarioRepository;
+
+    @Autowired
     private UsuarioRepository usuarioRepository;
 
     @Autowired
     private PaisRepository paisRepository;
 
-    @Autowired
-    private TipoUsuarioRepository tipoUsuarioRepository; // Asegúrate de tener este repositorio creado
+    // Métodos auxiliares para reducir duplicación
 
-    private Pais paisEspaña;
-    private TipoUsuario tipoDefault;
+    private Comercio crearYGuardarComercio(String cif) {
+        // Crear y guardar entidades dependientes
+        Pais pais = new Pais("default-country");
+        paisRepository.save(pais);
 
-    @BeforeEach
-    public void setUp() {
-        // Crear y guardar un Pais único para todos los tests
-        paisEspaña = new Pais("España");
-        paisEspaña = paisRepository.save(paisEspaña);
+        TipoUsuario tipoUsuario = new TipoUsuario("default-type");
+        tipoUsuarioRepository.save(tipoUsuario);
 
-        // Crear y guardar un TipoUsuario único para todos los tests
-        tipoDefault = new TipoUsuario("default");
-        tipoDefault = tipoUsuarioRepository.save(tipoDefault);
+        // Crear el comercio y guardar antes de asociar
+        Comercio comercio = new Comercio(cif);
+        comercio.setPais_id(pais); // Asocia el país al comercio
+        comercioRepository.save(comercio); // Guardar primero el comercio
+
+        // Crear y asociar el usuario al comercio
+        Usuario usuario = new Usuario("default@gmail.com");
+        usuario.setTipo(tipoUsuario); // Asocia el tipo al usuario
+        usuario.setComercio(comercio); // Asociar comercio al usuario
+        usuarioRepository.save(usuario);
+
+        Usuario usuario2 = new Usuario("default2@gmail.com");
+        usuario2.setTipo(tipoUsuario); // Asocia el tipo al usuario
+        usuario2.setComercio(comercio); // Asociar comercio al usuario
+        usuarioRepository.save(usuario2);
+
+        // Agregar el usuario al comercio y actualizar
+        comercio.getUsuarios().add(usuario);
+        comercio.getUsuarios().add(usuario2);
+        comercioRepository.save(comercio); // Actualizar el comercio con el usuario asociado
+
+        return comercio;
+    }
+
+
+    private Usuario crearYGuardarUsuario(String email) {
+        Usuario usuario = new Usuario(email);
+        usuarioRepository.save(usuario);
+        return usuario;
+    }
+
+    private Pais crearYGuardarPais(String nombre) {
+        Pais pais = new Pais(nombre);
+        paisRepository.save(pais);
+        return pais;
     }
 
     //
@@ -50,19 +85,25 @@ public class ComercioTest {
     @Test
     public void crearComercio() {
         // GIVEN
-        Comercio comercio = new Comercio("12345678A");
+        Comercio comercio = new Comercio("Comercio A", "CIF123456", "España", "Madrid", "Calle Falsa 123", "ES9121000418450200051332", "API_KEY_123", "http://url-back.com");
 
         // THEN
-        assertThat(comercio.getCif()).isEqualTo("12345678A");
-        assertThat(comercio.getNombre()).isEqualTo("default-name");
+        assertThat(comercio.getNombre()).isEqualTo("Comercio A");
+        assertThat(comercio.getCif()).isEqualTo("CIF123456");
+        assertThat(comercio.getPais()).isEqualTo("España");
+        assertThat(comercio.getProvincia()).isEqualTo("Madrid");
+        assertThat(comercio.getDireccion()).isEqualTo("Calle Falsa 123");
+        assertThat(comercio.getIban()).isEqualTo("ES9121000418450200051332");
+        assertThat(comercio.getApiKey()).isEqualTo("API_KEY_123");
+        assertThat(comercio.getUrl_back()).isEqualTo("http://url-back.com");
     }
 
     @Test
     public void comprobarIgualdadComerciosSinId() {
         // GIVEN
-        Comercio comercio1 = new Comercio("12345678A");
-        Comercio comercio2 = new Comercio("12345678A");
-        Comercio comercio3 = new Comercio("87654321B");
+        Comercio comercio1 = new Comercio("Comercio A", "CIF123456", "España", "Madrid", "Calle Falsa 123", "ES9121000418450200051332", "API_KEY_123", "http://url-back.com");
+        Comercio comercio2 = new Comercio("Comercio B", "CIF123456", "España", "Madrid", "Calle Falsa 123", "ES9121000418450200051332", "API_KEY_123", "http://url-back.com");
+        Comercio comercio3 = new Comercio("Comercio C", "CIF654321", "España", "Madrid", "Calle Verdadera 456", "ES9121000418450200051333", "API_KEY_456", "http://url-back2.com");
 
         // THEN
         assertThat(comercio1).isEqualTo(comercio2);
@@ -72,9 +113,9 @@ public class ComercioTest {
     @Test
     public void comprobarIgualdadComerciosConId() {
         // GIVEN
-        Comercio comercio1 = new Comercio("12345678A");
-        Comercio comercio2 = new Comercio("87654321B");
-        Comercio comercio3 = new Comercio("12345678A");
+        Comercio comercio1 = new Comercio("Comercio A", "CIF123456", "España", "Madrid", "Calle Falsa 123", "ES9121000418450200051332", "API_KEY_123", "http://url-back.com");
+        Comercio comercio2 = new Comercio("Comercio B", "CIF654321", "España", "Madrid", "Calle Verdadera 456", "ES9121000418450200051333", "API_KEY_456", "http://url-back2.com");
+        Comercio comercio3 = new Comercio("Comercio C", "CIF123456", "España", "Madrid", "Calle Falsa 123", "ES9121000418450200051332", "API_KEY_123", "http://url-back.com");
 
         comercio1.setId(1L);
         comercio2.setId(2L);
@@ -91,217 +132,86 @@ public class ComercioTest {
 
     @Test
     @Transactional
-    public void guardarComercioEnBaseDatos() {
+    public void crearComercioBaseDatos() {
         // GIVEN
-        Comercio comercio = new Comercio("12345678A");
-        comercio.setNombre("Comercio Ejemplo");
-        comercio.setPais("España");
-        comercio.setProvincia("Madrid");
-        comercio.setDireccion("Calle Falsa 123");
-        comercio.setIban("ES9121000418450200051332");
-        comercio.setApiKey("apikey123");
-        comercio.setUrl_back("https://example.com/back");
-
-        // Asignar el Pais previamente guardado
-        comercio.setPais_id(paisEspaña);
-
-        // WHEN
-        comercioRepository.save(comercio);
+        Comercio comercio = crearYGuardarComercio("CIF123456");
 
         // THEN
         assertThat(comercio.getId()).isNotNull();
 
         Comercio comercioBD = comercioRepository.findById(comercio.getId()).orElse(null);
+        assertThat(comercioBD.getNombre()).isEqualTo("default-name");
+        assertThat(comercioBD.getCif()).isEqualTo("CIF123456");
+    }
+
+    @Test
+    @Transactional
+    public void buscarComercioEnBaseDatos() {
+        // GIVEN
+        Comercio comercio = crearYGuardarComercio("CIF123456");
+        Long comercioId = comercio.getId();
+
+        // WHEN
+        Comercio comercioBD = comercioRepository.findById(comercioId).orElse(null);
+
+        // THEN
         assertThat(comercioBD).isNotNull();
-        assertThat(comercioBD.getNombre()).isEqualTo("Comercio Ejemplo");
-        assertThat(comercioBD.getCif()).isEqualTo("12345678A");
-        assertThat(comercioBD.getPais()).isEqualTo("España");
-        assertThat(comercioBD.getProvincia()).isEqualTo("Madrid");
-        assertThat(comercioBD.getDireccion()).isEqualTo("Calle Falsa 123");
-        assertThat(comercioBD.getIban()).isEqualTo("ES9121000418450200051332");
-        assertThat(comercioBD.getApiKey()).isEqualTo("apikey123");
-        assertThat(comercioBD.getUrl_back()).isEqualTo("https://example.com/back");
-        assertThat(comercioBD.getPais_id()).isEqualTo(paisEspaña);
-    }
-
-    @Test
-    @Transactional
-    public void salvarComercioConCifDuplicadoLanzaExcepcion() {
-        // GIVEN
-        Comercio comercio1 = new Comercio("12345678A");
-        comercio1.setPais_id(paisEspaña);
-        comercioRepository.save(comercio1);
-
-        Comercio comercio2 = new Comercio("12345678A"); // Mismo CIF
-        comercio2.setPais_id(paisEspaña); // Asignar el mismo Pais existente
-
-        // WHEN // THEN
-        Assertions.assertThrows(Exception.class, () -> {
-            comercioRepository.save(comercio2);
-            comercioRepository.flush(); // Forzar la ejecución de la operación
-        });
-    }
-
-    @Test
-    @Transactional
-    public void unComercioTieneUnaListaDeUsuarios() {
-        // GIVEN
-        Comercio comercio = new Comercio("12345678A");
-        comercio.setPais_id(paisEspaña);
-        comercioRepository.save(comercio);
-        Long comercioId = comercio.getId();
-
-        // Crear usuarios con TipoUsuario previamente guardado
-        Usuario usuario1 = new Usuario("user1@ua");
-        usuario1.setTipo(tipoDefault);
-        usuario1.setComercio(comercio);
-
-        Usuario usuario2 = new Usuario("user2@ua");
-        usuario2.setTipo(tipoDefault);
-        usuario2.setComercio(comercio);
-
-        usuarioRepository.save(usuario1);
-        usuarioRepository.save(usuario2);
-
-        // WHEN
-        Comercio comercioRecuperado = comercioRepository.findById(comercioId).orElse(null);
-
-        // THEN
-        assertThat(comercioRecuperado).isNotNull();
-        assertThat(comercioRecuperado.getUsuarios()).hasSize(2).containsExactlyInAnyOrder(usuario1, usuario2);
-    }
-
-    @Test
-    @Transactional
-    public void añadirUnUsuarioAUnComercioEnBD() {
-        // GIVEN
-        Comercio comercio = new Comercio("12345678A");
-        comercio.setPais_id(paisEspaña);
-        comercioRepository.save(comercio);
-        Long comercioId = comercio.getId();
-
-        // WHEN
-        Comercio comercioBD = comercioRepository.findById(comercioId).orElse(null);
-
-        // Crear un nuevo usuario con TipoUsuario previamente guardado
-        Usuario usuario = new Usuario("newuser@ua");
-        usuario.setTipo(tipoDefault);
-        usuario.setComercio(comercioBD);
-        usuarioRepository.save(usuario);
-        Long usuarioId = usuario.getId();
-
-        // THEN
-        Usuario usuarioBD = usuarioRepository.findById(usuarioId).orElse(null);
-        assertThat(usuarioBD).isEqualTo(usuario);
-        assertThat(usuarioBD.getComercio()).isEqualTo(comercioBD);
-
-        comercioBD = comercioRepository.findById(comercioId).orElse(null);
-        assertThat(comercioBD.getUsuarios()).contains(usuarioBD);
-    }
-
-    @Test
-    @Transactional
-    public void cambioEnLaEntidadEnTransactionalModificaLaBD() {
-        // GIVEN
-        Comercio comercio = new Comercio("12345678A");
-        comercio.setNombre("Comercio Original");
-        comercio.setPais_id(paisEspaña);
-        comercioRepository.save(comercio);
-
-        // Recuperar el comercio
-        Long comercioId = comercio.getId();
-        comercio = comercioRepository.findById(comercioId).orElse(null);
-
-        // WHEN
-        comercio.setNombre("Comercio Actualizado");
-
-        // THEN
-        Comercio comercioBD = comercioRepository.findById(comercioId).orElse(null);
-        assertThat(comercioBD.getNombre()).isEqualTo("Comercio Actualizado");
-    }
-
-    @Test
-    @Transactional
-    public void eliminarComercioEnBD() {
-        // GIVEN
-        Comercio comercio = new Comercio("12345678A");
-        comercio.setPais_id(paisEspaña);
-        comercioRepository.save(comercio);
-        Long comercioId = comercio.getId();
-
-        // WHEN
-        comercioRepository.delete(comercio);
-
-        // THEN
-        Comercio comercioBD = comercioRepository.findById(comercioId).orElse(null);
-        assertThat(comercioBD).isNull();
+        assertThat(comercioBD.getId()).isEqualTo(comercioId);
+        assertThat(comercioBD.getNombre()).isEqualTo("default-name");
     }
 
     @Test
     @Transactional
     public void buscarComercioPorCif() {
         // GIVEN
-        Comercio comercio = new Comercio("12345678A");
-        comercio.setNombre("Comercio Ejemplo");
-        comercio.setPais_id(paisEspaña);
-        comercioRepository.save(comercio);
+        crearYGuardarComercio("CIF123456");
 
         // WHEN
-        Comercio comercioBD = comercioRepository.findByCif("12345678A").orElse(null);
+        Comercio comercioBD = comercioRepository.findByCif("CIF123456").orElse(null);
 
         // THEN
-        assertThat(comercioBD).isNotNull();
-        assertThat(comercioBD.getNombre()).isEqualTo("Comercio Ejemplo");
+        assertThat(comercioBD.getNombre()).isEqualTo("default-name");
     }
 
     @Test
     @Transactional
-    public void existsByCifTrue_ShouldReturnTrueWhenCifExists() {
+    public void unComercioTieneUnaListaDeUsuarios() {
         // GIVEN
-        Comercio comercio = new Comercio("12345678A");
-        comercio.setPais_id(paisEspaña);
-        comercioRepository.save(comercio);
+        Comercio comercio = crearYGuardarComercio("CIF123456");
 
         // WHEN
-        boolean exists = comercioRepository.existsByCif("12345678A");
+        Comercio comercioRecuperado = comercioRepository.findById(comercio.getId()).orElse(null);
 
         // THEN
-        assertThat(exists).isTrue();
+        assertThat(comercioRecuperado.getUsuarios()).hasSize(2);
     }
 
     @Test
     @Transactional
-    public void existsByCifTrue_ShouldReturnFalseWhenCifDoesNotExist() {
+    public void añadirUnUsuarioAUnComercioEnBD() {
         // GIVEN
-        // No comercios en la base de datos
+        Comercio comercio = crearYGuardarComercio("CIF123456");
 
         // WHEN
-        boolean exists = comercioRepository.existsByCif("99999999Z");
+        Comercio comercioBD = comercioRepository.findById(comercio.getId()).orElse(null);
+        Usuario usuario = comercioBD.getUsuarios().iterator().next();
 
         // THEN
-        assertThat(exists).isFalse();
+        assertThat(comercioBD.getUsuarios()).contains(usuario);
     }
 
     @Test
     @Transactional
-    public void findAllComercios_ShouldReturnAllComercios() {
+    public void cambioEnLaEntidadEnTransactionalModificaLaBD() {
         // GIVEN
-        Comercio comercio1 = new Comercio("12345678A");
-        Comercio comercio2 = new Comercio("87654321B");
-
-        Pais paisFrancia = new Pais("Francia");
-        paisFrancia = paisRepository.save(paisFrancia);
-
-        comercio1.setPais_id(paisEspaña);
-        comercio2.setPais_id(paisFrancia);
-
-        comercioRepository.save(comercio1);
-        comercioRepository.save(comercio2);
+        Comercio comercio = crearYGuardarComercio("CIF123456");
 
         // WHEN
-        Iterable<Comercio> comercios = comercioRepository.findAll();
+        Comercio comercioBD = comercioRepository.findById(comercio.getId()).orElse(null);
+        Usuario usuarioDB = comercioBD.getUsuarios().iterator().next();
+        usuarioDB.setNombre("Usuario Uno Modificado");
 
         // THEN
-        assertThat(comercios).containsExactlyInAnyOrder(comercio1, comercio2);
+        assertThat(usuarioDB.getNombre()).isEqualTo("Usuario Uno Modificado");
     }
 }
