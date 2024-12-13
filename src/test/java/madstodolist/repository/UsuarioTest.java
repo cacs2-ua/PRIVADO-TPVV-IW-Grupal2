@@ -31,6 +31,12 @@ public class UsuarioTest {
     @Autowired
     private PaisRepository paisRepository;
 
+    @Autowired
+    private IncidenciaRepository incidenciaRepository;
+
+    @Autowired
+    private EstadoIncidenciaRepository estadoIncidenciaRepository;
+
     private Usuario crearYGuardarUsuario(String email1) {
         Pais pais = new Pais("default-country");
         paisRepository.save(pais);
@@ -63,6 +69,44 @@ public class UsuarioTest {
         comercio.getUsuarios().add(usuario3);
 
         comercioRepository.save(comercio);
+
+        EstadoIncidencia estadoIncidencia = new EstadoIncidencia("default-state");
+        estadoIncidenciaRepository.save(estadoIncidencia);
+
+        Incidencia incidencia = new Incidencia("default-title");
+        incidencia.setUsuario_comercio(usuario);
+        incidencia.setUsuario_tecnico(usuario2);
+        incidencia.setEstado(estadoIncidencia);
+
+        incidenciaRepository.save(incidencia);
+
+        Incidencia incidencia2 = new Incidencia("default-title2");
+        incidencia2.setUsuario_tecnico(usuario);
+        incidencia2.setUsuario_comercio(usuario2);
+        incidencia2.setEstado(estadoIncidencia);
+
+        incidenciaRepository.save(incidencia2);
+
+        Incidencia incidencia3 = new Incidencia("default-title3");
+        incidencia3.setUsuario_comercio(usuario);
+        incidencia3.setUsuario_tecnico(usuario2);
+        incidencia3.setEstado(estadoIncidencia);
+
+        incidenciaRepository.save(incidencia3);
+
+        Incidencia incidencia4 = new Incidencia("default-title2");
+        incidencia4.setUsuario_tecnico(usuario);
+        incidencia4.setUsuario_comercio(usuario2);
+        incidencia4.setEstado(estadoIncidencia);
+
+        incidenciaRepository.save(incidencia4);
+
+        usuario.addIncidencia_comercio(incidencia);
+        usuario.addIncidencia_comercio(incidencia3);
+        usuario.addIncidencia_tecnico(incidencia2);
+        usuario.addIncidencia_tecnico(incidencia4);
+
+        usuarioRepository.save(usuario);
 
         return usuario;
     }
@@ -178,4 +222,33 @@ public class UsuarioTest {
             usuarioRepository.save(usuario);
         });
     }
+
+    @Test
+    @Transactional
+    public void unUsuarioTecnicoTieneUnaListaDeIncidencias() {
+        // GIVEN
+        Usuario usuario = crearYGuardarUsuario("tecnico@empresa.com");
+
+        // WHEN
+        Usuario usuarioRecuperado = usuarioRepository.findById(usuario.getId()).orElse(null);
+
+        // THEN
+        assertThat(usuarioRecuperado).isNotNull();
+        assertThat(usuarioRecuperado.getIncidencias_tecnico()).hasSize(2);
+    }
+
+    @Test
+    @Transactional
+    public void unUsuarioComercioTieneUnaListaDeIncidencias() {
+        // GIVEN
+        Usuario usuario = crearYGuardarUsuario("comercio@empresa.com");
+
+        // WHEN
+        Usuario usuarioRecuperado = usuarioRepository.findById(usuario.getId()).orElse(null);
+
+        // THEN
+        assertThat(usuarioRecuperado).isNotNull();
+        assertThat(usuarioRecuperado.getIncidencias_comercio()).hasSize(2);
+    }
+    
 }

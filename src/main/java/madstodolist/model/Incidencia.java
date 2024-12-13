@@ -1,5 +1,6 @@
 package madstodolist.model;
 
+import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Text;
 
 import jakarta.persistence.*;
@@ -258,5 +259,7 @@ public class Incidencia implements Serializable {
         // Generamos el hashCode basado únicamente en el ID
         return Objects.hash(id);
     }
+
+
 
 }
