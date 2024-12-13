@@ -32,11 +32,10 @@ public class UsuarioTest {
     private PaisRepository paisRepository;
 
     private Usuario crearYGuardarUsuario(String email1) {
-        // Crear y guardar entidades dependientes
         Pais pais = new Pais("default-country");
         paisRepository.save(pais);
 
-        // Crear el comercio y guardar antes de asociar
+
         Comercio comercio = new Comercio("default-cif");
         comercio.setPais_id(pais); // Asocia el país al comercio
         comercioRepository.save(comercio); // Guardar primero el comercio
@@ -44,28 +43,26 @@ public class UsuarioTest {
         TipoUsuario tipoUsuario = new TipoUsuario("default-type");
         tipoUsuarioRepository.save(tipoUsuario);
 
-        // Crear y asociar el usuario al comercio
         Usuario usuario = new Usuario(email1);
-        usuario.setTipo(tipoUsuario); // Asocia el tipo al usuario
-        usuario.setComercio(comercio); // Asociar comercio al usuario
+        usuario.setTipo(tipoUsuario);
+        usuario.setComercio(comercio);
         usuarioRepository.save(usuario);
 
         Usuario usuario2 = new Usuario("default-email2");
-        usuario2.setTipo(tipoUsuario); // Asocia el tipo al usuario
-        usuario2.setComercio(comercio); // Asociar comercio al usuario
+        usuario2.setTipo(tipoUsuario);
+        usuario2.setComercio(comercio);
         usuarioRepository.save(usuario2);
 
         Usuario usuario3 = new Usuario("default-email3");
-        usuario3.setTipo(tipoUsuario); // Asocia el tipo al usuario
-        usuario3.setComercio(comercio); // Asociar comercio al usuario
+        usuario3.setTipo(tipoUsuario);
+        usuario3.setComercio(comercio);
         usuarioRepository.save(usuario3);
 
-        // Agregar los usuarios al comercio y actualizar
         comercio.getUsuarios().add(usuario);
         comercio.getUsuarios().add(usuario2);
         comercio.getUsuarios().add(usuario3);
 
-        comercioRepository.save(comercio); // Actualizar el comercio con el usuario asociado
+        comercioRepository.save(comercio);
 
         return usuario;
     }

@@ -2,10 +2,7 @@
 
 package madstodolist.repository;
 
-import madstodolist.model.Comercio;
-import madstodolist.model.TipoUsuario;
-import madstodolist.model.Usuario;
-import madstodolist.model.Pais;
+import madstodolist.model.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +30,15 @@ public class ComercioTest {
 
     @Autowired
     private PaisRepository paisRepository;
+
+    @Autowired
+    private PagoRepository pagoRepository;
+
+    @Autowired
+    private EstadoPagoRepository estadoPagoRepository;
+
+    @Autowired
+    private TarjetaPagoRepository tarjetaPagoRepository;
 
     // Métodos auxiliares para reducir duplicación
 
@@ -69,6 +75,35 @@ public class ComercioTest {
         comercio.getUsuarios().add(usuario);
         comercio.getUsuarios().add(usuario2);
         comercio.getUsuarios().add(usuario3);
+
+        EstadoPago estadoPago = new EstadoPago("default-state");
+        estadoPagoRepository.save(estadoPago);
+
+        TarjetaPago tarjetaPago = new TarjetaPago("default");
+        tarjetaPagoRepository.save(tarjetaPago);
+
+        Pago pago = new Pago("pago1");
+        pago.setComercio(comercio);
+        pago.setEstado(estadoPago);
+        pago.setTarjetaPago(tarjetaPago);
+
+        Pago pago2 = new Pago("pago2");
+        pago2.setComercio(comercio);
+        pago2.setEstado(estadoPago);
+        pago2.setTarjetaPago(tarjetaPago);
+
+        Pago pago3 = new Pago("pago3");
+        pago3.setComercio(comercio);
+        pago3.setEstado(estadoPago);
+        pago3.setTarjetaPago(tarjetaPago);
+
+        pagoRepository.save(pago);
+        pagoRepository.save(pago2);
+        pagoRepository.save(pago3);
+
+        comercio.addPago(pago);
+        comercio.addPago(pago2);
+        comercio.addPago(pago3);
 
         comercioRepository.save(comercio); // Actualizar el comercio con el usuario asociado
 
@@ -183,6 +218,36 @@ public class ComercioTest {
 
         // THEN
         assertThat(usuarioDB.getNombre()).isEqualTo("Usuario Uno Modificado");
+    }
+
+    @Test
+    @Transactional
+    public void unComercioTieneUnaListaDePagos() {
+        // GIVEN
+        Comercio comercio = crearYGuardarComercio("CIF123456");
+
+        // WHEN
+        Comercio comercioRecuperado = comercioRepository.findById(comercio.getId()).orElse(null);
+
+        // THEN
+        assertThat(comercioRecuperado.getPagos()).hasSize(3);
+    }
+
+    @Test
+    @Transactional
+    public void cambioEnLaEntidadEnTransactionalConPagoModificaLaBD() {
+        // GIVEN
+        Comercio comercio = crearYGuardarComercio("CIF123456");
+
+        // WHEN
+        Comercio comercioBD = comercioRepository.findById(comercio.getId()).orElse(null);
+        Pago pagoDB = comercioBD.getPagos().iterator().next();
+        pagoDB.setTicketExt("Pago Modificado");
+
+        pagoDB = pagoRepository.findById(pagoDB.getId()).orElse(null);
+
+        // THEN
+        assertThat(pagoDB.getTicketExt()).isEqualTo("Pago Modificado");
     }
 
     @Test
