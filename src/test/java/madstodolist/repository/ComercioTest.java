@@ -38,13 +38,13 @@ public class ComercioTest {
         Pais pais = new Pais("default-country");
         paisRepository.save(pais);
 
-        TipoUsuario tipoUsuario = new TipoUsuario("default-type");
-        tipoUsuarioRepository.save(tipoUsuario);
-
         // Crear el comercio y guardar antes de asociar
         Comercio comercio = new Comercio(cif);
         comercio.setPais_id(pais); // Asocia el país al comercio
         comercioRepository.save(comercio); // Guardar primero el comercio
+
+        TipoUsuario tipoUsuario = new TipoUsuario("default-type");
+        tipoUsuarioRepository.save(tipoUsuario);
 
         // Crear y asociar el usuario al comercio
         Usuario usuario = new Usuario("default@gmail.com");
@@ -57,26 +57,21 @@ public class ComercioTest {
         usuario2.setComercio(comercio); // Asociar comercio al usuario
         usuarioRepository.save(usuario2);
 
-        // Agregar el usuario al comercio y actualizar
+        Usuario usuario3 = new Usuario("default3@gmail.com");
+        usuario3.setTipo(tipoUsuario); // Asocia el tipo al usuario
+        usuario3.setComercio(comercio); // Asociar comercio al usuario
+        usuarioRepository.save(usuario3);
+
+        // Agregar los usuarios al comercio y actualizar
         comercio.getUsuarios().add(usuario);
         comercio.getUsuarios().add(usuario2);
+        comercio.getUsuarios().add(usuario3);
+
         comercioRepository.save(comercio); // Actualizar el comercio con el usuario asociado
 
         return comercio;
     }
 
-
-    private Usuario crearYGuardarUsuario(String email) {
-        Usuario usuario = new Usuario(email);
-        usuarioRepository.save(usuario);
-        return usuario;
-    }
-
-    private Pais crearYGuardarPais(String nombre) {
-        Pais pais = new Pais(nombre);
-        paisRepository.save(pais);
-        return pais;
-    }
 
     //
     // Tests modelo Comercio en memoria, sin la conexión con la BD
@@ -183,7 +178,7 @@ public class ComercioTest {
         Comercio comercioRecuperado = comercioRepository.findById(comercio.getId()).orElse(null);
 
         // THEN
-        assertThat(comercioRecuperado.getUsuarios()).hasSize(2);
+        assertThat(comercioRecuperado.getUsuarios()).hasSize(3);
     }
 
     @Test
