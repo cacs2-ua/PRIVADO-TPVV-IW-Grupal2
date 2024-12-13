@@ -148,4 +148,21 @@ public class PagoTest {
             pagoRepository.save(pago);
         });
     }
+
+    @Test
+    @Transactional
+    public void salvarPagoEnBaseDatosConEstadoPagoNoBDLanzaExcepcion() {
+        // GIVEN
+        // Un pago nuevo que no está en la BD y asociado a un comercio no persistente
+        Pago pago = new Pago("nuevo-ticket");
+        EstadoPago estadoPago = new EstadoPago("default-state");
+
+        pago.setEstado(estadoPago);
+
+        // WHEN // THEN
+        // se lanza una excepción al intentar salvar el pago en la BD
+        Assertions.assertThrows(Exception.class, () -> {
+            pagoRepository.save(pago);
+        });
+    }
 }
