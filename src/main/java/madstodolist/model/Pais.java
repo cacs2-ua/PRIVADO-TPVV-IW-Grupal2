@@ -62,6 +62,28 @@ public class Pais implements Serializable {
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Pais that = (Pais) o;
+
+        // Si ambos objetos tienen un ID no nulo, comparamos por ID
+        if (this.id != null && that.id != null) {
+            return Objects.equals(this.id, that.id);
+        }
+
+        // Si no se pueden comparar por ID, consideramos que son diferentes
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        // Generamos el hashCode basado únicamente en el ID
+        return Objects.hash(id);
+    }
+
 
 
 }

@@ -6,6 +6,7 @@ import madstodolist.model.Comercio;
 import madstodolist.model.TipoUsuario;
 import madstodolist.model.Usuario;
 import madstodolist.model.Pais;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -182,5 +183,20 @@ public class ComercioTest {
 
         // THEN
         assertThat(usuarioDB.getNombre()).isEqualTo("Usuario Uno Modificado");
+    }
+
+    @Test
+    @Transactional
+    public void salvarComercioEnBaseDatosConPaisNoBDLanzaExcepcion() {
+        // GIVEN
+
+        Comercio comercio = new Comercio("CIF123456");
+        Pais pais = new Pais("default-country");
+
+        // WHEN // THEN
+
+        Assertions.assertThrows(Exception.class, () -> {
+            comercioRepository.save(comercio);
+        });
     }
 }
