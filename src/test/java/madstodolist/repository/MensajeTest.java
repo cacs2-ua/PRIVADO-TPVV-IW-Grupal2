@@ -54,7 +54,7 @@ public class MensajeTest {
         tipoUsuarioRepository.save(tipoUsuario);
 
 
-        Usuario usuario = new Usuario("default-email2");
+        Usuario usuario = new Usuario("default-email1");
         usuario.setTipo(tipoUsuario);
         usuario.setComercio(comercio);
         usuarioRepository.save(usuario);
@@ -90,6 +90,7 @@ public class MensajeTest {
 
         Mensaje mensaje = new Mensaje("mensaje");
         mensaje.setIncidencia(incidencia);
+        mensaje.setUsuario(usuario);
 
         mensajeRepository.save(mensaje);
 
@@ -108,5 +109,83 @@ public class MensajeTest {
         // THEN
         assertThat(mensaje.getContenido()).isEqualTo("mensaje");
     }
+
+    @Test
+    public void comprobarIgualdadMensajes() {
+        // GIVEN
+        Mensaje mensaje1 = new Mensaje("mensaje1");
+        Mensaje mensaje2 = new Mensaje("mensaje2");
+        Mensaje mensaje3 = new Mensaje("mensaje3");
+
+        mensaje1.setId(1L);
+        mensaje2.setId(2L);
+        mensaje3.setId(1L);
+
+        // THEN
+        assertThat(mensaje1).isEqualTo(mensaje3);
+        assertThat(mensaje1).isNotEqualTo(mensaje2);
+    }
+
+    @Test
+    @Transactional
+    public void crearYBuscarMensajeBaseDatos() {
+        // GIVEN
+        Mensaje mensaje = crearYGuardarMensaje("mensaje");
+
+        // WHEN && THEN
+        Mensaje mensajeDB = mensajeRepository.findById(mensaje.getId()).orElse(null);
+
+        assertThat(mensajeDB).isNotNull();
+        assertThat(mensajeDB.getContenido()).isEqualTo("mensaje");
+        assertThat(mensajeDB.getIncidencia().getTitulo()).isEqualTo("titulo");
+    }
+
+    @Test
+    @Transactional
+    public void buscarMensajePorId() {
+        // GIVEN
+        crearYGuardarMensaje("mensaje");
+
+        // WHEN
+        Mensaje mensajeDB = mensajeRepository.findById(1L).orElse(null);
+
+        // THEN
+        assertThat(mensajeDB.getContenido()).isEqualTo("mensaje");
+    }
+
+    @Test
+    @Transactional
+    public void salvarMensajeEnBaseDatosConUsuarioNoBDLanzaExcepcion() {
+        // GIVEN
+
+        Usuario usuario = new Usuario("juan.gutierrez@gmail.com");
+        Mensaje mensaje = new Mensaje("mensaje");
+
+        // WHEN // THEN
+        // se lanza una excepción al intentar salvar la tarea en la BD
+
+        Assertions.assertThrows(Exception.class, () -> {
+            mensajeRepository.save(mensaje);
+        });
+    }
+
+    @Test
+    @Transactional
+    public void salvarMensajeEnBaseDatosConIncidenciaNoBDLanzaExcepcion() {
+        // GIVEN
+        // Un usuario nuevo que no está en la BD
+        // y una tarea asociada a ese usuario,
+
+        Incidencia incidencia = new Incidencia("titulo");
+        Mensaje mensaje = new Mensaje("mensaje");
+
+        // WHEN // THEN
+        // se lanza una excepción al intentar salvar la tarea en la BD
+
+        Assertions.assertThrows(Exception.class, () -> {
+            mensajeRepository.save(mensaje);
+        });
+    }
+
 
 }
