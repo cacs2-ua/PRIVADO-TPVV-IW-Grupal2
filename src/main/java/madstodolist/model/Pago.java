@@ -5,6 +5,8 @@ package madstodolist.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.Objects;
 
@@ -54,7 +56,7 @@ public class Pago implements Serializable {
 
     public Pago(String ticketExt) {
         this.ticketExt = ticketExt;
-        this.fecha = new Date();
+        this.fecha = Date.from(LocalDate.of(2000, 12, 12).atStartOfDay(ZoneId.systemDefault()).toInstant());
         this.importe = 0.0;
         this.tarjeta = "default";
         this.comercio = new Comercio("default");

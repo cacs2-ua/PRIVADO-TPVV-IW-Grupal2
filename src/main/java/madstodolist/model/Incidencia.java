@@ -5,6 +5,8 @@ import org.w3c.dom.Text;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Objects;
@@ -63,7 +65,7 @@ public class Incidencia implements Serializable {
         this.setUsuario_comercio(usuario_comercio);
         Usuario usuario_tecnico = new Usuario("email", "nombre", "contrasenya", new Comercio("nombre"));
         this.setUsuario_tecnico(usuario_tecnico);
-        this.fecha = new Date("2000-12-12");
+        this.fecha = Date.from(LocalDate.of(2000, 12, 12).atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
 
     public Incidencia(String titulo, String descripcion, Usuario usuario_comercio, Usuario usuario_tecnico) {
@@ -71,7 +73,7 @@ public class Incidencia implements Serializable {
         this.descripcion = descripcion;
         this.setUsuario_comercio(usuario_comercio);
         this.setUsuario_tecnico(usuario_tecnico);
-        this.fecha = new Date("2000-12-12");
+        this.fecha = Date.from(LocalDate.of(2000, 12, 12).atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
 
     private int valoracion;
