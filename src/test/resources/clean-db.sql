@@ -9,4 +9,5 @@ DELETE FROM estados_pago;
 DELETE FROM tarjetas_pago;
 DELETE FROM personas_contacto;
 DELETE FROM comercios;
+DELETE FROM paises;
 

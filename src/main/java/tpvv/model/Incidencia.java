@@ -200,10 +200,11 @@ public class Incidencia implements Serializable {
 
         // Desvincular el pago anterior si existe
         if (this.pago != null) {
-            this.pago.setIncidencia(null);
+            Pago previousPago = this.pago;
+            this.pago = null; // Evita la llamada recursiva
+            previousPago.setIncidencia(null);
         }
 
-        // Asignar el nuevo pago
         this.pago = pago;
 
         // Vincular la relación inversa

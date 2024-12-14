@@ -34,6 +34,15 @@ public class IncidenciaTest {
     @Autowired
     private EstadoIncidenciaRepository estadoIncidenciaRepository;
 
+    @Autowired
+    private PagoRepository pagoRepository;
+
+    @Autowired
+    private EstadoPagoRepository estadoPagoRepository;
+
+    @Autowired
+    private TarjetaPagoRepository tarjetaPagoRepository;
+
     private Incidencia crearYGuardarIncidencia(String titulo) {
         Pais pais = new Pais("default-country");
         paisRepository.save(pais);
@@ -68,6 +77,25 @@ public class IncidenciaTest {
         incidencia.setUsuario_tecnico(usuario2);
         incidencia.setEstado(estadoIncidencia);
 
+        incidenciaRepository.save(incidencia);
+
+        EstadoPago estadoPago = new EstadoPago("default-state");
+        estadoPagoRepository.save(estadoPago);
+
+        TarjetaPago tarjetaPago = new TarjetaPago("default");
+        tarjetaPagoRepository.save(tarjetaPago);
+
+        Pago pago = new Pago("pago1");
+        pago.setComercio(comercio);
+        pago.setEstado(estadoPago);
+        pago.setTarjetaPago(tarjetaPago);
+
+        pagoRepository.save(pago);
+
+        incidencia.setPago(pago);
+        pago.setIncidencia(incidencia);
+
+        pagoRepository.save(pago);
         incidenciaRepository.save(incidencia);
 
         return incidencia;
@@ -209,6 +237,114 @@ public class IncidenciaTest {
         assertThat(incidenciaModificada).isNotNull();
         assertThat(incidenciaModificada.getEstado().getNombre()).isEqualTo("Nuevo Estado");
     }
+
+    /**
+     * Test para crear una Incidencia con un Pago y verificar la relación uno a uno.
+     */
+    @Test
+    @Transactional
+    public void crearIncidenciaConPago() {
+        // GIVEN
+        Incidencia incidencia = crearYGuardarIncidencia("Incidencia con Pago");
+
+        // Obtener el Pago asociado
+        Pago pagoAsociado = incidencia.getPago();
+
+        // THEN
+        assertThat(incidencia.getId()).isNotNull();
+        assertThat(pagoAsociado).isNotNull();
+        assertThat(pagoAsociado.getIncidencia()).isEqualTo(incidencia);
+
+        // Verificar desde el lado de Pago
+        Pago pagoBD = pagoRepository.findById(pagoAsociado.getId()).orElse(null);
+        assertThat(pagoBD).isNotNull();
+        assertThat(pagoBD.getIncidencia()).isEqualTo(incidencia);
+    }
+
+    /**
+     * Test para actualizar la relación entre Incidencia y Pago.
+     */
+    @Test
+    @Transactional
+    public void actualizarRelacionIncidenciaPago() {
+        // GIVEN
+        Incidencia incidencia = crearYGuardarIncidencia("Incidencia para actualizar Pago");
+        Pago nuevoPago = new Pago("pago-nuevo");
+        nuevoPago.setComercio(incidencia.getUsuario_comercio().getComercio());
+        nuevoPago.setEstado(estadoPagoRepository.save(new EstadoPago("estado-nuevo")));
+        nuevoPago.setTarjetaPago(tarjetaPagoRepository.save(new TarjetaPago("tarjeta-nueva")));
+        pagoRepository.save(nuevoPago);
+
+        // WHEN
+        // Actualizar la Incidencia para que apunte al nuevo Pago
+        incidencia.setPago(nuevoPago);
+        incidenciaRepository.save(incidencia);
+
+        // THEN
+        Incidencia incidenciaBD = incidenciaRepository.findById(incidencia.getId()).orElse(null);
+        Pago pagoAntiguoBD = pagoRepository.findById(pagoRepository.findAll().stream()
+                .filter(p -> p.getTicketExt().equals("pago1"))
+                .findFirst()
+                .get().getId()).orElse(null);
+        Pago pagoNuevoBD = pagoRepository.findById(nuevoPago.getId()).orElse(null);
+
+        assertThat(incidenciaBD).isNotNull();
+        assertThat(incidenciaBD.getPago()).isEqualTo(pagoNuevoBD);
+        assertThat(pagoNuevoBD.getIncidencia()).isEqualTo(incidenciaBD);
+        assertThat(pagoAntiguoBD.getIncidencia()).isNull();
+    }
+
+    /**
+     * Test para desasociar un Pago de una Incidencia.
+     */
+    @Test
+    @Transactional
+    public void desasociarPagoDeIncidencia() {
+        // GIVEN
+        Incidencia incidencia = crearYGuardarIncidencia("Incidencia para desasociar Pago");
+
+        // WHEN
+        // Desasociar el Pago de la Incidencia
+        Pago pago = incidencia.getPago();
+        incidencia.setPago(null);
+        incidenciaRepository.save(incidencia);
+
+        // THEN
+        Incidencia incidenciaBD = incidenciaRepository.findById(incidencia.getId()).orElse(null);
+        Pago pagoBD = pagoRepository.findById(pago.getId()).orElse(null);
+
+        assertThat(incidenciaBD).isNotNull();
+        assertThat(incidenciaBD.getPago()).isNull();
+        assertThat(pagoBD).isNotNull();
+        assertThat(pagoBD.getIncidencia()).isNull();
+    }
+
+
+    /**
+     * Test para verificar que al guardar una Incidencia con un Pago ya persistido, la relación se establece correctamente.
+     */
+    @Test
+    @Transactional
+    public void guardarIncidenciaConPagoYaPersistido() {
+        // GIVEN
+        Incidencia incidencia = crearYGuardarIncidencia("Incidencia con Pago ya persistido");
+        Pago pagoExistente = pagoRepository.findByTicketExt("pago1").orElse(null);
+        assertThat(pagoExistente).isNotNull();
+
+        // WHEN
+        // Asociar nuevamente el mismo Pago
+        incidencia.setPago(pagoExistente);
+        incidenciaRepository.save(incidencia);
+
+        // THEN
+        Incidencia incidenciaBD = incidenciaRepository.findById(incidencia.getId()).orElse(null);
+        Pago pagoBD = pagoRepository.findById(pagoExistente.getId()).orElse(null);
+
+        assertThat(incidenciaBD).isNotNull();
+        assertThat(incidenciaBD.getPago()).isEqualTo(pagoBD);
+        assertThat(pagoBD.getIncidencia()).isEqualTo(incidenciaBD);
+    }
+
 
 
 }

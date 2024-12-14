@@ -33,6 +33,13 @@ public class PagoTest {
     private PagoRepository pagoRepository;
 
     @Autowired
+    private IncidenciaRepository incidenciaRepository;
+
+    @Autowired
+    private EstadoIncidenciaRepository estadoIncidenciaRepository;
+
+
+    @Autowired
     private EstadoPagoRepository estadoPagoRepository;
 
     @Autowired
@@ -46,13 +53,40 @@ public class PagoTest {
         comercio.setPais_id(pais);
         comercioRepository.save(comercio);
 
+        TipoUsuario tipoUsuario = new TipoUsuario("default-type");
+        tipoUsuarioRepository.save(tipoUsuario);
+
+        Usuario usuario = new Usuario("default-email");
+        usuario.setTipo(tipoUsuario);
+        usuario.setComercio(comercio);
+        usuarioRepository.save(usuario);
+
+        Usuario usuario2 = new Usuario("default-email2");
+        usuario2.setTipo(tipoUsuario);
+        usuario2.setComercio(comercio);
+        usuarioRepository.save(usuario2);
+
+        comercio.getUsuarios().add(usuario);
+
+        comercioRepository.save(comercio);
+
+        EstadoIncidencia estadoIncidencia = new EstadoIncidencia("default-state");
+        estadoIncidenciaRepository.save(estadoIncidencia);
+
+        Incidencia incidencia = new Incidencia("default-title");
+        incidencia.setUsuario_comercio(usuario);
+        incidencia.setUsuario_tecnico(usuario2);
+        incidencia.setEstado(estadoIncidencia);
+
+        incidenciaRepository.save(incidencia);
+
         EstadoPago estadoPago = new EstadoPago("default-state");
         estadoPagoRepository.save(estadoPago);
 
         TarjetaPago tarjetaPago = new TarjetaPago("default");
         tarjetaPagoRepository.save(tarjetaPago);
 
-        Pago pago = new Pago("pago1");
+        Pago pago = new Pago(ticket);
         pago.setComercio(comercio);
         pago.setEstado(estadoPago);
         pago.setTarjetaPago(tarjetaPago);
@@ -71,6 +105,11 @@ public class PagoTest {
         pagoRepository.save(pago2);
         pagoRepository.save(pago3);
 
+        incidencia.setPago(pago);
+        pago.setIncidencia(incidencia);
+
+        incidenciaRepository.save(incidencia);
+        pagoRepository.save(pago);
         return pago;
     }
 
@@ -113,7 +152,7 @@ public class PagoTest {
         // THEN
         Pago pagoBD = pagoRepository.findById(pago.getId()).orElse(null);
         assertThat(pagoBD).isNotNull();
-        assertThat(pagoBD.getTicketExt()).isEqualTo("pago1");
+        assertThat(pagoBD.getTicketExt()).isEqualTo("ticket@pago.com");
         assertThat(pagoBD.getComercio().getCif()).isEqualTo("default-cif");
     }
 
@@ -124,10 +163,10 @@ public class PagoTest {
         crearYGuardarPago("ticket@pago.com");
 
         // WHEN
-        Pago pagoBD = pagoRepository.findByTicketExt("pago1").orElse(null);
+        Pago pagoBD = pagoRepository.findByTicketExt("ticket@pago.com").orElse(null);
 
         // THEN
-        assertThat(pagoBD.getTicketExt()).isEqualTo("pago1"); // Asumiendo un valor por defecto
+        assertThat(pagoBD.getTicketExt()).isEqualTo("ticket@pago.com"); // Asumiendo un valor por defecto
     }
 
     @Test
@@ -180,5 +219,7 @@ public class PagoTest {
             pagoRepository.save(pago);
         });
     }
+
+
 
 }

@@ -143,10 +143,20 @@ public class Pago implements Serializable {
     }
 
     public void setIncidencia(Incidencia incidencia) {
-        if (this.incidencia != null) {
-            this.incidencia.setPago(null);
+        if (this.incidencia == incidencia) {
+            return; // No hacer nada si es la misma incidencia
         }
+
+        // Desvincular la incidencia anterior si existe
+        if (this.incidencia != null) {
+            Incidencia previousIncidencia = this.incidencia;
+            this.incidencia = null; // Evita la llamada recursiva
+            previousIncidencia.setPago(null);
+        }
+
         this.incidencia = incidencia;
+
+        // Vincular la relación inversa
         if (incidencia != null && incidencia.getPago() != this) {
             incidencia.setPago(this);
         }
