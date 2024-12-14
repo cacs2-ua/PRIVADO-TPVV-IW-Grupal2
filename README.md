@@ -38,10 +38,30 @@ La API de tpvv-BoarDalo es una API REST que permite realizar pagos online de for
 
 ### 🔥 Ejecutar la aplicación a partir de los contenedores de docker
 
+1. Para levantar la base de datos de `PostgreSQL` en un contenedor de `Docker`, ejecutar el siguiente comando:
 
 ```sh
-./mvnw spring-boot:run
+docker run --name postgres-tpvv-develop -e POSTGRES_USER=tpvv -e POSTGRES_PASSWORD=tpvv -e POSTGRES_DB=tpvv -p 5462:5432 -d postgres:13
 ```
+
+2. Para ejecutar la aplicación para que se conecte a la base de datos de PostgreSQL, ejecutar el siguiente comando:
+
+```sh
+mvn spring-boot:run -D spring-boot.run.profiles=postgres
+```
+
+3. Para levantar la base de datos de `PostgreSQL` para los TESTS en un contenedor de `Docker`, ejecutar el siguiente comando:
+
+```sh
+docker run --name postgres-tpvv-test -e POSTGRES_USER=tpvv -e POSTGRES_PASSWORD=tpvv -e POSTGRES_DB=tpvv_test -p 5463:5432 -d postgres:13
+```
+
+4. Para ejecutar los tests para que se ejecuten con la base de datos de PostgreSQL, ejecutar el siguiente comando:
+
+```sh
+mvn test "-Dspring-boot.run.profiles=postgres"
+```
+
 
 ## 🔎 Explicación del funcionamiento de la Integración del Proyecto
 
@@ -73,7 +93,6 @@ Este comercio puede ser utilizado para realizar las pruebas de **integración**.
 
 1. Una vez abierto `Postman`, en el cuadro de texto de la `URL` elegir `GET` e ingresar la siguiente dirección URL (podéis elegir los valores de `importe` y de `idTicket` que queráis):
     - `http://localhost:8123/pago/form?importe=100&idTicket=1`
-    -
 ![img.png](public-resources/doc-images/img.png)
 
 2. En la pestaña de `Headers`, agregar la siguiente clave-valor:
