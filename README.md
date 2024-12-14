@@ -31,6 +31,14 @@ La API de tpvv-BoarDalo es una API REST que permite realizar pagos online de for
 
 ### 🔥 Ejecutar la aplicación a partir del application.properties
 
+
+```sh
+./mvnw spring-boot:run
+```
+
+### 🔥 Ejecutar la aplicación a partir de los contenedores de docker
+
+
 ```sh
 ./mvnw spring-boot:run
 ```

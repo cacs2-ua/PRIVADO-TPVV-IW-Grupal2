@@ -11,6 +11,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
@@ -34,6 +35,9 @@ public class UsuarioTest {
 
     @Autowired
     private EstadoIncidenciaRepository estadoIncidenciaRepository;
+
+    @Autowired
+    private ValoracionTecnicoRepository valoracionTecnicoRepository;
 
     private Usuario crearYGuardarUsuario(String email1) {
         Pais pais = new Pais("default-country");
@@ -105,6 +109,19 @@ public class UsuarioTest {
         usuario.addIncidencia_tecnico(incidencia4);
 
         usuarioRepository.save(usuario);
+
+        usuarioRepository.save(usuario);
+
+        //AQUÍ FALLA
+        ValoracionTecnico valoracionTecnico = new ValoracionTecnico(4.0);
+        valoracionTecnicoRepository.save(valoracionTecnico);
+        usuario.setValoracionTecnico(valoracionTecnico);
+        usuarioRepository.save(usuario);
+
+        valoracionTecnico.setTecnico(usuario);
+
+        usuarioRepository.save(usuario);
+        valoracionTecnicoRepository.save(valoracionTecnico);
 
         return usuario;
     }
@@ -248,5 +265,127 @@ public class UsuarioTest {
         assertThat(usuarioRecuperado).isNotNull();
         assertThat(usuarioRecuperado.getIncidencias_comercio()).hasSize(2);
     }
-    
+
+    /**
+     * Test para verificar que un Usuario puede existir sin una ValoracionTecnico asociada.
+     */
+    @Test
+    @Transactional
+    public void testUsuarioSinValoracionTecnico() {
+        // Crear y guardar un usuario sin valoración técnica
+        Usuario usuario = crearYGuardarUsuario("test-email-sin-valoracion@example.com");
+        usuario.setValoracionTecnico(null);
+        usuarioRepository.save(usuario);
+
+        // Recuperar el usuario desde la base de datos
+        Usuario usuarioRecuperado = usuarioRepository.findById(usuario.getId()).orElse(null);
+
+        // Verificar que el usuario existe y no tiene valoración técnica
+        assertThat(usuarioRecuperado).isNotNull();
+        assertNull(usuarioRecuperado.getValoracionTecnico());
+    }
+
+    /**
+     * Test para verificar que un Usuario puede tener una ValoracionTecnico asociada correctamente.
+     */
+    @Test
+    @Transactional
+    public void testUsuarioConValoracionTecnico() {
+        // Crear y guardar un usuario
+        Usuario usuario = crearYGuardarUsuario("test-email-con-valoracion@example.com");
+
+        // Crear y guardar una valoración técnica
+        ValoracionTecnico valoracionTecnico = new ValoracionTecnico(4.5f);
+        valoracionTecnicoRepository.save(valoracionTecnico);
+
+        // Asignar la valoración técnica al usuario
+        usuario.setValoracionTecnico(valoracionTecnico);
+        usuarioRepository.save(usuario);
+
+        // Recuperar el usuario desde la base de datos
+        Usuario usuarioRecuperado = usuarioRepository.findById(usuario.getId()).orElse(null);
+        ValoracionTecnico valoracionRecuperada = usuarioRecuperado.getValoracionTecnico();
+
+        // Verificar que la valoración técnica está correctamente asignada
+        assertThat(usuarioRecuperado).isNotNull();
+        assertThat(valoracionRecuperada).isNotNull();
+        assertThat(valoracionRecuperada.getValoracion()).isEqualTo(4.5f);
+        assertThat(valoracionRecuperada.getTecnico()).isEqualTo(usuarioRecuperado);
+    }
+
+    /**
+     * Test para verificar la actualización de la ValoracionTecnico de un Usuario.
+     */
+    @Test
+    @Transactional
+    public void testActualizarValoracionTecnico() {
+        // Crear y guardar un usuario
+        Usuario usuario = crearYGuardarUsuario("test-email-actualizar-valoracion@example.com");
+
+        // Crear y guardar una valoración técnica inicial
+        ValoracionTecnico valoracionInicial = new ValoracionTecnico(3.0f);
+        valoracionTecnicoRepository.save(valoracionInicial);
+
+        // Asignar la valoración técnica inicial al usuario
+        usuario.setValoracionTecnico(valoracionInicial);
+        usuarioRepository.save(usuario);
+
+        // Crear y guardar una nueva valoración técnica
+        ValoracionTecnico valoracionNueva = new ValoracionTecnico(5.0f);
+        valoracionTecnicoRepository.save(valoracionNueva);
+
+        // Actualizar la valoración técnica del usuario
+        usuario.setValoracionTecnico(valoracionNueva);
+        usuarioRepository.save(usuario);
+
+        // Recuperar el usuario desde la base de datos
+        Usuario usuarioRecuperado = usuarioRepository.findById(usuario.getId()).orElse(null);
+
+        // Verificar que la valoración técnica se ha actualizado correctamente
+        assertThat(usuarioRecuperado).isNotNull();
+        ValoracionTecnico valoracionRecuperada = usuarioRecuperado.getValoracionTecnico();
+        assertThat(valoracionRecuperada).isNotNull();
+        assertThat(valoracionRecuperada.getValoracion()).isEqualTo(5.0f);
+        assertThat(valoracionRecuperada.getTecnico()).isEqualTo(usuarioRecuperado);
+
+        // Verificar que la valoración técnica inicial ya no está asociada al usuario
+        ValoracionTecnico valoracionInicialRecuperada = valoracionTecnicoRepository.findById(valoracionInicial.getId()).orElse(null);
+        assertThat(valoracionInicialRecuperada).isNotNull();
+    }
+
+    /**
+     * Test para verificar la eliminación de una ValoracionTecnico asociada a un Usuario.
+     */
+    @Test
+    @Transactional
+    public void testEliminarValoracionTecnico() {
+        // Crear y guardar un usuario
+        Usuario usuario = crearYGuardarUsuario("test-email-eliminar-valoracion@example.com");
+
+        // Crear y guardar una valoración técnica
+        ValoracionTecnico valoracionTecnico = new ValoracionTecnico(4.0f);
+        valoracionTecnicoRepository.save(valoracionTecnico);
+
+        // Asignar la valoración técnica al usuario
+        usuario.setValoracionTecnico(valoracionTecnico);
+        usuarioRepository.save(usuario);
+
+        // Eliminar la valoración técnica
+        usuario.setValoracionTecnico(null);
+        usuarioRepository.save(usuario);
+        valoracionTecnicoRepository.delete(valoracionTecnico);
+
+        // Recuperar el usuario desde la base de datos
+        Usuario usuarioRecuperado = usuarioRepository.findById(usuario.getId()).orElse(null);
+
+        // Verificar que la valoración técnica ha sido eliminada y la relación está nula
+        assertThat(usuarioRecuperado).isNotNull();
+        assertNull(usuarioRecuperado.getValoracionTecnico());
+
+        // Verificar que la valoración técnica ya no existe en la base de datos
+        ValoracionTecnico valoracionRecuperada = valoracionTecnicoRepository.findById(valoracionTecnico.getId()).orElse(null);
+        assertThat(valoracionRecuperada).isNull();
+    }
+
+
 }

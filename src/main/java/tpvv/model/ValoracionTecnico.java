@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 
 @Entity
-@Table(name = "incidencias")
+@Table(name = "valoraciones_tecnico")
 public class ValoracionTecnico implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -16,7 +16,7 @@ public class ValoracionTecnico implements Serializable {
     private Long id;
 
     @NotNull
-    private float valoracion;
+    private double valoracion;
 
 
     @OneToOne
@@ -25,12 +25,12 @@ public class ValoracionTecnico implements Serializable {
 
     public ValoracionTecnico() {}
 
-    public ValoracionTecnico(float valoracion) {
+    public ValoracionTecnico(double valoracion) {
         this.valoracion = valoracion;
         this.tecnico = new Usuario("default");
     }
 
-    public  ValoracionTecnico(float valoracion, Usuario tecnico) {
+    public  ValoracionTecnico(double valoracion, Usuario tecnico) {
         this.valoracion = valoracion;
         this.tecnico = tecnico;
     }
@@ -43,11 +43,11 @@ public class ValoracionTecnico implements Serializable {
         this.id = id;
     }
 
-    public float getValoracion() {
+    public double getValoracion() {
         return valoracion;
     }
 
-    public void setValoracion(float valoracion) {
+    public void setValoracion(double valoracion) {
         this.valoracion = valoracion;
     }
 
