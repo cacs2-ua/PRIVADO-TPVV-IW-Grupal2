@@ -1,13 +1,13 @@
-# TPVV-BoarDalo: Tu Plataforma de Pago Online de Confianza
+# tpvv-BoarDalo: Tu Plataforma de Pago Online de Confianza
 
-## 💸 ¿Por Qué TPVV-BoarDalo?
+## 💸 ¿Por Qué tpvv-BoarDalo?
 
 ---
 
-TPVV-BoarDalo transforma la manera en que manejas pagos online: seguro, rápido y fácil de integrar.
+tpvv-BoarDalo transforma la manera en que manejas pagos online: seguro, rápido y fácil de integrar.
 Ofrecemos una solución confiable que se adapta a cualquier negocio,
 brindando una experiencia de pago moderna y fluida tanto para ti como para tus clientes.
-¡Con TPVV, llevas tus transacciones al siguiente nivel!
+¡Con tpvv, llevas tus transacciones al siguiente nivel!
 
 ## 💪 Componentes del equipo
 
@@ -23,7 +23,7 @@ Somos el grupo **G15** de parácticas de la asignatura de **Ingeniería Web** de
 
 ---
 
-La API de TPVV-BoarDalo es una API REST que permite realizar pagos online de forma segura y sencilla.
+La API de tpvv-BoarDalo es una API REST que permite realizar pagos online de forma segura y sencilla.
 
 ## 🚀 Levantar el Proyecto en Local
 
@@ -155,4 +155,4 @@ Una vez establecidos todos estos datos, simplemente seguid **exactamente** los m
 
 ---
 
-## Eso es todo, 🤑🤑¡A disfrutar de TPVV-BoarDalo! 🤑🤑
+## Eso es todo, 🤑🤑¡A disfrutar de tpvv-BoarDalo! 🤑🤑
