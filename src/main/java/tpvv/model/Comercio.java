@@ -203,17 +203,26 @@ public class Comercio implements Serializable {
     }
 
     public void setPersonaContacto(PersonaContacto personaContacto) {
-        // Si ya existe una persona de contacto, elimina la referencia inversa
-        if (this.personaContacto != null) {
-            this.personaContacto.setComercio(null);
+        if (this.personaContacto == personaContacto) {
+            return; // No hacer nada si ya están vinculados
         }
-        // Establece la nueva persona de contacto
+
+        // Desvincular la persona de contacto anterior
+        if (this.personaContacto != null) {
+            PersonaContacto personaAnterior = this.personaContacto;
+            this.personaContacto = null; // Romper la referencia
+            personaAnterior.setComercio(null); // Actualizar la relación inversa
+        }
+
+        // Asignar la nueva persona de contacto
         this.personaContacto = personaContacto;
-        // Si la nueva persona de contacto no tiene esta relación, establécela
+
+        // Vincular la relación inversa si es necesario
         if (personaContacto != null && personaContacto.getComercio() != this) {
             personaContacto.setComercio(this);
         }
     }
+
 
     public Set<Pago> getPagos() {
         return pagos;
