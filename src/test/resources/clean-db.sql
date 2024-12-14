@@ -1,3 +1,4 @@
+DELETE FROM parametros;
 DELETE FROM mensajes;
 DELETE FROM valoraciones_tecnico;
 DELETE FROM usuarios;
