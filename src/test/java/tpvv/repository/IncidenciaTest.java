@@ -162,5 +162,53 @@ public class IncidenciaTest {
         assertThat(incidenciaModificada).isNotNull();
         assertThat(incidenciaModificada.getDescripcion()).isEqualTo("Descripción Modificada");
     }
-    
+
+    @Test
+    @Transactional
+    public void salvarIncidenciaEnBaseDatosConEstadoIncidenciaNoBDLanzaExcepcion() {
+        // GIVEN
+        // Una incidencia nueva que no está en la BD y asociada a un EstadoIncidencia no persistente
+        Incidencia incidencia = new Incidencia("Nueva incidencia");
+        Usuario usuarioComercio = new Usuario("comercio-no-persistente@empresa.com");
+        Usuario usuarioTecnico = new Usuario("tecnico-no-persistente@empresa.com");
+        // No se guardan los usuarios en la BD
+
+        incidencia.setUsuario_comercio(usuarioComercio);
+        incidencia.setUsuario_tecnico(usuarioTecnico);
+
+        EstadoIncidencia estadoIncidencia = new EstadoIncidencia("pendiente");
+        estadoIncidenciaRepository.save(estadoIncidencia);
+        incidencia.setEstado(estadoIncidencia);
+
+        // WHEN // THEN
+        // Se lanza una excepción al intentar salvar la incidencia en la BD debido a Usuarios no persistentes
+        Assertions.assertThrows(Exception.class, () -> {
+            incidenciaRepository.save(incidencia);
+        });
+    }
+
+    @Test
+    @Transactional
+    public void cambioEnLaEntidadEnTransactionalConEstadoIncidenciaModificaLaBD() {
+        // GIVEN
+        Incidencia incidencia = crearYGuardarIncidencia("Incidencia para modificar");
+
+        // Crear un nuevo EstadoIncidencia para asociarlo
+        EstadoIncidencia nuevoEstado = new EstadoIncidencia("Nuevo Estado");
+        estadoIncidenciaRepository.save(nuevoEstado);
+
+        // WHEN
+        Incidencia incidenciaBD = incidenciaRepository.findById(incidencia.getId()).orElse(null);
+        incidenciaBD.setEstado(nuevoEstado); // Cambiar el estado asociado
+        incidenciaRepository.save(incidenciaBD);
+
+        // Recuperar la Incidencia nuevamente para verificar el cambio
+        Incidencia incidenciaModificada = incidenciaRepository.findById(incidencia.getId()).orElse(null);
+
+        // THEN
+        assertThat(incidenciaModificada).isNotNull();
+        assertThat(incidenciaModificada.getEstado().getNombre()).isEqualTo("Nuevo Estado");
+    }
+
+
 }
