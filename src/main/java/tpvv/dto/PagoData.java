@@ -1,6 +1,7 @@
 package tpvv.dto;
 
 import java.util.Date;
+import java.util.Objects;
 
 public class PagoData {
     private Long id;
@@ -14,18 +15,6 @@ public class PagoData {
 
     // Constructor vacío
     public PagoData() {}
-
-    // Constructor completo
-    public PagoData(Long id, String ticketExt, Date fecha, double importe, String tarjeta, String estadoPago, String comercioNombre, String tarjetaPagoNumero) {
-        this.id = id;
-        this.ticketExt = ticketExt;
-        this.fecha = fecha;
-        this.importe = importe;
-        this.tarjeta = tarjeta;
-        this.estadoPago = estadoPago;
-        this.comercioNombre = comercioNombre;
-        this.tarjetaPagoNumero = tarjetaPagoNumero;
-    }
 
     // Getters y Setters
     public Long getId() {
@@ -93,6 +82,13 @@ public class PagoData {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PagoData that)) return false;
+        return Objects.equals(getId(), that.getId());
+    }
+
+    @Override
     public String toString() {
         return "PagoData{" +
                 "id=" + id +
@@ -104,5 +100,10 @@ public class PagoData {
                 ", comercioNombre='" + comercioNombre + '\'' +
                 ", tarjetaPagoNumero='" + tarjetaPagoNumero + '\'' +
                 '}';
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
     }
 }

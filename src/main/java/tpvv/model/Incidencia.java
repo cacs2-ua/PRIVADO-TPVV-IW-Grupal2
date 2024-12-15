@@ -31,6 +31,10 @@ public class Incidencia implements Serializable {
     @NotNull
     private String descripcion;
 
+    private int valoracion;
+
+    private String razon_valoracion;
+
     @NotNull
     @ManyToOne
     @JoinColumn(name = "usuario_comercio_id", nullable = false)
@@ -73,10 +77,6 @@ public class Incidencia implements Serializable {
         this.setUsuario_tecnico(usuario_tecnico);
         this.fecha = Date.from(LocalDate.of(2000, 12, 12).atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
-
-    private int valoracion;
-
-    private String razon_valoracion;
 
     public Long getId() {
         return id;

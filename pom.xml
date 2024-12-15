@@ -14,7 +14,6 @@
         <version>3.4.0</version> <!-- Actualización de la versión -->
     </parent>
 
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -65,29 +64,31 @@
 
     <build>
         <plugins>
+            <!-- Plugin de Spring Boot -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+
+            <!-- Plugin Maven Surefire para pruebas -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0-M7</version>
                 <configuration>
-                    <!-- Enable detailed logging for tests -->
+                    <!-- Configuración para detalles de las pruebas -->
                     <forkCount>1</forkCount>
                     <reuseForks>true</reuseForks>
                     <testFailureIgnore>false</testFailureIgnore>
                     <printSummary>true</printSummary>
-                    <reportFormat>brief</reportFormat>
-                    <showErrors>true</showErrors>
-                    <surefireArgLine>-Dfile.encoding=UTF-8</surefireArgLine>
-                    <useFile>false</useFile> <!-- Outputs directly to console for more details -->
+                    <reportFormat>plain</reportFormat> <!-- Formato detallado -->
+                    <argLine>-Dfile.encoding=UTF-8</argLine>
+                    <useFile>false</useFile> <!-- Salida directamente a la consola -->
+                    <trimStackTrace>false</trimStackTrace> <!-- Mostrar trazas completas -->
+                    <debugForkedProcess>true</debugForkedProcess> <!-- Habilitar depuración -->
                     <systemPropertyVariables>
-                        <property>
-                            <name>junit.jupiter.extensions.autodetection.enabled</name>
-                            <value>true</value>
-                        </property>
+                        <junit.jupiter.extensions.autodetection.enabled>true</junit.jupiter.extensions.autodetection.enabled>
+                        <logging.level.root>DEBUG</logging.level.root> <!-- Nivel de logging DEBUG -->
                     </systemPropertyVariables>
                 </configuration>
             </plugin>

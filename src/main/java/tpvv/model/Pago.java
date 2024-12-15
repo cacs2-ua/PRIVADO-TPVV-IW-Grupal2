@@ -1,7 +1,5 @@
 package tpvv.model;
 
-
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
