@@ -50,7 +50,7 @@ public class Comercio implements Serializable {
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "pais_id", nullable = false, foreignKey = @ForeignKey(name = "fk_comercio_pais"))
+    @JoinColumn(name = "pais_id", nullable = false)
     private Pais pais_id;
 
     @OneToOne(mappedBy = "comercio", cascade = CascadeType.ALL, orphanRemoval = true)

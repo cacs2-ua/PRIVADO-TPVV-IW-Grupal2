@@ -2,6 +2,7 @@ package tpvv.seeder;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import tpvv.model.Pais;
 import tpvv.repository.PaisRepository;
@@ -9,6 +10,9 @@ import tpvv.repository.PaisRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,9 +27,8 @@ public class PaisSeeder {
 
     @Transactional
     public void seed() {
-        // Eliminar todos los países existentes
-        paisRepository.deleteAll();
-        entityManager.flush(); // Asegurar que las eliminaciones se persistan
+        // Ejecutar el script clean-db.sql para limpiar la base de datos
+        executeSqlScript("clean-db.sql");
 
         // Reiniciar la secuencia de IDs
         resetSequence();
@@ -64,6 +67,40 @@ public class PaisSeeder {
             System.out.println("Secuencia " + sequenceName + " reiniciada a 1.");
         } catch (Exception e) {
             System.err.println("Error al reiniciar la secuencia: " + e.getMessage());
+        }
+    }
+
+    private void executeSqlScript(String scriptPath) {
+        try {
+            // Cargar el archivo desde la carpeta resources
+            ClassPathResource resource = new ClassPathResource(scriptPath);
+
+            // Leer el contenido del archivo línea por línea
+            try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8))) {
+
+                StringBuilder sqlBuilder = new StringBuilder();
+                String line;
+
+                // Concatenar líneas y ejecutar cada comando SQL
+                while ((line = reader.readLine()) != null) {
+                    // Ignorar líneas vacías o comentarios
+                    if (line.trim().isEmpty() || line.trim().startsWith("--")) {
+                        continue;
+                    }
+                    sqlBuilder.append(line).append(" ");
+                    if (line.trim().endsWith(";")) {
+                        // Ejecutar el comando SQL
+                        String sql = sqlBuilder.toString();
+                        entityManager.createNativeQuery(sql).executeUpdate();
+                        sqlBuilder.setLength(0); // Resetear para el próximo comando
+                    }
+                }
+            }
+
+            System.out.println("Script SQL ejecutado correctamente: " + scriptPath);
+        } catch (Exception e) {
+            System.err.println("Error al ejecutar el script SQL: " + e.getMessage());
         }
     }
 }
