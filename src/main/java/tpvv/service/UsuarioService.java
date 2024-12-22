@@ -25,7 +25,7 @@ public class UsuarioService {
 
     Logger logger = LoggerFactory.getLogger(UsuarioService.class);
 
-    public enum LoginStatus {LOGIN_OK, USER_NOT_FOUND, ERROR_PASSWORD, USER_BLOCKED}
+    public enum LoginStatus {LOGIN_OK, USER_NOT_FOUND, ERROR_PASSWORD}
 
     @Autowired
     private UsuarioRepository usuarioRepository;
