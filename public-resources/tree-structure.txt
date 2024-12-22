@@ -21,6 +21,7 @@ PRIVADO-TPVV-IW-Grupal2/
 │   │   │       ├── repository/
 │   │   │       ├── security/
 │   │   │       ├── service/
+                ├── seeder/
 │   │   │       └── Application.java
 │   │   ├── resources/
 │   │   │   ├── static/
