@@ -29,6 +29,7 @@ PRIVADO-TPVV-IW-Grupal2/
 │   │   │   │   └── js/
 │   │   │   ├── templates/
 │   │   │   └── application.properties
+            └── application-postgres.properties
 │   └── test/
 │       ├── java/
 │       │   └── tpvv/
