@@ -22,22 +22,23 @@ public class ComercioServiceTest {
     PaisRepository paisRepository;
 
     private ComercioData crearComercio() {
-        String nombre = "Comercio Test";
-        String cif = "A12345678";
-        String pais = "España";
-        String provincia = "Madrid";
-        String direccion = "Calle Falsa 123";
-        String iban = "ES6621000418401234567891";
-        String apiKey = "clave-api";
-        String url_back = "http://callback.test";
+        ComercioData nuevoComercio = new ComercioData();
+        Pais nuevoPais = new Pais("España");
 
-        if (paisRepository.findByNombre(pais).isEmpty()) {
-            Pais nuevoPais = new Pais(pais);
+        if (paisRepository.findByNombre("España").isEmpty()) {
             paisRepository.save(nuevoPais);
         }
 
+        nuevoComercio.setNombre("Comercio Test");
+        nuevoComercio.setCif("A12345678");
+        nuevoComercio.setPais("España");
+        nuevoComercio.setProvincia("Madrid");
+        nuevoComercio.setDireccion("Calle Falsa 123");
+        nuevoComercio.setIban("ES6621000418401234567891");
+        nuevoComercio.setUrl_back("http://callback.test");
 
-        ComercioData comercio = comercioService.crearComercio(nombre, cif, pais, provincia, direccion, iban, apiKey, url_back);
+
+        ComercioData comercio = comercioService.crearComercio(nuevoComercio);
         return comercio;
     }
 
@@ -49,6 +50,26 @@ public class ComercioServiceTest {
         ComercioData comercioBd = comercioService.recuperarComercio(comercio.getId());
         assertThat(comercioBd).isNotNull();
         assertThat(comercioBd.getNombre()).isEqualTo("Comercio Test");
+    }
+
+    @Test
+    public void actualizarURLComercioTest() {
+        String nuevaURL = "https://www.google.com/";
+        ComercioData comercio = crearComercio();
+        comercioService.actualizarURLComercio(comercio.getId(), nuevaURL);
+        ComercioData comercioActualizado = comercioService.recuperarComercio(comercio.getId());
+        assertThat(comercioActualizado.getUrl_back())
+                .isEqualTo(nuevaURL);
+    }
+
+    @Test
+    public void regenerarAPIKeyComercioTest() {
+        ComercioData comercio = crearComercio();
+        String antiguaApi = comercio.getApiKey();
+        comercioService.regenerarAPIKeyComercio(comercio.getId());
+        ComercioData comercioActualizado = comercioService.recuperarComercio(comercio.getId());
+        assertThat(comercioActualizado.getApiKey())
+                .isNotEqualTo(antiguaApi);
     }
 
 }
