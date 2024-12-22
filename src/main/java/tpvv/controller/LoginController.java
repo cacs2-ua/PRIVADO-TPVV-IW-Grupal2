@@ -14,7 +14,6 @@ import tpvv.dto.UsuarioData;
 import tpvv.service.UsuarioService;
 import tpvv.service.exception.UsuarioServiceException;
 
-
 @Controller
 public class LoginController {
 
@@ -32,30 +31,41 @@ public class LoginController {
     @GetMapping("/login")
     public String loginForm(Model model) {
         model.addAttribute("loginData", new LoginData());
-        return "formLogin";
+        return "formLogin"; // Plantilla adaptada con thymeleaf
     }
 
     @PostMapping("/login")
-    public String loginSubmit(@ModelAttribute LoginData loginData, Model model, HttpSession session) {
-
-        // Llamada al servicio para comprobar si el login es correcto
-        UsuarioService.LoginStatus loginStatus = usuarioService.login(loginData.getEmail(), loginData.getPassword());
+    public String loginSubmit(@ModelAttribute LoginData loginData, Model model) {
+        UsuarioService.LoginStatus loginStatus = usuarioService.login(
+                loginData.getEmail(),
+                loginData.getPassword()
+        );
 
         if (loginStatus == UsuarioService.LoginStatus.LOGIN_OK) {
             UsuarioData usuario = usuarioService.findByEmail(loginData.getEmail());
-
             managerUserSession.logearUsuario(usuario.getId());
 
-            model.addAttribute("usuario", usuario); // Add user to model
-            return "redirect:/usuarios/" + usuario.getId() + "/tareas";
+            // Redirigir a la página de bienvenida
+            return "redirect:/bienvenida";
+
         } else if (loginStatus == UsuarioService.LoginStatus.USER_NOT_FOUND) {
-            model.addAttribute("error", "No existe usuario");
+            model.addAttribute("error", "No existe usuario con ese correo");
             return "formLogin";
         } else if (loginStatus == UsuarioService.LoginStatus.ERROR_PASSWORD) {
             model.addAttribute("error", "Contraseña incorrecta");
             return "formLogin";
         }
+
+        // Si por alguna razón llega aquí, repetimos el login
+        model.addAttribute("error", "Error desconocido");
         return "formLogin";
+    }
+
+    // Nueva ruta para la página de bienvenida
+    @GetMapping("/bienvenida")
+    public String bienvenida(Model model) {
+        // Aquí podrías pasar datos adicionales al modelo si lo deseas
+        return "bienvenida";
     }
 
     @GetMapping("/registro")
@@ -63,12 +73,14 @@ public class LoginController {
         RegistroData registroData = new RegistroData();
         model.addAttribute("registroData", registroData);
 
+        // Si quisieras cargar dinámicamente los tipos desde la DB, harías algo así:
+        // model.addAttribute("tiposUsuario", tipoUsuarioRepository.findAll());
+
         return "formRegistro";
     }
 
     @PostMapping("/registro")
     public String registroSubmit(@Valid RegistroData registroData, BindingResult result, Model model) {
-
         if (result.hasErrors()) {
             return "formRegistro";
         }
@@ -82,7 +94,6 @@ public class LoginController {
         try {
             UsuarioData nuevoUsuario = usuarioService.registrar(registroData);
             return "redirect:/login";
-
         } catch (UsuarioServiceException e) {
             model.addAttribute("error", e.getMessage());
             return "formRegistro";
@@ -90,9 +101,8 @@ public class LoginController {
     }
 
     @GetMapping("/logout")
-    public String logout(HttpSession session) {
+    public String logout() {
         managerUserSession.logout();
         return "redirect:/login";
     }
 }
-

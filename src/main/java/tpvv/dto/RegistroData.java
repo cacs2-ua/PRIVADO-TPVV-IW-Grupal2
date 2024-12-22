@@ -9,6 +9,9 @@ public class RegistroData {
     private String nombre;
     private String contrasenya;
 
+    // Campo adicional para capturar el tipo de usuario desde el formulario
+    private Long tipoId;
+
     // Getters y setters
     public Long getId() {
         return id;
@@ -42,11 +45,19 @@ public class RegistroData {
         this.contrasenya = contrasenya;
     }
 
+    public Long getTipoId() {
+        return tipoId;
+    }
+
+    public void setTipoId(Long tipoId) {
+        this.tipoId = tipoId;
+    }
+
     // equals, hashCode
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof UsuarioData that)) return false;
+        if (!(o instanceof RegistroData that)) return false;
         return Objects.equals(getId(), that.getId());
     }
 

@@ -3,21 +3,21 @@ package tpvv.service;
 
 import tpvv.dto.RegistroData;
 import tpvv.dto.UsuarioData;
+import tpvv.model.Comercio;
+import tpvv.model.TipoUsuario;
 import tpvv.model.Usuario;
+import tpvv.repository.ComercioRepository;
+import tpvv.repository.TipoUsuarioRepository;
 import tpvv.repository.UsuarioRepository;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 import tpvv.service.exception.UsuarioServiceException;
 
-import java.io.IOException;
 import java.util.Optional;
 
 @Service
@@ -29,6 +29,18 @@ public class UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    // Repositorio para tipos de usuario
+    @Autowired
+    private TipoUsuarioRepository tipoUsuarioRepository;
+
+    @Autowired
+    private ComercioRepository comercioRepository;
+
+    // Repositorio para comercio, si quieres buscar uno existente por ID
+    // @Autowired
+    // private ComercioRepository comercioRepository;
+
     @Autowired
     private ModelMapper modelMapper;
 
@@ -46,11 +58,9 @@ public class UsuarioService {
         }
     }
 
-    // Se añade un usuario en la aplicación.
-    // El email y password del usuario deben ser distinto de null
-    // El email no debe estar registrado en la base de datos
     @Transactional
     public UsuarioData registrar(RegistroData registroData) {
+        // Validaciones básicas
         Optional<Usuario> usuarioBD = usuarioRepository.findByEmail(registroData.getEmail());
         if (usuarioBD.isPresent())
             throw new UsuarioServiceException("El usuario " + registroData.getEmail() + " ya está registrado");
@@ -58,15 +68,38 @@ public class UsuarioService {
             throw new UsuarioServiceException("El usuario no tiene email");
         else if (registroData.getContrasenya() == null)
             throw new UsuarioServiceException("El usuario no tiene password");
-        else {
-            String contraEnClaro = registroData.getContrasenya();
-            registroData.setContrasenya(encoder.encode(contraEnClaro));
 
-            Usuario usuarioNuevo = modelMapper.map(registroData, Usuario.class);
+        // Encriptar contraseña
+        String contraEnClaro = registroData.getContrasenya();
+        registroData.setContrasenya(encoder.encode(contraEnClaro));
 
-            usuarioNuevo = usuarioRepository.save(usuarioNuevo);
-            return modelMapper.map(usuarioNuevo, UsuarioData.class);
+        // Convertir DTO -> Entidad
+        Usuario usuarioNuevo = modelMapper.map(registroData, Usuario.class);
+
+        // Asignar TipoUsuario
+        if (registroData.getTipoId() == null) {
+            throw new UsuarioServiceException("No se especificó el tipo de usuario");
         }
+        TipoUsuario tipo = tipoUsuarioRepository.findById(registroData.getTipoId())
+                .orElseThrow(() -> new UsuarioServiceException("Tipo de usuario inválido"));
+        usuarioNuevo.setTipo(tipo);
+
+        // Asignar un comercio por defecto (ID=1), asumiendo que ya existe en DB
+        // Comercio comercioDefecto = comercioRepository.findById(1L)
+        //     .orElseThrow(() -> new UsuarioServiceException("No existe comercio con ID=1"));
+        // usuarioNuevo.setComercio(comercioDefecto);
+
+        // Si no tenemos un repositorio de comercio, podemos crear uno "dummy" (no recomendado):
+        // usuarioNuevo.setComercio(new Comercio("defaultNIF")); // Genera problemas si la DB exige ID existente
+
+        Comercio comercioDefecto = comercioRepository.findById(1L)
+                .orElseThrow(() -> new UsuarioServiceException("No existe comercio con ID=1 en la base de datos"));
+
+        // Asignarlo al usuario para no violar la constraint
+        usuarioNuevo.setComercio(comercioDefecto);
+
+        usuarioNuevo = usuarioRepository.save(usuarioNuevo);
+        return modelMapper.map(usuarioNuevo, UsuarioData.class);
     }
 
     @Transactional(readOnly = true)
@@ -86,6 +119,7 @@ public class UsuarioService {
             return modelMapper.map(usuario, UsuarioData.class);
         }
     }
+
 
 }
 
