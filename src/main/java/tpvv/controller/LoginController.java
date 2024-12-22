@@ -1,6 +1,5 @@
 package tpvv.controller;
 
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -38,7 +37,7 @@ public class LoginController {
     public String loginSubmit(@ModelAttribute LoginData loginData, Model model) {
         UsuarioService.LoginStatus loginStatus = usuarioService.login(
                 loginData.getEmail(),
-                loginData.getPassword()
+                loginData.getContrasenya()
         );
 
         if (loginStatus == UsuarioService.LoginStatus.LOGIN_OK) {

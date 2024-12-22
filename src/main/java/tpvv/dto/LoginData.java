@@ -8,20 +8,16 @@ public class LoginData {
         return email;
     }
 
-    // Corrige para usar 'this.email = eMail;'
-    public void setEmail(String eMail) {
-        this.email = eMail;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    // Corrige el getter, si quieres llamarlo getPassword().
-    // Devuelve 'contrasenya'.
-    public String getPassword() {
+    public String getContrasenya() {
         return contrasenya;
     }
 
-    // Corrige para usar 'this.contrasenya = password;'
-    public void setPassword(String password) {
-        this.contrasenya = password;
+    public void setContrasenya(String contrasenya) {
+        this.contrasenya = contrasenya;
     }
 }
 
