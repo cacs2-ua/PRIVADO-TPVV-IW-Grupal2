@@ -44,6 +44,8 @@ public class Comercio implements Serializable {
     @NotNull
     private String url_back;
 
+    private boolean activo;
+
     // Relación One-to-Many con Usuario
     @OneToMany(mappedBy = "comercio", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     Set<Usuario> usuarios = new HashSet<>();
@@ -70,6 +72,7 @@ public class Comercio implements Serializable {
         this.iban = "default-iban";
         this.apiKey = "default-apiKey";
         this.url_back = "default-url_back";
+        this.activo = true;
         this.pais_id = new Pais("default-country");
     }
 
@@ -82,6 +85,7 @@ public class Comercio implements Serializable {
         this.iban = iban;
         this.apiKey = apiKey;
         this.url_back = url_back;
+        this.activo = true;
         this.pais_id = new Pais("default-country");
     }
 
@@ -162,6 +166,10 @@ public class Comercio implements Serializable {
     public Pais getPais_id() {
         return pais_id;
     }
+
+    public boolean getActivo() { return activo; }
+
+    public void setActivo(boolean activo) { this.activo = activo; }
 
     public void setPais_id(Pais pais_id) {
         // Si el nuevo pais_id es el mismo que el actual, no hace nada

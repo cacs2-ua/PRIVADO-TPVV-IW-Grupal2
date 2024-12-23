@@ -162,4 +162,13 @@ public class ComercioService {
         String nuevaApiKey = generateApiKey(32);
         comercio.setApiKey(nuevaApiKey);
     }
+
+    @Transactional
+    public void modificarEstadoComercio(Long id, boolean activado) {
+        Comercio comercio = comercioRepository.findById(id).orElse(null);
+        if (comercio == null){
+            throw new ComercioServiceException("El comercio " + id + " no existe");
+        }
+        comercio.setActivo(activado);
+    }
 }

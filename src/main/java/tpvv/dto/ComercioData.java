@@ -13,6 +13,7 @@ public class ComercioData {
     private String iban;
     private String apiKey;
     private String url_back;
+    private boolean activo;
 
     public Long getId() {
         return id;
@@ -85,6 +86,10 @@ public class ComercioData {
     public void setUrl_back(String url_back) {
         this.url_back = url_back;
     }
+
+    public boolean getActivo() { return activo; }
+
+    public void setActivo(boolean activo) { this.activo = activo; }
 
     @Override
     public boolean equals(Object o) {
