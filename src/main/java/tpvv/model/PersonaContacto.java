@@ -47,27 +47,27 @@ public class PersonaContacto implements Serializable {
         return id;
     }
 
-    public String getTelefono_ext() {
+    public String getTelefono() {
         return telefono;
     }
 
-    public void setTelefono_ext(String telefono) {
+    public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
 
-    public String getNombre_ext() {
+    public String getNombre() {
         return nombre;
     }
 
-    public void setNombre_ext(String nombre) {
+    public void setNombre(String nombre) {
         this.nombre = nombre;
     }
 
-    public String getEmail_ext() {
+    public String getEmail() {
         return email;
     }
 
-    public void setEmail_ext(String email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 

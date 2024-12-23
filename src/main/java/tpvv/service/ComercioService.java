@@ -11,6 +11,7 @@ import tpvv.model.PersonaContacto;
 import tpvv.repository.ComercioRepository;
 import org.modelmapper.ModelMapper;
 import tpvv.repository.PaisRepository;
+import tpvv.repository.PersonaContactoRepository;
 
 import java.security.SecureRandom;
 import java.util.List;
@@ -30,6 +31,8 @@ public class ComercioService {
 
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     private static final SecureRandom RANDOM = new SecureRandom();
+    @Autowired
+    private PersonaContactoRepository personaContactoRepository;
 
     private String generateApiKey(int length) {
         if (length <= 0) {
@@ -80,6 +83,49 @@ public class ComercioService {
 
     }
 
+    @Transactional
+    public PersonaContactoData crearPersonaContacto(PersonaContactoData personaContacto) {
+        if (personaContacto.getNombre() == null)
+            throw new ComercioServiceException("El nombre no puede ser nulo");
+        else if (personaContacto.getEmail() == null)
+            throw new ComercioServiceException("El email no puede ser nulo");
+        else if (personaContacto.getTelefono() == null)
+            throw new ComercioServiceException("El teléfono no puede ser nulo");
+        else{
+            PersonaContacto personaContactoNueva = modelMapper.map(personaContacto, PersonaContacto.class);
+            personaContactoRepository.save(personaContactoNueva);
+            return modelMapper.map(personaContactoNueva, PersonaContactoData.class);
+        }
+
+    }
+
+    @Transactional
+    public void asignarPersonaDeContactoAComercio(Long idComercio, Long idPersona) {
+        Comercio comercio = comercioRepository.findById(idComercio)
+                .orElseThrow(() -> new ComercioServiceException("Comercio no encontrado con ID: " + idComercio));
+        PersonaContacto persona = personaContactoRepository.findById(idPersona)
+                .orElseThrow(() -> new ComercioServiceException("Persona de contacto no encontrada con ID: " + idComercio));
+        comercio.setPersonaContacto(persona);
+    }
+
+    @Transactional(readOnly = true)
+    public PersonaContactoData recuperarPersonaContactoById(Long id) {
+        PersonaContacto persona = personaContactoRepository.findById(id).orElse(null);
+        if (persona == null){
+            throw new ComercioServiceException("La persona de contacto " + id + " no existe");
+        }
+        return modelMapper.map(persona, PersonaContactoData.class);
+    }
+
+    @Transactional(readOnly = true)
+    public PersonaContactoData recuperarPersonaContactoByComercioId(Long id) {
+        Comercio comercio = comercioRepository.findById(id).orElse(null);
+        if (comercio == null){
+            throw new ComercioServiceException("El comercio " + id + " no existe");
+        }
+        PersonaContacto persona = comercio.getPersonaContacto();
+        return modelMapper.map(persona, PersonaContactoData.class);
+    }
 
     @Transactional(readOnly = true)
     public ComercioData recuperarComercio(Long id) {

@@ -6,8 +6,10 @@ import org.springframework.test.context.jdbc.Sql;
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import tpvv.dto.ComercioData;
+import tpvv.dto.PersonaContactoData;
 import tpvv.model.Comercio;
 import tpvv.model.Pais;
+import tpvv.model.PersonaContacto;
 import tpvv.repository.PaisRepository;
 
 
@@ -70,6 +72,23 @@ public class ComercioServiceTest {
         ComercioData comercioActualizado = comercioService.recuperarComercio(comercio.getId());
         assertThat(comercioActualizado.getApiKey())
                 .isNotEqualTo(antiguaApi);
+    }
+
+    @Test
+    public void crearRecuperarYAsignarPersonaContactoAComercioTest() {
+        ComercioData comercio = crearComercio();
+        PersonaContactoData personaContacto = new PersonaContactoData();
+        personaContacto.setNombre("Persona Contacto");
+        personaContacto.setEmail("email@email.com");
+        personaContacto.setTelefono("12345678");
+        personaContacto = comercioService.crearPersonaContacto(personaContacto);
+
+        PersonaContactoData contactoRecuperadoPorId = comercioService.recuperarPersonaContactoById(personaContacto.getId());
+
+        comercioService.asignarPersonaDeContactoAComercio(comercio.getId(), personaContacto.getId());
+        PersonaContactoData contactoRecuperadoPorIdComercio = comercioService.recuperarPersonaContactoByComercioId(comercio.getId());
+
+        assertThat(contactoRecuperadoPorId).isEqualTo(contactoRecuperadoPorIdComercio);
     }
 
 }
