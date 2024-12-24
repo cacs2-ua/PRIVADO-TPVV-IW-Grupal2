@@ -33,7 +33,7 @@ public class TecnicoOrAdminInterceptor implements HandlerInterceptor {
         }
 
         UsuarioData usuario = usuarioService.findById(userId);
-        if (usuario == null || usuario.getTipoId() != 1 || usuario.getTipoId() != 2) {
+        if (usuario == null || (usuario.getTipoId() != 1 && usuario.getTipoId() != 2)) {
             // User is not admin or tecnico
             throw new NotFoundException("Página no encontrada.");
         }
