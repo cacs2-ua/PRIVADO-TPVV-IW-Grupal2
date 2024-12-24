@@ -361,7 +361,7 @@ public class ComercioTest {
         Comercio comercioBD = comercioRepository.findById(comercio.getId()).orElse(null);
 
         assertThat(personaContactoBD).isNotNull();
-        assertThat(personaContactoBD.getEmail_ext()).isEqualTo("contacto@comercio.com");
+        assertThat(personaContactoBD.getEmail()).isEqualTo("contacto@comercio.com");
         assertThat(personaContactoBD.getComercio()).isEqualTo(comercioBD);
 
         assertThat(comercioBD).isNotNull();
