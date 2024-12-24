@@ -8,6 +8,7 @@ public class UsuarioData {
     private String email;
     private String nombre;
     private String contrasenya;
+    private Long tipoId;
 
     // Getters y setters
     public Long getId() {
@@ -40,6 +41,14 @@ public class UsuarioData {
 
     public void setContrasenya(String contrasenya) {
         this.contrasenya = contrasenya;
+    }
+
+    public Long getTipoId() {
+        return tipoId;
+    }
+
+    public void setTipoId(Long tipoId) {
+        this.tipoId = tipoId;
     }
 
     // equals, hashCode
