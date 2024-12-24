@@ -85,7 +85,6 @@
                     <argLine>-Dfile.encoding=UTF-8</argLine>
                     <useFile>false</useFile> <!-- Salida directamente a la consola -->
                     <trimStackTrace>false</trimStackTrace> <!-- Mostrar trazas completas -->
-                    <debugForkedProcess>true</debugForkedProcess> <!-- Habilitar depuración -->
                     <systemPropertyVariables>
                         <junit.jupiter.extensions.autodetection.enabled>true</junit.jupiter.extensions.autodetection.enabled>
                         <logging.level.root>DEBUG</logging.level.root> <!-- Nivel de logging DEBUG -->

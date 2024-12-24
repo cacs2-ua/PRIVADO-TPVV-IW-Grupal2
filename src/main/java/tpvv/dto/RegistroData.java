@@ -2,12 +2,14 @@ package tpvv.dto;
 
 import java.util.Objects;
 
-public class UsuarioData {
+public class RegistroData {
 
     private Long id;
     private String email;
     private String nombre;
     private String contrasenya;
+
+    // Campo adicional para capturar el tipo de usuario desde el formulario
     private Long tipoId;
 
     // Getters y setters
@@ -55,7 +57,7 @@ public class UsuarioData {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof UsuarioData that)) return false;
+        if (!(o instanceof RegistroData that)) return false;
         return Objects.equals(getId(), that.getId());
     }
 
