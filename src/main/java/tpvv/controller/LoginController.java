@@ -47,17 +47,11 @@ public class LoginController {
             // Redirigir a la página de bienvenida
             return "redirect:/api/general/bienvenida";
 
-        } else if (loginStatus == UsuarioService.LoginStatus.USER_NOT_FOUND) {
-            model.addAttribute("error", "No existe usuario con ese correo");
-            return "formLogin";
-        } else if (loginStatus == UsuarioService.LoginStatus.ERROR_PASSWORD) {
-            model.addAttribute("error", "Contraseña incorrecta");
+        } else {
+            model.addAttribute("error", "Ha habido algún error al iniciar sesión");
             return "formLogin";
         }
 
-        // Si por alguna razón llega aquí, repetimos el login
-        model.addAttribute("error", "Error desconocido");
-        return "formLogin";
     }
 
     // Nueva ruta para la página de bienvenida
