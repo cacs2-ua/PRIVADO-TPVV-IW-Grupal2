@@ -45,7 +45,7 @@ public class LoginController {
             managerUserSession.logearUsuario(usuario.getId());
 
             // Redirigir a la página de bienvenida
-            return "redirect:/bienvenida";
+            return "redirect:/api/general/bienvenida";
 
         } else if (loginStatus == UsuarioService.LoginStatus.USER_NOT_FOUND) {
             model.addAttribute("error", "No existe usuario con ese correo");
@@ -61,10 +61,10 @@ public class LoginController {
     }
 
     // Nueva ruta para la página de bienvenida
-    @GetMapping("/bienvenida")
+    @GetMapping("/api/general/bienvenida")
     public String bienvenida(Model model) {
         // Aquí podrías pasar datos adicionales al modelo si lo deseas
-        return "bienvenida";
+        return "debug/bienvenida";
     }
 
     @GetMapping("/registro")
