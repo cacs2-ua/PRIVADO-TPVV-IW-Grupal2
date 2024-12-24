@@ -29,6 +29,8 @@ public class Usuario implements Serializable {
     @NotNull
     private String contrasenya;
 
+    private boolean activo = true;
+
     // Relación Many-to-One con Comercio
     @NotNull
     @ManyToOne

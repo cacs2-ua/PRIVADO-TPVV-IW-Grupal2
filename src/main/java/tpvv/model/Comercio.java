@@ -44,7 +44,7 @@ public class Comercio implements Serializable {
     @NotNull
     private String url_back;
 
-    private boolean activo;
+    private boolean activo = true;
 
     // Relación One-to-Many con Usuario
     @OneToMany(mappedBy = "comercio", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
