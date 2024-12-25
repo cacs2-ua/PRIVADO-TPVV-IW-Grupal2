@@ -22,6 +22,10 @@ public class LoginController {
     @Autowired
     private ManagerUserSession managerUserSession;
 
+    private Long getUsuarioLogeadoId() {
+        return managerUserSession.usuarioLogeado();
+    }
+
     @GetMapping("/")
     public String home(Model model) {
         return "redirect:/login";
@@ -29,6 +33,10 @@ public class LoginController {
 
     @GetMapping("/login")
     public String loginForm(Model model) {
+        if (getUsuarioLogeadoId() != null) {
+            return "redirect:/api/general/bienvenida";
+        }
+
         model.addAttribute("loginData", new LoginData());
         return "formLogin"; // Plantilla adaptada con thymeleaf
     }
