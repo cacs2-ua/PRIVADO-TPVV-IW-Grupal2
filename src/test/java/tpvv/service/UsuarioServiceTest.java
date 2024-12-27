@@ -59,7 +59,7 @@ public class UsuarioServiceTest {
     }
 
     private UsuarioData crearUsuario() {
-        crearComercio();
+        ComercioData comercio = crearComercio();
         RegistroData registro = new RegistroData();
         TipoUsuario nuevoTipo = new TipoUsuario("Comercio");
 
@@ -72,6 +72,7 @@ public class UsuarioServiceTest {
         registro.setContrasenya("A12345678");
         registro.setEmail("test@test.com");
         registro.setTipoId(idTipo);
+        registro.setComercioId(comercio.getId());
 
 
         UsuarioData Usuario = usuarioService.registrar(registro);

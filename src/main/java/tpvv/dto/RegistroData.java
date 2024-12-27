@@ -8,6 +8,7 @@ public class RegistroData {
     private String email;
     private String nombre;
     private String contrasenya;
+    private Long comercioId;
 
     // Campo adicional para capturar el tipo de usuario desde el formulario
     private Long tipoId;
@@ -51,6 +52,14 @@ public class RegistroData {
 
     public void setTipoId(Long tipoId) {
         this.tipoId = tipoId;
+    }
+
+    public Long getComercioId() {
+        return comercioId;
+    }
+
+    public void setComercioId(Long comercioId) {
+        this.comercioId = comercioId;
     }
 
     // equals, hashCode

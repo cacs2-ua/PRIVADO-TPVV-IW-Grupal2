@@ -71,6 +71,8 @@ public class UsuarioService {
             throw new UsuarioServiceException("El usuario no tiene email");
         else if (registroData.getContrasenya() == null)
             throw new UsuarioServiceException("El usuario no tiene password");
+        else if (registroData.getComercioId() == null)
+            throw new UsuarioServiceException("El usuario no tiene comercio asignado");
 
         // Encriptar contraseña
         String contraEnClaro = registroData.getContrasenya();
@@ -87,17 +89,14 @@ public class UsuarioService {
         TipoUsuario tipo = tipoUsuarioRepository.findById(registroData.getTipoId())
                 .orElseThrow(() -> new UsuarioServiceException("Tipo de usuario inválido"));
         usuarioNuevo.setTipo(tipo);
+        Comercio comercioDefecto;
 
-        // Asignar un comercio por defecto (ID=1), asumiendo que ya existe en DB
-        // Comercio comercioDefecto = comercioRepository.findById(1L)
-        //     .orElseThrow(() -> new UsuarioServiceException("No existe comercio con ID=1"));
-        // usuarioNuevo.setComercio(comercioDefecto);
+            /*comercioDefecto = comercioRepository.findById(1L)
+                    .orElseThrow(() -> new UsuarioServiceException("No existe comercio con ID=1 en la base de datos"));*/
 
-        // Si no tenemos un repositorio de comercio, podemos crear uno "dummy" (no recomendado):
-        // usuarioNuevo.setComercio(new Comercio("defaultNIF")); // Genera problemas si la DB exige ID existente
+            comercioDefecto = comercioRepository.findById(registroData.getComercioId())
+                    .orElseThrow(() -> new UsuarioServiceException("No existe comercio con ID=" + registroData.getComercioId() + " en la base de datos"));
 
-        Comercio comercioDefecto = comercioRepository.findById(1L)
-                .orElseThrow(() -> new UsuarioServiceException("No existe comercio con ID=1 en la base de datos"));
 
         // Asignarlo al usuario para no violar la constraint
         usuarioNuevo.setComercio(comercioDefecto);
