@@ -1,6 +1,7 @@
 package tpvv.service;
 
 
+import tpvv.dto.ComercioData;
 import tpvv.dto.RegistroData;
 import tpvv.dto.UsuarioData;
 import tpvv.model.Comercio;
@@ -18,7 +19,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tpvv.service.exception.UsuarioServiceException;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UsuarioService {
@@ -80,6 +83,7 @@ public class UsuarioService {
         if (registroData.getTipoId() == null) {
             throw new UsuarioServiceException("No se especificó el tipo de usuario");
         }
+
         TipoUsuario tipo = tipoUsuarioRepository.findById(registroData.getTipoId())
                 .orElseThrow(() -> new UsuarioServiceException("Tipo de usuario inválido"));
         usuarioNuevo.setTipo(tipo);
@@ -118,6 +122,16 @@ public class UsuarioService {
         else {
             return modelMapper.map(usuario, UsuarioData.class);
         }
+    }
+
+    @Transactional(readOnly = true)
+    public List<UsuarioData> findAll() {
+        List<Usuario> usuarios = usuarioRepository.findAll();
+
+        return usuarios.stream()
+                .map(usuario -> modelMapper.map(usuario, UsuarioData.class))
+                .collect(Collectors.toList());
+
     }
 
 
