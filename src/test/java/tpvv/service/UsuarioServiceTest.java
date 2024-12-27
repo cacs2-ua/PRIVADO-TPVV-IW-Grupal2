@@ -93,14 +93,27 @@ public class UsuarioServiceTest {
         assertThat(usuariosBd).isNotNull();
         assertThat(usuariosBd.get(0).getNombre()).isEqualTo("Usuario Test");
         assertThat((usuariosBd).size()>0).isTrue();
+    }
 
+    @Test
+    public void borradoLogicoUsuarioTest() {
+        UsuarioData usuario = crearUsuario();
+        Long idComercio = usuarioService.findComercio(usuario.getId());
+        assertThat(usuario.getId()).isNotNull();
         //Test para comprobar el borrado
         usuarioService.borradoUsuarioLogico(usuario.getId(), false);
         UsuarioData usuarioBd = usuarioService.findById(usuario.getId());
         assertThat(usuarioBd).isNotNull();
         assertThat(usuarioBd.getActivo()).isFalse();
 
-        //Test para recuperar comercio y listar usuario por comercio
+    }
+
+    @Test
+    public void listarUsuariosDadoIdComercioTest() {
+        UsuarioData usuario = crearUsuario();
+        Long idComercio = usuarioService.findComercio(usuario.getId());
+        assertThat(usuario.getId()).isNotNull();
+        //Test para listar usuario por comercio
         List<UsuarioData> usuariosComercio = usuarioService.findAllByIdComercio(idComercio);
         assertThat((usuariosComercio).size()>1).isTrue();
     }
