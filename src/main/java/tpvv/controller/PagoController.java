@@ -44,22 +44,4 @@ public class PagoController {
         return "paymentForm"; // Esto devuelve la vista paymentForm.html
     }
 
-    /**
-     * Procesa el pago realizado.
-     *
-     * @param pagoData El formulario de pago enviado como DTO.
-     * @return La respuesta de confirmación del pago en formato JSON.
-     */
-    @PostMapping("/realizar")
-    @ResponseBody // Esto asegura que la respuesta se devuelva en formato JSON
-    public ResponseEntity<String> realizarPago(@Valid @RequestBody PagoData pagoData) {
-
-        // Validación simple: verificar si los campos necesarios están presentes
-        if (pagoData.getImporte() <= 0 || pagoData.getTicketExt() == null || pagoData.getTarjeta() == null) {
-            return ResponseEntity.badRequest().body("Error: Faltan datos requeridos (importe, ticketExt, tarjeta).");
-        }
-
-        // Si todo está bien, responder con un "ok" en JSON
-        return ResponseEntity.ok("Pago procesado correctamente.");
-    }
 }

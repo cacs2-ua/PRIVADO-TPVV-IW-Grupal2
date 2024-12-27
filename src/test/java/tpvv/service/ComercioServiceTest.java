@@ -12,7 +12,7 @@ import tpvv.repository.PaisRepository;
 
 
 @SpringBootTest
-@Sql(scripts = "/clean-db.sql")
+@Sql(scripts = "/sql/clean-test-db.sql")
 public class ComercioServiceTest {
 
     @Autowired
