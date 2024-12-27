@@ -34,11 +34,10 @@ public class UsuarioServiceTest {
     PaisRepository paisRepository;
 
 
+
     private ComercioData crearComercio() {
         List<ComercioData> comercios = comercioService.recuperarTodosLosComercios();
-        if (comercios.size() > 0){
-            return comercios.get(0);
-        }
+
         ComercioData nuevoComercio = new ComercioData();
         Pais nuevoPais = new Pais("España");
 
@@ -76,17 +75,34 @@ public class UsuarioServiceTest {
 
 
         UsuarioData Usuario = usuarioService.registrar(registro);
+
+        registro.setEmail("eee@ee");
+        usuarioService.registrar(registro);
+
         return Usuario;
     }
 
     @Test
     public void crearRecuperarUsuarioTest() {
         UsuarioData usuario = crearUsuario();
+        Long idComercio = usuarioService.findComercio(usuario.getId());
         assertThat(usuario.getId()).isNotNull();
 
-        List<UsuarioData> usuarioBd = usuarioService.findAll();
+        List<UsuarioData> usuariosBd = usuarioService.findAll();
+        assertThat(usuariosBd).isNotNull();
+        assertThat(usuariosBd.get(0).getNombre()).isEqualTo("Usuario Test");
+        assertThat((usuariosBd).size()>0).isTrue();
+
+        //Test para comprobar el borrado
+        usuarioService.borradoUsuarioLogico(usuario.getId(), false);
+        UsuarioData usuarioBd = usuarioService.findById(usuario.getId());
         assertThat(usuarioBd).isNotNull();
-        assertThat(usuarioBd.get(0).getNombre()).isEqualTo("Usuario Test");
-        assertThat((usuarioBd).size()>0).isTrue();
+        assertThat(usuarioBd.getActivo()).isFalse();
+
+        //Test para recuperar comercio y listar usuario por comercio
+        List<UsuarioData> usuariosComercio = usuarioService.findAllByIdComercio(idComercio);
+        assertThat((usuariosComercio).size()>1).isTrue();
     }
+
+
 }

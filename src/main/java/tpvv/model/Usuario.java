@@ -107,6 +107,14 @@ public class Usuario implements Serializable {
         this.contrasenya = contrasenya;
     }
 
+
+    public boolean getActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
+    }
     // Getter y Setter de la Relación Many-to-One
 
     public Comercio getComercio() {

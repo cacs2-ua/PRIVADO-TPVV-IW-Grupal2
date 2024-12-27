@@ -124,6 +124,8 @@ public class UsuarioService {
         }
     }
 
+
+
     @Transactional(readOnly = true)
     public List<UsuarioData> findAll() {
         List<Usuario> usuarios = usuarioRepository.findAll();
@@ -131,6 +133,38 @@ public class UsuarioService {
         return usuarios.stream()
                 .map(usuario -> modelMapper.map(usuario, UsuarioData.class))
                 .collect(Collectors.toList());
+
+    }
+
+    @Transactional(readOnly = true)
+    public Long findComercio(Long usuarioId) {
+        Usuario usuario = usuarioRepository.findById(usuarioId).orElse(null);
+        if (usuario == null) return null;
+        return usuario.getComercio().getId();
+    }
+
+    @Transactional(readOnly = true)
+    public List<UsuarioData> findAllByIdComercio(Long idComercio) {
+        Comercio comercio = comercioRepository.findById(idComercio).orElse(null);
+        if (comercio == null){
+            throw new ComercioServiceException("El comercio " + idComercio + " no existe");
+        }
+
+        List<Usuario> usuarios = usuarioRepository.findByComercio(comercio);
+
+        return usuarios.stream()
+                .map(usuario -> modelMapper.map(usuario, UsuarioData.class))
+                .collect(Collectors.toList());
+
+    }
+
+    @Transactional
+    public void borradoUsuarioLogico(Long id, boolean activo){ // el argumento activo ayuda a reutilizar el metodo para restaurar los usuarios eliminados
+        Usuario usuario = usuarioRepository.findById(id).orElse(null);
+        if (usuario == null){
+            throw new UsuarioServiceException("El usuario " + id + " no existe");
+        }
+        usuario.setActivo(activo);
 
     }
 

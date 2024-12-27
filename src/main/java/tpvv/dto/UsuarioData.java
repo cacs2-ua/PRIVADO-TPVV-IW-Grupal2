@@ -9,6 +9,7 @@ public class UsuarioData {
     private String nombre;
     private String contrasenya;
     private Long tipoId;
+    private boolean activo;
 
     // Getters y setters
     public Long getId() {
@@ -50,6 +51,10 @@ public class UsuarioData {
     public void setTipoId(Long tipoId) {
         this.tipoId = tipoId;
     }
+
+    public boolean getActivo() { return activo; }
+
+    public void setActivo(boolean activo) { this.activo = activo; }
 
     // equals, hashCode
     @Override
