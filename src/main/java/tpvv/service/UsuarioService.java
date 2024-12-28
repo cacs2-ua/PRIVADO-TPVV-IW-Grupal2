@@ -1,6 +1,7 @@
 package tpvv.service;
 
 
+import tpvv.dto.ComercioData;
 import tpvv.dto.RegistroData;
 import tpvv.dto.UsuarioData;
 import tpvv.model.Comercio;
@@ -18,7 +19,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tpvv.service.exception.UsuarioServiceException;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UsuarioService {
@@ -68,6 +71,8 @@ public class UsuarioService {
             throw new UsuarioServiceException("El usuario no tiene email");
         else if (registroData.getContrasenya() == null)
             throw new UsuarioServiceException("El usuario no tiene password");
+        else if (registroData.getComercioId() == null)
+            throw new UsuarioServiceException("El usuario no tiene comercio asignado");
 
         // Encriptar contraseña
         String contraEnClaro = registroData.getContrasenya();
@@ -80,20 +85,18 @@ public class UsuarioService {
         if (registroData.getTipoId() == null) {
             throw new UsuarioServiceException("No se especificó el tipo de usuario");
         }
+
         TipoUsuario tipo = tipoUsuarioRepository.findById(registroData.getTipoId())
                 .orElseThrow(() -> new UsuarioServiceException("Tipo de usuario inválido"));
         usuarioNuevo.setTipo(tipo);
+        Comercio comercioDefecto;
 
-        // Asignar un comercio por defecto (ID=1), asumiendo que ya existe en DB
-        // Comercio comercioDefecto = comercioRepository.findById(1L)
-        //     .orElseThrow(() -> new UsuarioServiceException("No existe comercio con ID=1"));
-        // usuarioNuevo.setComercio(comercioDefecto);
+            /*comercioDefecto = comercioRepository.findById(1L)
+                    .orElseThrow(() -> new UsuarioServiceException("No existe comercio con ID=1 en la base de datos"));*/
 
-        // Si no tenemos un repositorio de comercio, podemos crear uno "dummy" (no recomendado):
-        // usuarioNuevo.setComercio(new Comercio("defaultNIF")); // Genera problemas si la DB exige ID existente
+            comercioDefecto = comercioRepository.findById(registroData.getComercioId())
+                    .orElseThrow(() -> new UsuarioServiceException("No existe comercio con ID=" + registroData.getComercioId() + " en la base de datos"));
 
-        Comercio comercioDefecto = comercioRepository.findById(1L)
-                .orElseThrow(() -> new UsuarioServiceException("No existe comercio con ID=1 en la base de datos"));
 
         // Asignarlo al usuario para no violar la constraint
         usuarioNuevo.setComercio(comercioDefecto);
@@ -118,6 +121,50 @@ public class UsuarioService {
         else {
             return modelMapper.map(usuario, UsuarioData.class);
         }
+    }
+
+
+
+    @Transactional(readOnly = true)
+    public List<UsuarioData> findAll() {
+        List<Usuario> usuarios = usuarioRepository.findAll();
+
+        return usuarios.stream()
+                .map(usuario -> modelMapper.map(usuario, UsuarioData.class))
+                .collect(Collectors.toList());
+
+    }
+
+    @Transactional(readOnly = true)
+    public Long findComercio(Long usuarioId) {
+        Usuario usuario = usuarioRepository.findById(usuarioId).orElse(null);
+        if (usuario == null) return null;
+        return usuario.getComercio().getId();
+    }
+
+    @Transactional(readOnly = true)
+    public List<UsuarioData> findAllByIdComercio(Long idComercio) {
+        Comercio comercio = comercioRepository.findById(idComercio).orElse(null);
+        if (comercio == null){
+            throw new ComercioServiceException("El comercio " + idComercio + " no existe");
+        }
+
+        List<Usuario> usuarios = usuarioRepository.findByComercio(comercio);
+
+        return usuarios.stream()
+                .map(usuario -> modelMapper.map(usuario, UsuarioData.class))
+                .collect(Collectors.toList());
+
+    }
+
+    @Transactional
+    public void borradoUsuarioLogico(Long id, boolean activo){ // el argumento activo ayuda a reutilizar el metodo para restaurar los usuarios eliminados
+        Usuario usuario = usuarioRepository.findById(id).orElse(null);
+        if (usuario == null){
+            throw new UsuarioServiceException("El usuario " + id + " no existe");
+        }
+        usuario.setActivo(activo);
+
     }
 
 
