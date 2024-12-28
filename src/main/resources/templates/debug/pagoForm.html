@@ -23,7 +23,7 @@
         }
 
         .payment-title {
-            color: #95b3c6;
+            color: #89A8B2;
             font-size: 24px;
             margin-bottom: 30px;
         }
@@ -63,7 +63,7 @@
         }
 
         .card-payment {
-            background: #95b3c6;
+            background: #89A8B2;
             border-radius: 10px;
             padding: 20px;
             color: white;
@@ -88,7 +88,7 @@
             padding: 8px;
             border: none;
             border-radius: 5px;
-            background: #e8e8e8;
+            background: #D9D9D9;
         }
 
         .security-code {
@@ -100,7 +100,7 @@
         }
 
         .accept-button {
-            background: white;
+            background: #F1F0E8;
             color: #666;
             border: none;
             border-radius: 5px;
@@ -113,7 +113,7 @@
 </head>
 <body class="payment-background">
 <div class="payment-container">
-    <h1 class="payment-title">TPVV</h1>
+    <h1 class="payment-title">TPVV BoarDalo</h1>
 
     <div class="payment-grid">
         <!-- Purchase Details Section -->
@@ -121,7 +121,7 @@
             <h2 class="purchase-title">Datos de la Compra</h2>
             <div class="details-grid">
                 <span class="details-label">Importe:</span>
-                <span class="details-value">218,42 €</span>
+                <span class="details-value" style="font-weight: bold; text-decoration: underline;">218,42 €</span>
 
                 <span class="details-label">Comercio:</span>
                 <span class="details-value">Paquetería</span>
@@ -141,6 +141,10 @@
         <div class="card-payment">
             <h2 class="card-title">Pago con tarjeta</h2>
             <form class="card-form">
+                <div class="form-group">
+                    <label>Nombre Completo</label>
+                    <input type="text" class="card-input" placeholder="Nombre Completo">
+                </div>
                 <div class="form-group">
                     <label>Nº Tarjeta:</label>
                     <input type="text" class="card-input" placeholder="0000 0000 0000 0000">
