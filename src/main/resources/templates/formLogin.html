@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar sesión</title>
+    <div th:include="fragments :: head (titulo='Iniciar sesión')"></div>
     <link rel="stylesheet" th:href="@{/css/custom/login-style.css}">
 </head>
 <body class="custom-body">
+<div th:replace="fragments::menuBar"></div>
 
 <div class="login-container">
     <h1 class="login-title">Iniciar sesión</h1>
@@ -30,5 +32,6 @@
 
 </div>
 
+<div th:replace="fragments::javascript"></div>
 </body>
 </html>
