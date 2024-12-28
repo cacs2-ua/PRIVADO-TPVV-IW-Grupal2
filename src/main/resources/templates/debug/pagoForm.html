@@ -5,9 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TPVV Payment Form</title>
     <style>
+
+        .payment-background {
+            background-color: #F1F0E8;
+            display: flex;              /* Se mantiene para centrar */
+            align-items: center;        /* Se mantiene para centrar */
+            justify-content: center;    /* Se mantiene para centrar */
+            min-height: 100vh;          /* Para ocupar toda la altura de la ventana */
+            margin: 0;                  /* Elimina márgenes del body */
+        }
+
         .payment-container {
-            max-width: 900px;
-            margin: 20px auto;
+            max-width: 900px;          /* Tamaño máximo */
+            width: 100%;               /* Ocupa el 100% hasta llegar a 900px */
+            margin: 20px auto;         /* Se restaura para mantener dimensiones iniciales */
             font-family: Arial, sans-serif;
         }
 
@@ -100,7 +111,7 @@
         }
     </style>
 </head>
-<body>
+<body class="payment-background">
 <div class="payment-container">
     <h1 class="payment-title">TPVV</h1>
 
