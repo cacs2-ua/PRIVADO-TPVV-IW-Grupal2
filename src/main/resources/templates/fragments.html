@@ -14,7 +14,7 @@
 <div th:fragment="menuBar">
   <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #B3C8CF;">
     <!-- Logo o nombre de la aplicación -->
-    <a class="navbar-brand" th:href="@{/}">TPVV-BoarDalo</a>
+    <a class="navbar-brand" th:href="@{/}" style="font-weight: normal; text-decoration: none;" onclick="highlightLink(this)">TPVV-BoarDalo</a>
 
     <!-- Botón del menú hamburguesa -->
     <button class="navbar-toggler" type="button"
@@ -28,46 +28,46 @@
       <ul class="navbar-nav me-auto">
         <!-- Guest User -->
         <li class="nav-item" th:if="${usuario == null}">
-          <a class="nav-link" th:href="@{/}">Iniciar Sesión</a>
+          <a class="nav-link" th:href="@{/}" style="font-weight: normal; text-decoration: none;" onclick="highlightLink(this)">Iniciar Sesión</a>
         </li>
 
         <!-- Admin User -->
         <li class="nav-item" th:if="${usuario != null and usuario.tipoId == 1}">
-          <a class="nav-link" th:href="@{/}">Comercios</a>
+          <a class="nav-link" th:href="@{/}" style="font-weight: normal; text-decoration: none;" onclick="highlightLink(this)">Comercios</a>
         </li>
         <li class="nav-item" th:if="${usuario != null and usuario.tipoId == 1}">
-          <a class="nav-link" th:href="@{/}">Usuarios</a>
+          <a class="nav-link" th:href="@{/}" style="font-weight: normal; text-decoration: none;" onclick="highlightLink(this)">Usuarios</a>
         </li>
         <li class="nav-item" th:if="${usuario != null and usuario.tipoId == 1}">
-          <a class="nav-link" th:href="@{/}">Incidencias</a>
+          <a class="nav-link" th:href="@{/}" style="font-weight: normal; text-decoration: none;" onclick="highlightLink(this)">Incidencias</a>
         </li>
         <li class="nav-item" th:if="${usuario != null and usuario.tipoId == 1}">
-          <a class="nav-link" th:href="@{/}">Pagos</a>
+          <a class="nav-link" th:href="@{/}" style="font-weight: normal; text-decoration: none;" onclick="highlightLink(this)">Pagos</a>
         </li>
         <li class="nav-item" th:if="${usuario != null and usuario.tipoId == 1}">
-          <a class="nav-link" th:href="@{/}">Nombre</a>
+          <a class="nav-link" th:href="@{/}" style="font-weight: normal; text-decoration: none;" onclick="highlightLink(this)">Nombre</a>
         </li>
 
         <!-- Tecnico User -->
         <li class="nav-item" th:if="${usuario != null and usuario.tipoId == 2}">
-          <a class="nav-link" th:href="@{/}">Comercios</a>
+          <a class="nav-link" th:href="@{/}" style="font-weight: normal; text-decoration: none;" onclick="highlightLink(this)">Comercios</a>
         </li>
         <li class="nav-item" th:if="${usuario != null and usuario.tipoId == 2}">
-          <a class="nav-link" th:href="@{/}">Incidencias</a>
+          <a class="nav-link" th:href="@{/}" style="font-weight: normal; text-decoration: none;" onclick="highlightLink(this)">Incidencias</a>
         </li>
         <li class="nav-item" th:if="${usuario != null and usuario.tipoId == 2}">
-          <a class="nav-link" th:href="@{/}">Nombre</a>
+          <a class="nav-link" th:href="@{/}" style="font-weight: normal; text-decoration: none;" onclick="highlightLink(this)">Nombre</a>
         </li>
 
         <!-- Comercio User -->
         <li class="nav-item" th:if="${usuario != null and usuario.tipoId == 3}">
-          <a class="nav-link" th:href="@{/}">Incidencias</a>
+          <a class="nav-link" th:href="@{/}" style="font-weight: normal; text-decoration: none;" onclick="highlightLink(this)">Incidencias</a>
         </li>
         <li class="nav-item" th:if="${usuario != null and usuario.tipoId == 3}">
-          <a class="nav-link" th:href="@{/}">Pagos</a>
+          <a class="nav-link" th:href="@{/}" style="font-weight: normal; text-decoration: none;" onclick="highlightLink(this)">Pagos</a>
         </li>
         <li class="nav-item" th:if="${usuario != null and usuario.tipoId == 3}">
-          <a class="nav-link" th:href="@{/}">Nombre</a>
+          <a class="nav-link" th:href="@{/}" style="font-weight: normal; text-decoration: none;" onclick="highlightLink(this)">Nombre</a>
         </li>
       </ul>
     </div>
@@ -77,6 +77,42 @@
 <div th:fragment="javascript">
   <!-- Bootstrap 5 JavaScript Bundle with Popper -->
   <script th:src="@{/js/bootstrap/bootstrap.bundle.min.js}"></script>
+
+  <!-- Script para resaltar el enlace seleccionado -->
+  <script>
+    // Restaurar el estado de los enlaces al cargar la página
+    document.addEventListener('DOMContentLoaded', () => {
+      const activeLinkIndex = localStorage.getItem('activeLinkIndex');
+      if (activeLinkIndex !== null) {
+        const links = document.querySelectorAll('.nav-link, .navbar-brand');
+        const activeLink = links[activeLinkIndex];
+        if (activeLink) {
+          activeLink.style.fontWeight = 'bold';
+          activeLink.style.textDecoration = 'underline';
+          activeLink.classList.add('active');
+        }
+      }
+    });
+
+    function highlightLink(element) {
+      // Restablecer estilos de todos los enlaces y el logo
+      document.querySelectorAll('.nav-link, .navbar-brand').forEach(link => {
+        link.style.fontWeight = 'normal';
+        link.style.textDecoration = 'none';
+        link.classList.remove('active');
+      });
+
+      // Aplicar estilos al elemento seleccionado
+      element.style.fontWeight = 'bold';
+      element.style.textDecoration = 'underline';
+      element.classList.add('active');
+
+      // Guardar el índice del elemento seleccionado en localStorage
+      const links = Array.from(document.querySelectorAll('.nav-link, .navbar-brand'));
+      const index = links.indexOf(element);
+      localStorage.setItem('activeLinkIndex', index);
+    }
+  </script>
 </div>
 </body>
 </html>
