@@ -3,10 +3,23 @@
     margin: 0;
     height: 100vh;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column; /* Asegura que los elementos estén apilados verticalmente */
     background-color: #f1f0e8;
     font-family: Arial, sans-serif;
+}
+
+/* Contenedor de la navbar */
+.navbar-container {
+    flex-shrink: 0; /* Asegura que la navbar no se reduzca */
+    width: 100%; /* Ocupa todo el ancho disponible */
+}
+
+/* Contenedor principal del contenido */
+.content {
+    flex: 1; /* Ocupa el espacio restante */
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* Contenedor principal del login */
