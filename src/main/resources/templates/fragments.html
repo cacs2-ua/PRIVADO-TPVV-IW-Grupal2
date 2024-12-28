@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:fragment="head (titulo)">
+  <meta charset="UTF-8" />
+  <!-- Vista para móviles: imprescindible para que el menú hamburguesa funcione correctamente -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <title th:text="${titulo}"></title>
+  <link rel="stylesheet" th:href="@{/css/bootstrap/bootstrap.min.css}" />
+</head>
+
+<body>
+<div th:fragment="menuBar">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <!-- Logo o nombre de la aplicación -->
+    <a class="navbar-brand" th:href="@{/}">TPVV-BoarDalo</a>
+
+    <!-- Botón del menú hamburguesa -->
+    <button class="navbar-toggler" type="button"
+            data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Enlaces del menú colapsable -->
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto">
+        <!-- Guest User -->
+        <li class="nav-item" th:if="${usuario == null}">
+          <a class="nav-link" th:href="@{/}">Iniciar Sesión</a>
+        </li>
+
+        <!-- Admin User -->
+        <li class="nav-item" th:if="${usuario != null and usuario.tipoId == 1}">
+          <a class="nav-link" th:href="@{/}">Comercios</a>
+        </li>
+        <li class="nav-item" th:if="${usuario != null and usuario.tipoId == 1}">
+          <a class="nav-link" th:href="@{/}">Usuarios</a>
+        </li>
+        <li class="nav-item" th:if="${usuario != null and usuario.tipoId == 1}">
+          <a class="nav-link" th:href="@{/}">Incidencias</a>
+        </li>
+        <li class="nav-item" th:if="${usuario != null and usuario.tipoId == 1}">
+          <a class="nav-link" th:href="@{/}">Pagos</a>
+        </li>
+        <li class="nav-item" th:if="${usuario != null and usuario.tipoId == 1}">
+          <a class="nav-link" th:href="@{/}">Nombre</a>
+        </li>
+
+        <!-- Tecnico User -->
+        <li class="nav-item" th:if="${usuario != null and usuario.tipoId == 2}">
+          <a class="nav-link" th:href="@{/}">Comercios</a>
+        </li>
+        <li class="nav-item" th:if="${usuario != null and usuario.tipoId == 2}">
+          <a class="nav-link" th:href="@{/}">Incidencias</a>
+        </li>
+        <li class="nav-item" th:if="${usuario != null and usuario.tipoId == 2}">
+          <a class="nav-link" th:href="@{/}">Nombre</a>
+        </li>
+
+        <!-- Comercio User -->
+        <li class="nav-item" th:if="${usuario != null and usuario.tipoId == 3}">
+          <a class="nav-link" th:href="@{/}">Incidencias</a>
+        </li>
+        <li class="nav-item" th:if="${usuario != null and usuario.tipoId == 3}">
+          <a class="nav-link" th:href="@{/}">Pagos</a>
+        </li>
+        <li class="nav-item" th:if="${usuario != null and usuario.tipoId == 3}">
+          <a class="nav-link" th:href="@{/}">Nombre</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</div>
+
+<div th:fragment="javascript">
+  <!-- Bootstrap 5 JavaScript Bundle with Popper -->
+  <script th:src="@{/js/bootstrap/bootstrap.bundle.min.js}"></script>
+</div>
+</body>
+</html>
