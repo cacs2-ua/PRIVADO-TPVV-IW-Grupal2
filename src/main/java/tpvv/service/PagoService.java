@@ -29,7 +29,6 @@ public class PagoService {
         pago.setImporte(importe);
         pago.setTicketExt(ticketId);
         pago.setFecha(new Date());
-        pago.setTarjeta(tarjeta);
         // Aquí puedes añadir lógica adicional, como validar el ticket, procesar el pago, etc.
 
         return pagoRepository.save(pago);
