@@ -40,8 +40,9 @@ public class PagoController {
         PagoData pagoData = new PagoData();
         pagoData.setImporte(importe);
         pagoData.setTicketExt(ticketId);
-        model.addAttribute("pagoData", pagoData); // Nota: Asegúrate de usar "pagoData" como th:object
-        return "paymentForm"; // Esto devuelve la vista paymentForm.html
+        model.addAttribute("pagoData", pagoData);
+        model.addAttribute("fullPage", true); // Plantilla completa
+        return "paymentForm";
     }
 
 }
