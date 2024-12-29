@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @Configuration
 @EnableWebSecurity
@@ -17,19 +18,38 @@ public class SecurityConfig {
     private ApiKeyAuthFilter apiKeyAuthFilter;
 
     @Bean
-    public SecurityFilterChain filterChain(org.springframework.security.config.annotation.web.builders.HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(org.springframework.security.config.annotation.web.builders.HttpSecurity http)
+            throws Exception {
+
         http
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**", "/pago/**")) // Ignorar CSRF en H2 Console
-                .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin())) // Permitir iframes para H2 Console
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/h2-console/**").permitAll() // Permitir acceso a la consola H2
-                        .requestMatchers("/pago/**").authenticated() // Requiere autenticación para los endpoints de pago
-                        .anyRequest().permitAll() // Permitir acceso al resto de rutas
+                // Configuración de CSRF:
+                // 1. Ignoramos CSRF en /h2-console/** y /pago/**
+                // 2. Usamos CookieCsrfTokenRepository para el resto
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/h2-console/**", "/pago/**")
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 )
+
+                // Permitir iframes en la misma ruta (necesario para la consola H2)
+                .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
+
+                // Control de sesiones (STATELESS)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+                // Reglas de autorización
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/h2-console/**").permitAll()  // Permitir H2
+                        .requestMatchers("/pago/**").authenticated()    // Exigir autenticación en /pago
+                        .anyRequest().permitAll()                      // Todo lo demás, libre
+                )
+
+                // Filtro personalizado antes de UsernamePasswordAuthenticationFilter
                 .addFilterBefore(apiKeyAuthFilter, UsernamePasswordAuthenticationFilter.class)
+
+                // Autenticación básica
                 .httpBasic(Customizer.withDefaults());
 
+        // Construye el SecurityFilterChain
         return http.build();
     }
 }
