@@ -93,12 +93,12 @@ public class ComercioServiceTest {
     public void cambiarEstadoComercioTest() {
         ComercioData comercio = crearComercio();
 
-        assertThat(comercio.getActivo()).isFalse();
+        assertThat(comercio.getActivo()).isTrue();
 
-        comercioService.modificarEstadoComercio(comercio.getId(), true);
+        comercioService.modificarEstadoComercio(comercio.getId(), false);
         comercio = comercioService.recuperarComercio(comercio.getId());
 
-        assertThat(comercio.getActivo()).isTrue();
+        assertThat(comercio.getActivo()).isFalse();
     }
 
 }

@@ -33,7 +33,7 @@
 
         <!-- Admin User -->
         <li class="nav-item" th:if="${usuario != null and usuario.tipoId == 1}">
-          <a class="nav-link" th:href="@{/}" style="font-weight: normal; text-decoration: none;" onclick="highlightLink(this)">Comercios</a>
+          <a class="nav-link" th:href="@{/api/admin/comercios}" style="font-weight: normal; text-decoration: none;" onclick="highlightLink(this)">Comercios</a>
         </li>
         <li class="nav-item" th:if="${usuario != null and usuario.tipoId == 1}">
           <a class="nav-link" th:href="@{/}" style="font-weight: normal; text-decoration: none;" onclick="highlightLink(this)">Usuarios</a>

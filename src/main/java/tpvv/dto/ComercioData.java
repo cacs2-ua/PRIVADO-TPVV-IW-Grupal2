@@ -13,7 +13,7 @@ public class ComercioData {
     private String iban;
     private String apiKey;
     private String url_back;
-    private boolean activo;
+    private boolean activo = true;
 
     public Long getId() {
         return id;
