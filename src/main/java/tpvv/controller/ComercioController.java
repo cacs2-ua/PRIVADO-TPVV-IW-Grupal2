@@ -69,12 +69,13 @@ public class ComercioController {
         return "redirect:/api/admin/crearcomercio";  // redirigir al formulario o a una página de confirmación
     }
 
-    @GetMapping("/api/admin/listado-comercios")
+    @GetMapping("/api/admin/comercios")
     public String listarComercio(Model model) {
+        List<ComercioData> comercios = comercioService.recuperarTodosLosComercios();
+        model.addAttribute("comercios", comercios);
 
 
-
-        return "listarComercios";
+        return "listadoComercio";
 
     }
 }
