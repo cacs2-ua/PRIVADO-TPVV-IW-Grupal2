@@ -36,8 +36,11 @@ public class PagoRestController {
      * - TarjetaPagoData (numeroTarjeta, cvc, fechaCaducidad, nombre)
      */
     @PostMapping("/realizar")
-    public ResponseEntity<String> realizarPago(@Valid @RequestBody PagoCompletoRequest request) {
+    public ResponseEntity<String> realizarPago(@RequestHeader(value = "Authorization", required = false) String authorizationHeader,
+            @Valid @RequestBody PagoCompletoRequest request) {
 
+
+        String apiKey = authorizationHeader.trim();
         // Obtenemos PagoData
         PagoData pagoData = request.getPagoData();
         if (pagoData == null) {
