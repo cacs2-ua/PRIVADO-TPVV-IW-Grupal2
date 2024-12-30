@@ -1,10 +1,12 @@
 package tpvv.service;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tpvv.dto.PagoCompletoRequest;
 import tpvv.dto.PagoData;
 import tpvv.dto.TarjetaPagoData;
+import tpvv.dto.ComercioData;
 import tpvv.model.Comercio;
 import tpvv.model.EstadoPago;
 import tpvv.model.Pago;
@@ -12,6 +14,7 @@ import tpvv.model.TarjetaPago;
 import tpvv.repository.EstadoPagoRepository;
 import tpvv.repository.PagoRepository;
 import tpvv.repository.TarjetaPagoRepository;
+import tpvv.repository.ComercioRepository;
 
 import java.util.Optional;
 
@@ -26,6 +29,8 @@ public class PagoService {
 
     @Autowired
     private EstadoPagoRepository estadoPagoRepository;
+    @Autowired
+    private ComercioRepository comercioRepository;
 
     /**
      * Procesa el pago recibido y persiste la información en la base de datos.
@@ -35,6 +40,7 @@ public class PagoService {
      * @return         Mensaje de éxito con el ID del pago.
      * @throws IllegalArgumentException En caso de datos incompletos o inválidos.
      */
+    @Transactional
     public String procesarPago(PagoCompletoRequest request, String apiKey) {
         // Obtener PagoData
         PagoData pagoData = request.getPagoData();
@@ -91,10 +97,16 @@ public class PagoService {
         pago.setFecha(pagoData.getFecha());
 
         // Asignar un comercio (ejemplo)
-        pago.setComercio(new Comercio("B12345678"));
+        Comercio comercio = comercioRepository.findByApiKey(apiKey).orElse(null);
 
         // Asignar la Tarjeta
         pago.setTarjetaPago(tarjetaPago);
+
+        // Asignar el Estado Pago
+        pago.setEstado(estadoPago);
+
+        // Asignar el Comercio
+        pago.setComercio(comercio);
 
         // Guardar el Pago
         pagoRepository.save(pago);
