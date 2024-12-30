@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tpvv.dto.PagoCompletoRequest;
+import tpvv.dto.PagoData;
+import tpvv.dto.PedidoCompletoRequest;
 import tpvv.service.PagoService;
 
 @RestController
@@ -28,8 +30,8 @@ public class PagoRestController {
         String apiKey = (authorizationHeader != null) ? authorizationHeader.trim() : "";
 
         try {
-            String respuesta = pagoService.procesarPago(request, apiKey);
-            return ResponseEntity.ok(respuesta);
+            PedidoCompletoRequest pedidoCompletoRequest = pagoService.procesarPago(request, apiKey);
+            return ResponseEntity.ok("Pago procesado correctamente.");
         } catch (IllegalArgumentException ex) {
             return ResponseEntity.badRequest().body("Error 404");
         }

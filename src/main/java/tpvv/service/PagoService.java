@@ -1,12 +1,13 @@
 package tpvv.service;
 
 import jakarta.transaction.Transactional;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tpvv.dto.PagoCompletoRequest;
 import tpvv.dto.PagoData;
 import tpvv.dto.TarjetaPagoData;
-import tpvv.dto.ComercioData;
+import tpvv.dto.PedidoCompletoRequest;
 import tpvv.model.Comercio;
 import tpvv.model.EstadoPago;
 import tpvv.model.Pago;
@@ -29,8 +30,12 @@ public class PagoService {
 
     @Autowired
     private EstadoPagoRepository estadoPagoRepository;
+
     @Autowired
     private ComercioRepository comercioRepository;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     /**
      * Procesa el pago recibido y persiste la información en la base de datos.
@@ -41,7 +46,7 @@ public class PagoService {
      * @throws IllegalArgumentException En caso de datos incompletos o inválidos.
      */
     @Transactional
-    public String procesarPago(PagoCompletoRequest request, String apiKey) {
+    public PedidoCompletoRequest procesarPago(PagoCompletoRequest request, String apiKey) {
         // Obtener PagoData
         PagoData pagoData = request.getPagoData();
         if (pagoData == null) {
@@ -111,7 +116,19 @@ public class PagoService {
         // Guardar el Pago
         pagoRepository.save(pago);
 
-        // Retornar respuesta
-        return "Pago procesado correctamente. ID del pago: " + pago.getId();
+        PedidoCompletoRequest pedidoCompletoRequest = new PedidoCompletoRequest();
+
+        // Asignar el Pago
+        pedidoCompletoRequest.setId(pago.getId());
+        pedidoCompletoRequest.setPagoId(pago.getId());
+        pedidoCompletoRequest.setPedidoId(4L); // Se asigna un id de prueba para debugear
+        pedidoCompletoRequest.setTicketExt(pago.getTicketExt());
+        pedidoCompletoRequest.setFecha(pago.getFecha());
+        pedidoCompletoRequest.setImporte(pago.getImporte());
+        pedidoCompletoRequest.setEstadoPago(pago.getEstado().getNombre());
+        pedidoCompletoRequest.setComercioNombre(pago.getComercio().getNombre());
+        pedidoCompletoRequest.setTarjeta(pago.getTarjetaPago().getNumeroTarjeta());
+
+        return pedidoCompletoRequest;
     }
 }
