@@ -1,5 +1,6 @@
 package tpvv.dto;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class ComercioData {
@@ -14,6 +15,7 @@ public class ComercioData {
     private String apiKey;
     private String url_back;
     private boolean activo = true;
+    private LocalDate fechaAlta = LocalDate.now();
 
     public Long getId() {
         return id;
@@ -90,6 +92,10 @@ public class ComercioData {
     public boolean getActivo() { return activo; }
 
     public void setActivo(boolean activo) { this.activo = activo; }
+
+    public LocalDate getFechaAlta() { return fechaAlta; }
+
+    public void setFechaAlta(LocalDate fechaAlta) { this.fechaAlta = fechaAlta; }
 
     @Override
     public boolean equals(Object o) {

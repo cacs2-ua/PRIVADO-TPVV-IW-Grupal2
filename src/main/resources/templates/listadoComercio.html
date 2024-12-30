@@ -126,7 +126,7 @@
         <button type="submit" class="btn btn-light">Aplicar filtros</button>
     </form>
 
-    <a href="">Crear nuevo comercio</a>
+    <a th:href="@{/api/admin/crearcomercio}">Crear nuevo comercio</a>
     <div class="table-container">
         <table class="data-table">
             <thead>
@@ -142,46 +142,18 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <td>00000000002</td>
+            <tr th:each="comercio: ${comercios}">
+                <td th:text="${comercio.id}"></td>
                 <td>10/07/2024 16:44</td>
-                <td>Hotel 2 grupo 15</td>
-                <td>13243245R</td>
-                <td>España</td>
-                <td>Alicante</td>
-                <td class="status-active">Activo</td>
+                <td th:text="${comercio.nombre}"></td>
+                <td th:text="${comercio.cif}"></td>
+                <td th:text="${comercio.pais}"></td>
+                <td th:text="${comercio.provincia}"></td>
+                <td th:if="${comercio.activo}" class="status-active">Activo</td>
+                <td th:if="${!comercio.activo}" class="status-inactive">Desactivado</td>
                 <td><button class="btn btn-info">Detalles</button> <button class="btn btn-danger">Desactivar</button></td>
             </tr>
-            <tr>
-                <td>00000000002</td>
-                <td>10/07/2024 16:44</td>
-                <td>Paquetería</td>
-                <td>13243245R</td>
-                <td>España</td>
-                <td>Alicante</td>
-                <td class="status-inactive">Desactivo</td>
-                <td><button class="btn btn-info">Detalles</button> <button class="btn btn-success">Activar</button></td>
-            </tr>
-            <tr>
-                <td>00000000002</td>
-                <td>10/07/2024 16:44</td>
-                <td>Hotel 2 grupo 15</td>
-                <td>13243245R</td>
-                <td>España</td>
-                <td>Alicante</td>
-                <td class="status-inactive">Desactivo</td>
-                <td><button class="btn btn-info">Detalles</button> <button class="btn btn-success">Activar</button></td>
-            </tr>
-            <tr>
-                <td>00000000002</td>
-                <td>10/07/2024 16:44</td>
-                <td>Hotel 2 grupo 15</td>
-                <td>13243245R</td>
-                <td>España</td>
-                <td>Alicante</td>
-                <td class="status-inactive">Desactivo</td>
-                <td><button class="btn btn-info">Detalles</button> <button class="btn btn-success">Activar</button></td>
-            </tr>
+
             </tbody>
         </table>
     </div>

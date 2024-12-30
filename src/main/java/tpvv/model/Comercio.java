@@ -5,6 +5,8 @@ package tpvv.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -46,6 +48,8 @@ public class Comercio implements Serializable {
 
     private boolean activo = true;
 
+    private LocalDate fechaAlta;
+
     // Relación One-to-Many con Usuario
     @OneToMany(mappedBy = "comercio", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     Set<Usuario> usuarios = new HashSet<>();
@@ -72,6 +76,7 @@ public class Comercio implements Serializable {
         this.iban = "default-iban";
         this.apiKey = "default-apiKey";
         this.url_back = "default-url_back";
+        this.fechaAlta = LocalDate.now();
         this.activo = true;
         this.pais_id = new Pais("default-country");
     }
@@ -86,6 +91,7 @@ public class Comercio implements Serializable {
         this.apiKey = apiKey;
         this.url_back = url_back;
         this.activo = true;
+        this.fechaAlta = LocalDate.now();
         this.pais_id = new Pais("default-country");
     }
 
@@ -170,6 +176,10 @@ public class Comercio implements Serializable {
     public boolean getActivo() { return activo; }
 
     public void setActivo(boolean activo) { this.activo = activo; }
+
+    public LocalDate getFechaAlta() { return fechaAlta; }
+
+    public void setFechaAlta(LocalDate fechaAlta) { this.fechaAlta = fechaAlta; }
 
     public void setPais_id(Pais pais_id) {
         // Si el nuevo pais_id es el mismo que el actual, no hace nada

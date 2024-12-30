@@ -76,7 +76,7 @@ public class ComercioServiceTest {
     public void crearRecuperarYAsignarPersonaContactoAComercioTest() {
         ComercioData comercio = crearComercio();
         PersonaContactoData personaContacto = new PersonaContactoData();
-        personaContacto.setNombre("Persona Contacto");
+        personaContacto.setNombreContacto("Persona Contacto");
         personaContacto.setEmail("email@email.com");
         personaContacto.setTelefono("12345678");
         personaContacto = comercioService.crearPersonaContacto(personaContacto);

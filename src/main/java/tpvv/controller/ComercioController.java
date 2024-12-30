@@ -48,7 +48,7 @@ public class ComercioController {
         PersonaContactoData personaContacto = new PersonaContactoData();
         List<PaisData> paises = paisService.findAll();
 
-        model.addAttribute("usuario", usuario);
+        //model.addAttribute("usuario", usuario);
         model.addAttribute("comercio", comercio);
         model.addAttribute("paises", paises);
         model.addAttribute("personaContacto", personaContacto);
@@ -61,7 +61,7 @@ public class ComercioController {
     @PostMapping("/creacomercio")
     public String registrarComercio(ComercioData comercio, PersonaContactoData personaContacto, Model model) {
         ComercioData nuevoComercio = comercioService.crearComercio(comercio);
-        if (personaContacto.getNombre() != null) {
+        if (personaContacto.getNombreContacto() != null) {
             PersonaContactoData contacto = comercioService.crearPersonaContacto(personaContacto);
             comercioService.asignarPersonaDeContactoAComercio(nuevoComercio.getId(), contacto.getId());
         }

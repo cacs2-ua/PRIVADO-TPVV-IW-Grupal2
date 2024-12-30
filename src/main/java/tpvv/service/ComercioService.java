@@ -85,7 +85,7 @@ public class ComercioService {
 
     @Transactional
     public PersonaContactoData crearPersonaContacto(PersonaContactoData personaContacto) {
-        if (personaContacto.getNombre() == null)
+        if (personaContacto.getNombreContacto() == null)
             throw new ComercioServiceException("El nombre no puede ser nulo");
         else if (personaContacto.getEmail() == null)
             throw new ComercioServiceException("El email no puede ser nulo");
