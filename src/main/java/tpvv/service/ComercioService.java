@@ -14,6 +14,7 @@ import tpvv.repository.PaisRepository;
 import tpvv.repository.PersonaContactoRepository;
 
 import java.security.SecureRandom;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -140,6 +141,7 @@ public class ComercioService {
     public List<ComercioData> recuperarTodosLosComercios() {
         List<Comercio> comercios = comercioRepository.findAll();
         return comercios.stream()
+                .sorted(Comparator.comparingLong(Comercio::getId)) // Ordena por id
                 .map(comercio -> modelMapper.map(comercio, ComercioData.class))
                 .collect(Collectors.toList());
     }

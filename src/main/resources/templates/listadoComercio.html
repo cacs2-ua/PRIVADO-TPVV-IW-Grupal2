@@ -15,13 +15,15 @@
             color: rgba(255, 255, 255, 0.9);
         }
 
-        td > button.btn-success{
+        .estado{
+            display: inline;
+        }
+
+        .estado button{
             width: 100px;
         }
 
-        td > button.btn-danger{
-            width: 100px;
-        }
+
 
         td > button.btn-info{
             color: white;
@@ -144,20 +146,32 @@
             <tbody>
             <tr th:each="comercio: ${comercios}">
                 <td th:text="${comercio.id}"></td>
-                <td>10/07/2024 16:44</td>
+                <td th:text="${comercio.fechaAlta}">10/07/2024 16:44</td>
                 <td th:text="${comercio.nombre}"></td>
                 <td th:text="${comercio.cif}"></td>
                 <td th:text="${comercio.pais}"></td>
                 <td th:text="${comercio.provincia}"></td>
                 <td th:if="${comercio.activo}" class="status-active">Activo</td>
                 <td th:if="${!comercio.activo}" class="status-inactive">Desactivado</td>
-                <td><button class="btn btn-info">Detalles</button> <button class="btn btn-danger">Desactivar</button></td>
+                <td>
+                    <button class="btn btn-info">Detalles</button>
+                    <form class="estado" th:action="@{/api/admin/comercios/estado/{idComercio}(idComercio=${comercio.id})}" method="post">
+                        <button  type="submit" th:if="${comercio.activo}"  class="btn btn-danger">Desactivar</button>
+                        <button  type="submit" th:if="${!comercio.activo}"  class="btn btn-success">Activar</button>
+                    </form>
+                </td>
             </tr>
 
             </tbody>
         </table>
     </div>
 </div>
+
+<script type="text/javascript">
+
+
+
+</script>
 <div th:replace="fragments::javascript"></div>
 </body>
 </html>

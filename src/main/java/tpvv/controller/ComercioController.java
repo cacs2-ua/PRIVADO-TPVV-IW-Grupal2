@@ -1,11 +1,11 @@
 package tpvv.controller;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import tpvv.authentication.ManagerUserSession;
 import tpvv.dto.ComercioData;
 import tpvv.dto.PaisData;
@@ -77,5 +77,19 @@ public class ComercioController {
 
         return "listadoComercio";
 
+    }
+
+    @PostMapping("/api/admin/comercios/activar/{id}")
+    @ResponseBody
+    public String activarComercio(@PathVariable(value="id") Long idComercio, RedirectAttributes flash, HttpSession session) {
+        comercioService.modificarEstadoComercio(idComercio, true);
+        return "";
+    }
+
+    @PostMapping("/api/admin/comercios/estado/{id}")
+    public String desactivarComercio(@PathVariable(value="id") Long idComercio, RedirectAttributes flash, HttpSession session) {
+        ComercioData comercio = comercioService.recuperarComercio(idComercio);
+        comercioService.modificarEstadoComercio(idComercio, !comercio.getActivo());
+        return "redirect:/api/admin/comercios";
     }
 }
