@@ -10,8 +10,10 @@ import tpvv.dto.TarjetaPagoData;
 import tpvv.model.Comercio;
 import tpvv.model.Pago;
 import tpvv.model.TarjetaPago;
+import tpvv.model.EstadoPago;
 import tpvv.repository.PagoRepository;
 import tpvv.repository.TarjetaPagoRepository;
+import tpvv.repository.EstadoPagoRepository;
 
 import java.util.Optional;
 
@@ -24,6 +26,9 @@ public class PagoRestController {
 
     @Autowired
     private TarjetaPagoRepository tarjetaPagoRepository;
+
+    @Autowired
+    private EstadoPagoRepository estadoPagoRepository;
 
     /**
      * Procesa el pago realizado, recibiendo en un solo body:
@@ -76,6 +81,10 @@ public class PagoRestController {
 
         // Guardar Tarjeta en la BD
         tarjetaPagoRepository.save(tarjetaPago);
+
+        EstadoPago estadoPago = new EstadoPago("acept001", "Pago procesado correctamente.");
+
+        estadoPagoRepository.save(estadoPago);
 
         // Construir entidad Pago a partir de PagoData
         Pago pago = new Pago();
