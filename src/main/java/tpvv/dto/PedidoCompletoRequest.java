@@ -11,10 +11,10 @@ public class PedidoCompletoRequest {
     private String ticketExt;
     private Date fecha;
     private double importe;
-    private String tarjeta;
     private String estadoPago;
     private String comercioNombre;
-    private String tarjetaPagoNumero;
+    private String numeroTarjeta;
+
 
     // Constructor vacío
     public PedidoCompletoRequest() {}
@@ -68,13 +68,7 @@ public class PedidoCompletoRequest {
         this.importe = importe;
     }
 
-    public String getTarjeta() {
-        return tarjeta;
-    }
 
-    public void setTarjeta(String tarjeta) {
-        this.tarjeta = tarjeta;
-    }
 
     public String getEstadoPago() {
         return estadoPago;
@@ -92,12 +86,12 @@ public class PedidoCompletoRequest {
         this.comercioNombre = comercioNombre;
     }
 
-    public String getTarjetaPagoNumero() {
-        return tarjetaPagoNumero;
+    public String getNumeroTarjeta() {
+        return numeroTarjeta;
     }
 
-    public void setTarjetaPagoNumero(String tarjetaPagoNumero) {
-        this.tarjetaPagoNumero = tarjetaPagoNumero;
+    public void setNumeroTarjeta(String numeroTarjeta) {
+        this.numeroTarjeta = numeroTarjeta;
     }
 
     @Override
@@ -114,10 +108,10 @@ public class PedidoCompletoRequest {
                 ", ticketExt='" + ticketExt + '\'' +
                 ", fecha=" + fecha +
                 ", importe=" + importe +
-                ", tarjeta='" + tarjeta + '\'' +
+                ", numeroTarjeta='" + numeroTarjeta + '\'' +
                 ", estadoPago='" + estadoPago + '\'' +
                 ", comercioNombre='" + comercioNombre + '\'' +
-                ", tarjetaPagoNumero='" + tarjetaPagoNumero + '\'' +
+                ", tarjetaPagoNumero='" + numeroTarjeta + '\'' +
                 '}';
     }
 

@@ -127,7 +127,12 @@ public class PagoService {
         pedidoCompletoRequest.setImporte(pago.getImporte());
         pedidoCompletoRequest.setEstadoPago(pago.getEstado().getNombre());
         pedidoCompletoRequest.setComercioNombre(pago.getComercio().getNombre());
-        pedidoCompletoRequest.setTarjeta(pago.getTarjetaPago().getNumeroTarjeta());
+
+        TarjetaPago prueba = pago.getTarjetaPago();
+
+        String numeroTarjeta = prueba.getNumeroTarjeta();
+
+        pedidoCompletoRequest.setNumeroTarjeta(pago.getTarjetaPago().getNumeroTarjeta());
 
         return pedidoCompletoRequest;
     }
