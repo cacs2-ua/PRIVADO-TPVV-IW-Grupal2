@@ -44,12 +44,13 @@ public class PagoRestController {
         String apiKey = (authorizationHeader != null) ? authorizationHeader.trim() : "";
 
         try {
+            String urlBack = pagoService.obtenerUrlBack(apiKey);
             PedidoCompletoRequest pedidoCompletoRequest = pagoService.procesarPago(request, apiKey);
 
             // NUEVO: Llamada POST al proyecto cliente, enviando pedidoCompletoRequest
             // ------------------------------------------------------------------------------
             Mono<String> response = webClient.post()
-                    .uri("http://localhost:8246/tienda/receivePedido")  // El endpoint en la Tienda
+                    .uri(urlBack)  // El endpoint en la Tienda
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .body(BodyInserters.fromValue(pedidoCompletoRequest))
                     .retrieve()

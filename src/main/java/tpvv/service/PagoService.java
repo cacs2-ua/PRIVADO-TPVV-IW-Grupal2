@@ -37,6 +37,17 @@ public class PagoService {
     @Autowired
     private ModelMapper modelMapper;
 
+
+    @Transactional
+    public String obtenerUrlBack(String apiKey) {
+        Comercio comercio = comercioRepository.findByApiKey(apiKey).orElse(null);
+
+        String urlBack = comercio.getUrl_back();
+
+        return urlBack;
+    }
+
+
     /**
      * Procesa el pago recibido y persiste la información en la base de datos.
      *
@@ -71,10 +82,10 @@ public class PagoService {
 
         // Transformar TarjetaPagoData a TarjetaPago (Entidad)
         TarjetaPago tarjetaPago = new TarjetaPago();
-        tarjetaPago.setNumeroTarjeta(tarjetaData.getNumeroTarjeta());
+        tarjetaPago.setNumeroTarjeta(tarjetaData.getNumeroTarjeta().trim());
         tarjetaPago.setCvc(tarjetaData.getCvc());
         tarjetaPago.setFechaCaducidad(tarjetaData.getFechaCaducidad());
-        tarjetaPago.setNombre(tarjetaData.getNombre());
+        tarjetaPago.setNombre(tarjetaData.getNombre().trim());
 
         // Intentar reutilizar si ya existe en BD
         Optional<TarjetaPago> tarjetaExistenteOpt =
