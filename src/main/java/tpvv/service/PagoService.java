@@ -1,23 +1,21 @@
 package tpvv.service;
 
-
 import jakarta.transaction.Transactional;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tpvv.dto.PagoCompletoRequest;
 import tpvv.dto.PagoData;
-import tpvv.dto.TarjetaPagoData;
 import tpvv.dto.PedidoCompletoRequest;
+import tpvv.dto.TarjetaPagoData;
 import tpvv.model.Comercio;
 import tpvv.model.EstadoPago;
 import tpvv.model.Pago;
 import tpvv.model.TarjetaPago;
-import tpvv.repository.EstadoPagoRepository;
-import tpvv.repository.PagoRepository;
-import tpvv.repository.TarjetaPagoRepository;
-import tpvv.repository.ComercioRepository;
+import tpvv.repository.*;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -35,26 +33,23 @@ public class PagoService {
     @Autowired
     private ComercioRepository comercioRepository;
 
-    @Autowired
-    private ModelMapper modelMapper;
-
+    // Eliminado: No necesitamos ModelMapper en este ejemplo, pero si existiera no pasa nada
+    // @Autowired
+    // private ModelMapper modelMapper;
 
     @Transactional
     public String obtenerUrlBack(String apiKey) {
         Comercio comercio = comercioRepository.findByApiKey(apiKey).orElse(null);
-
         String urlBack = comercio.getUrl_back();
-
         return urlBack;
     }
-
 
     /**
      * Procesa el pago recibido y persiste la información en la base de datos.
      *
      * @param request  Objeto con la información de pago y de la tarjeta.
      * @param apiKey   Clave API (si la necesitas).
-     * @return         Mensaje de éxito con el ID del pago.
+     * @return         Objeto PedidoCompletoRequest que se enviará a la tienda.
      * @throws IllegalArgumentException En caso de datos incompletos o inválidos.
      */
     @Transactional
@@ -64,7 +59,16 @@ public class PagoService {
         if (pagoData == null) {
             throw new IllegalArgumentException("Error: Falta el objeto PagoData en la petición.");
         }
-        if (pagoData.getImporte() <= 0 ||
+
+        // MODIFICADO: parsear el importe (String -> double)
+        double importeDouble;
+        try {
+            importeDouble = Double.parseDouble(pagoData.getImporte());
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Error: Importe no válido.");
+        }
+
+        if (importeDouble <= 0 ||
                 pagoData.getTicketExt() == null ||
                 pagoData.getFecha() == null) {
             throw new IllegalArgumentException("Error: Datos de PagoData incompletos (importe/ticketExt/fecha).");
@@ -81,11 +85,28 @@ public class PagoService {
             throw new IllegalArgumentException("Error: Datos de TarjetaPagoData incompletos.");
         }
 
-        // Transformar TarjetaPagoData a TarjetaPago (Entidad)
+        // MODIFICADO: transformar TarjetaPagoData (cvc, fechaCaducidad) a sus tipos nativos
+        int cvcInt;
+        try {
+            cvcInt = Integer.parseInt(tarjetaData.getCvc());
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Error: CVC no válido.");
+        }
+
+        // Parseo de la fecha de caducidad (String -> Date), asumiendo formato "MM/yy"
+        Date fechaCaducDate;
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("MM/yy");
+            fechaCaducDate = sdf.parse(tarjetaData.getFechaCaducidad());
+        } catch (ParseException e) {
+            throw new IllegalArgumentException("Error: Formato de fechaCaducidad no válido (se esperaba MM/yy).");
+        }
+
+        // Crear entidad TarjetaPago
         TarjetaPago tarjetaPago = new TarjetaPago();
         tarjetaPago.setNumeroTarjeta(tarjetaData.getNumeroTarjeta().trim());
-        tarjetaPago.setCvc(tarjetaData.getCvc());
-        tarjetaPago.setFechaCaducidad(tarjetaData.getFechaCaducidad());
+        tarjetaPago.setCvc(cvcInt);  // int
+        tarjetaPago.setFechaCaducidad(fechaCaducDate);
         tarjetaPago.setNombre(tarjetaData.getNombre().trim());
 
         // Intentar reutilizar si ya existe en BD
@@ -93,15 +114,16 @@ public class PagoService {
                 tarjetaPagoRepository.findByNumeroTarjeta(tarjetaPago.getNumeroTarjeta());
         if (tarjetaExistenteOpt.isPresent()) {
             TarjetaPago tarjetaExistente = tarjetaExistenteOpt.get();
-            // Actualizamos cvc, fechaCaducidad, nombre si es necesario
+            // Actualizamos cvc, fechaCaducidad, nombre
             tarjetaExistente.setCvc(tarjetaPago.getCvc());
             tarjetaExistente.setFechaCaducidad(tarjetaPago.getFechaCaducidad());
             tarjetaExistente.setNombre(tarjetaPago.getNombre());
             tarjetaPago = tarjetaExistente;
         }
-
         // Guardar Tarjeta en la BD
         tarjetaPagoRepository.save(tarjetaPago);
+
+        Comercio comercio = comercioRepository.findByApiKey(apiKey).orElse(null);
 
         // Crear o asignar estado de pago
         EstadoPago estadoPago = new EstadoPago("acept001", "Pago procesado correctamente.");
@@ -109,41 +131,29 @@ public class PagoService {
 
         // Construir entidad Pago a partir de PagoData
         Pago pago = new Pago();
-        pago.setImporte(pagoData.getImporte());
+        pago.setImporte(importeDouble);               // double
         pago.setTicketExt(pagoData.getTicketExt());
-        pago.setFecha(pagoData.getFecha());
-
-        // Asignar un comercio (ejemplo)
-        Comercio comercio = comercioRepository.findByApiKey(apiKey).orElse(null);
-
-        // Asignar la Tarjeta
+        pago.setFecha(pagoData.getFecha());           // Date original en PagoData
         pago.setTarjetaPago(tarjetaPago);
-
-        // Asignar el Estado Pago
         pago.setEstado(estadoPago);
 
-        // Asignar el Comercio
+        // Asignar un comercio (ejemplo)
+
         pago.setComercio(comercio);
 
         // Guardar el Pago
         pagoRepository.save(pago);
 
+        // Construir PedidoCompletoRequest para enviarlo al cliente
         PedidoCompletoRequest pedidoCompletoRequest = new PedidoCompletoRequest();
-
-        // Asignar el Pago
         pedidoCompletoRequest.setId(pago.getId());
         pedidoCompletoRequest.setPagoId(pago.getId());
-        pedidoCompletoRequest.setPedidoId(4L); // Se asigna un id de prueba para debugear
+        pedidoCompletoRequest.setPedidoId(4L); // ID de prueba
         pedidoCompletoRequest.setTicketExt(pago.getTicketExt());
         pedidoCompletoRequest.setFecha(pago.getFecha());
         pedidoCompletoRequest.setImporte(pago.getImporte());
         pedidoCompletoRequest.setEstadoPago(pago.getEstado().getNombre());
         pedidoCompletoRequest.setComercioNombre(pago.getComercio().getNombre());
-
-        TarjetaPago prueba = pago.getTarjetaPago();
-
-        String numeroTarjeta = prueba.getNumeroTarjeta();
-
         pedidoCompletoRequest.setNumeroTarjeta(pago.getTarjetaPago().getNumeroTarjeta());
 
         return pedidoCompletoRequest;

@@ -4,12 +4,9 @@ import tpvv.dto.PagoData;
 import tpvv.model.Comercio;
 import tpvv.service.PagoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/pago")
@@ -17,7 +14,6 @@ public class PagoController {
 
     @Autowired
     private PagoService pagoService;
-
 
     @ModelAttribute("comercio")
     public Comercio inicializarComercio() {
@@ -38,7 +34,10 @@ public class PagoController {
                                         @RequestParam("idTicket") String ticketId,
                                         Model model) {
         PagoData pagoData = new PagoData();
-        pagoData.setImporte(importe);
+
+        // MODIFICADO: Convertir el double a String
+        pagoData.setImporte(Double.toString(importe));  // Se asigna como String
+
         pagoData.setTicketExt(ticketId);
         model.addAttribute("pagoData", pagoData);
         model.addAttribute("fullPage", true); // Plantilla completa

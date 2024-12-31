@@ -7,7 +7,10 @@ public class PagoData {
     private Long id;
     private String ticketExt;
     private Date fecha;
-    private double importe;
+
+    // MODIFICADO: Antes era double, ahora String
+    private String importe;
+
     private String tarjeta;
     private String estadoPago;
     private String comercioNombre;
@@ -41,11 +44,12 @@ public class PagoData {
         this.fecha = fecha;
     }
 
-    public double getImporte() {
+    // MODIFICADO: Getter y Setter para importe como String
+    public String getImporte() {
         return importe;
     }
 
-    public void setImporte(double importe) {
+    public void setImporte(String importe) {
         this.importe = importe;
     }
 
@@ -89,21 +93,21 @@ public class PagoData {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(getId());
+    }
+
+    @Override
     public String toString() {
         return "PagoData{" +
                 "id=" + id +
                 ", ticketExt='" + ticketExt + '\'' +
                 ", fecha=" + fecha +
-                ", importe=" + importe +
+                ", importe='" + importe + '\'' +
                 ", tarjeta='" + tarjeta + '\'' +
                 ", estadoPago='" + estadoPago + '\'' +
                 ", comercioNombre='" + comercioNombre + '\'' +
                 ", tarjetaPagoNumero='" + tarjetaPagoNumero + '\'' +
                 '}';
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId());
     }
 }
