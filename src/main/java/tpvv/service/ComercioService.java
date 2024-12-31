@@ -12,11 +12,15 @@ import tpvv.repository.ComercioRepository;
 import org.modelmapper.ModelMapper;
 import tpvv.repository.PaisRepository;
 import tpvv.repository.PersonaContactoRepository;
-
-import java.security.SecureRandom;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Page;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import java.security.SecureRandom;
 
 @Service
 public class ComercioService {
@@ -144,6 +148,18 @@ public class ComercioService {
                 .sorted(Comparator.comparingLong(Comercio::getId)) // Ordena por id
                 .map(comercio -> modelMapper.map(comercio, ComercioData.class))
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ComercioData> recuperarComerciosPaginados(List<ComercioData> comerciosData, int page, int size) {
+        if (comerciosData == null || comerciosData.isEmpty()) {
+            return new PageImpl<>(List.of(), PageRequest.of(page, size), 0);
+        }
+        int start = page * size;
+        int end = Math.min(start + size, comerciosData.size());
+
+        List<ComercioData> comerciosPaginados = comerciosData.subList(start, end);
+        return new PageImpl<>(comerciosPaginados, PageRequest.of(page, size), comerciosData.size());
     }
 
     @Transactional

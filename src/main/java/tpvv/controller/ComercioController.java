@@ -1,6 +1,8 @@
 package tpvv.controller;
 
 import jakarta.servlet.http.HttpSession;
+
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +13,10 @@ import tpvv.dto.ComercioData;
 import tpvv.dto.PaisData;
 import tpvv.dto.PersonaContactoData;
 import tpvv.dto.UsuarioData;
-import tpvv.model.Comercio;
-import tpvv.model.PersonaContacto;
-import tpvv.repository.PaisRepository;
+import org.springframework.data.domain.Page;
+
+
+
 import tpvv.service.ComercioService;
 import tpvv.service.PaisService;
 import tpvv.service.UsuarioService;
@@ -69,6 +72,7 @@ public class ComercioController {
         return "redirect:/api/admin/crearcomercio";  // redirigir al formulario o a una página de confirmación
     }
 
+    /*
     @GetMapping("/api/admin/comercios")
     public String listarComercio(Model model) {
         List<ComercioData> comercios = comercioService.recuperarTodosLosComercios();
@@ -77,6 +81,19 @@ public class ComercioController {
 
         return "listadoComercio";
 
+    }
+
+     */
+
+    @GetMapping("/api/admin/comercios")
+    public String getComercios(@RequestParam(defaultValue = "0") int page, Model model) {
+        List<ComercioData> comerciosData = comercioService.recuperarTodosLosComercios();
+        Page<ComercioData> comerciosPage = comercioService.recuperarComerciosPaginados(comerciosData, page, 8);
+        int totalPages = comerciosPage.getTotalPages();
+        model.addAttribute("comercios", comerciosPage.getContent());
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("currentPage", page);
+        return "listadoComercio";
     }
 
     @PostMapping("/api/admin/comercios/activar/{id}")

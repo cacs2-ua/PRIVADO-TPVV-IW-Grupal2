@@ -69,6 +69,17 @@
     </div>
 </div>
 
+<div class="pagination">
+    <!-- <a th:href="@{/api/admin/comercios?page=0}" th:if="${currentPage > 0}">&laquo; Primero</a> -->
+    <a th:text="${currentPage}" th:href="@{'/api/admin/comercios?page=' + ${currentPage - 1}}" th:if="${currentPage > 0}">&lsaquo; Anterior</a>
+    <span class="page-item active">
+        <span th:text="${currentPage + 1}"></span>
+    </span>
+    <a th:text="${currentPage +2}" th:href="@{'/api/admin/comercios?page=' + ${currentPage + 1}}" th:if="${currentPage < totalPages - 1}">Siguiente &rsaquo;</a>
+    <!-- <a th:href="@{'/api/admin/comercios?page=' + ${totalPages - 1}}" th:if="${currentPage < totalPages - 1}">Último &raquo;</a> -->
+</div>
+
+
 <script type="text/javascript">
 
 
