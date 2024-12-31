@@ -1,12 +1,13 @@
 package tpvv.dto;
 
-import java.util.Date;
 import java.util.Objects;
 
 public class PagoData {
     private Long id;
     private String ticketExt;
-    private Date fecha;
+
+    // MODIFICADO: Antes era Date, ahora String
+    private String fecha;
 
     // MODIFICADO: Antes era double, ahora String
     private String importe;
@@ -23,7 +24,6 @@ public class PagoData {
     public Long getId() {
         return id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
@@ -31,24 +31,22 @@ public class PagoData {
     public String getTicketExt() {
         return ticketExt;
     }
-
     public void setTicketExt(String ticketExt) {
         this.ticketExt = ticketExt;
     }
 
-    public Date getFecha() {
+    // MODIFICADO: Getter/Setter de fecha como String
+    public String getFecha() {
         return fecha;
     }
-
-    public void setFecha(Date fecha) {
+    public void setFecha(String fecha) {
         this.fecha = fecha;
     }
 
-    // MODIFICADO: Getter y Setter para importe como String
+    // MODIFICADO: Getter/Setter de importe como String
     public String getImporte() {
         return importe;
     }
-
     public void setImporte(String importe) {
         this.importe = importe;
     }
@@ -56,7 +54,6 @@ public class PagoData {
     public String getTarjeta() {
         return tarjeta;
     }
-
     public void setTarjeta(String tarjeta) {
         this.tarjeta = tarjeta;
     }
@@ -64,7 +61,6 @@ public class PagoData {
     public String getEstadoPago() {
         return estadoPago;
     }
-
     public void setEstadoPago(String estadoPago) {
         this.estadoPago = estadoPago;
     }
@@ -72,7 +68,6 @@ public class PagoData {
     public String getComercioNombre() {
         return comercioNombre;
     }
-
     public void setComercioNombre(String comercioNombre) {
         this.comercioNombre = comercioNombre;
     }
@@ -80,7 +75,6 @@ public class PagoData {
     public String getTarjetaPagoNumero() {
         return tarjetaPagoNumero;
     }
-
     public void setTarjetaPagoNumero(String tarjetaPagoNumero) {
         this.tarjetaPagoNumero = tarjetaPagoNumero;
     }
@@ -102,7 +96,7 @@ public class PagoData {
         return "PagoData{" +
                 "id=" + id +
                 ", ticketExt='" + ticketExt + '\'' +
-                ", fecha=" + fecha +
+                ", fecha='" + fecha + '\'' +
                 ", importe='" + importe + '\'' +
                 ", tarjeta='" + tarjeta + '\'' +
                 ", estadoPago='" + estadoPago + '\'' +

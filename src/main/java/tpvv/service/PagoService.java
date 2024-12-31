@@ -33,23 +33,27 @@ public class PagoService {
     @Autowired
     private ComercioRepository comercioRepository;
 
-    // Eliminado: No necesitamos ModelMapper en este ejemplo, pero si existiera no pasa nada
-    // @Autowired
-    // private ModelMapper modelMapper;
-
+    /**
+     * Obtiene la URL de retorno (back) del comercio basado en la API Key.
+     *
+     * @param apiKey Clave API del comercio.
+     * @return URL de retorno.
+     */
     @Transactional
     public String obtenerUrlBack(String apiKey) {
         Comercio comercio = comercioRepository.findByApiKey(apiKey).orElse(null);
-        String urlBack = comercio.getUrl_back();
-        return urlBack;
+        if (comercio == null) {
+            throw new IllegalArgumentException("Comercio no encontrado para la API Key proporcionada.");
+        }
+        return comercio.getUrl_back();
     }
 
     /**
      * Procesa el pago recibido y persiste la información en la base de datos.
      *
-     * @param request  Objeto con la información de pago y de la tarjeta.
-     * @param apiKey   Clave API (si la necesitas).
-     * @return         Objeto PedidoCompletoRequest que se enviará a la tienda.
+     * @param request Objeto con la información de pago y de la tarjeta.
+     * @param apiKey  Clave API del comercio.
+     * @return Objeto PedidoCompletoRequest que se enviará a la tienda.
      * @throws IllegalArgumentException En caso de datos incompletos o inválidos.
      */
     @Transactional
@@ -60,12 +64,22 @@ public class PagoService {
             throw new IllegalArgumentException("Error: Falta el objeto PagoData en la petición.");
         }
 
-        // MODIFICADO: parsear el importe (String -> double)
+        // Parsear el importe de String a double
         double importeDouble;
         try {
             importeDouble = Double.parseDouble(pagoData.getImporte());
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Error: Importe no válido.");
+        }
+
+        // Parsear la fecha de String a Date
+        Date fechaDate;
+        try {
+            // Asumiendo que la fecha viene en formato "dd/MM/yyyy HH:mm"
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+            fechaDate = sdf.parse(pagoData.getFecha());
+        } catch (ParseException | NullPointerException e) {
+            throw new IllegalArgumentException("Error: Formato de fecha no válido o fecha nula.");
         }
 
         if (importeDouble <= 0 ||
@@ -85,7 +99,7 @@ public class PagoService {
             throw new IllegalArgumentException("Error: Datos de TarjetaPagoData incompletos.");
         }
 
-        // MODIFICADO: transformar TarjetaPagoData (cvc, fechaCaducidad) a sus tipos nativos
+        // Transformar TarjetaPagoData (cvc, fechaCaducidad) a sus tipos nativos
         int cvcInt;
         try {
             cvcInt = Integer.parseInt(tarjetaData.getCvc());
@@ -96,8 +110,8 @@ public class PagoService {
         // Parseo de la fecha de caducidad (String -> Date), asumiendo formato "MM/yy"
         Date fechaCaducDate;
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("MM/yy");
-            fechaCaducDate = sdf.parse(tarjetaData.getFechaCaducidad());
+            SimpleDateFormat sdfCaduc = new SimpleDateFormat("MM/yy");
+            fechaCaducDate = sdfCaduc.parse(tarjetaData.getFechaCaducidad());
         } catch (ParseException e) {
             throw new IllegalArgumentException("Error: Formato de fechaCaducidad no válido (se esperaba MM/yy).");
         }
@@ -124,6 +138,9 @@ public class PagoService {
         tarjetaPagoRepository.save(tarjetaPago);
 
         Comercio comercio = comercioRepository.findByApiKey(apiKey).orElse(null);
+        if (comercio == null) {
+            throw new IllegalArgumentException("Comercio no encontrado para la API Key proporcionada.");
+        }
 
         // Crear o asignar estado de pago
         EstadoPago estadoPago = new EstadoPago("acept001", "Pago procesado correctamente.");
@@ -133,12 +150,11 @@ public class PagoService {
         Pago pago = new Pago();
         pago.setImporte(importeDouble);               // double
         pago.setTicketExt(pagoData.getTicketExt());
-        pago.setFecha(pagoData.getFecha());           // Date original en PagoData
+        pago.setFecha(fechaDate);                     // Date convertido desde String
         pago.setTarjetaPago(tarjetaPago);
         pago.setEstado(estadoPago);
 
-        // Asignar un comercio (ejemplo)
-
+        // Asignar el comercio
         pago.setComercio(comercio);
 
         // Guardar el Pago
