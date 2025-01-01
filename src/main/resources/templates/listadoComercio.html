@@ -11,7 +11,7 @@
 <div th:replace="fragments::menuBar" class="navbar-container"></div>
 <div class="container">
     <h1 class="title">Comercios</h1>
-    <form class="busqueda" th:action="@{/api/admin/comercios}" method="get">
+    <form class="busqueda" th:action="@{/api/tecnico-or-admin/comercios}" method="get">
         <label>Id</label>
         <label>Nombre</label>
         <label>Cif</label>
@@ -31,7 +31,7 @@
         <button type="submit" class="btn btn-light">Aplicar filtros</button>
     </form>
 
-    <a th:href="@{/api/admin/crearcomercio}">Crear nuevo comercio</a>
+    <a th:if="${usuario.getTipoId()==1}" th:href="@{/api/admin/crearcomercio}">Crear nuevo comercio</a>
     <div class="table-container">
         <table class="data-table">
             <thead>
@@ -58,7 +58,7 @@
                 <td th:if="${!comercio.activo}" class="status-inactive">Desactivado</td>
                 <td>
                     <button class="btn btn-info">Detalles</button>
-                    <form class="estado" th:action="@{/api/admin/comercios/estado/{idComercio}(idComercio=${comercio.id})}" method="post">
+                    <form class="estado" th:action="@{/api/tecnico-or-admin/comercios/estado/{idComercio}(idComercio=${comercio.id})}" method="post">
                         <button  type="submit" th:if="${comercio.activo}"  class="btn btn-danger">Desactivar</button>
                         <button  type="submit" th:if="${!comercio.activo}"  class="btn btn-success">Activar</button>
                     </form>
@@ -71,13 +71,11 @@
 </div>
 
 <div class="pagination">
-    <!-- <a th:href="@{/api/admin/comercios?page=0}" th:if="${currentPage > 0}">&laquo; Primero</a> -->
-    <a th:text="${currentPage}" th:href="@{'/api/admin/comercios?page=' + ${currentPage - 1}}" th:if="${currentPage > 0}">&lsaquo; Anterior</a>
+    <a th:text="${currentPage}" th:href="@{'/api/tecnico-or-admin/comercios?page=' + ${currentPage - 1}}" th:if="${currentPage > 0}">&lsaquo; Anterior</a>
     <span class="page-item active">
         <span th:text="${currentPage + 1}"></span>
     </span>
-    <a th:text="${currentPage +2}" th:href="@{'/api/admin/comercios?page=' + ${currentPage + 1}}" th:if="${currentPage < totalPages - 1}">Siguiente &rsaquo;</a>
-    <!-- <a th:href="@{'/api/admin/comercios?page=' + ${totalPages - 1}}" th:if="${currentPage < totalPages - 1}">Último &raquo;</a> -->
+    <a th:text="${currentPage +2}" th:href="@{'/api/tecnico-or-admin/comercios?page=' + ${currentPage + 1}}" th:if="${currentPage < totalPages - 1}">Siguiente &rsaquo;</a>
 </div>
 
 
