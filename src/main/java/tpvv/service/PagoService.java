@@ -33,12 +33,6 @@ public class PagoService {
     @Autowired
     private ComercioRepository comercioRepository;
 
-    /**
-     * Obtiene la URL de retorno (back) del comercio basado en la API Key.
-     *
-     * @param apiKey Clave API del comercio.
-     * @return URL de retorno.
-     */
     @Transactional
     public String obtenerUrlBack(String apiKey) {
         Comercio comercio = comercioRepository.findByApiKey(apiKey).orElse(null);
@@ -57,14 +51,6 @@ public class PagoService {
         return comercio.getNombre();
     }
 
-    /**
-     * Procesa el pago recibido y persiste la información en la base de datos.
-     *
-     * @param request Objeto con la información de pago y de la tarjeta.
-     * @param apiKey  Clave API del comercio.
-     * @return Objeto PedidoCompletoRequest que se enviará a la tienda.
-     * @throws IllegalArgumentException En caso de datos incompletos o inválidos.
-     */
     @Transactional
     public PedidoCompletoRequest procesarPago(PagoCompletoRequest request, String apiKey) {
         // Obtener PagoData
@@ -107,7 +93,7 @@ public class PagoService {
             throw new IllegalArgumentException("Error: Datos de TarjetaPagoData incompletos.");
         }
 
-        // Transformar TarjetaPagoData (cvc, fechaCaducidad) a sus tipos nativos
+        // Transformar TarjetaPagoData
         int cvcInt;
         try {
             cvcInt = Integer.parseInt(tarjetaData.getCvc());
@@ -115,7 +101,7 @@ public class PagoService {
             throw new IllegalArgumentException("Error: CVC no válido.");
         }
 
-        // Parseo de la fecha de caducidad (String -> Date)
+        // Parsear fecha de caducidad (String -> Date)
         Date fechaCaducDate;
         try {
             SimpleDateFormat sdfCaduc = new SimpleDateFormat("MM/yy");
@@ -127,22 +113,20 @@ public class PagoService {
         // Crear entidad TarjetaPago
         TarjetaPago tarjetaPago = new TarjetaPago();
         tarjetaPago.setNumeroTarjeta(tarjetaData.getNumeroTarjeta().trim());
-        tarjetaPago.setCvc(cvcInt);  // int
+        tarjetaPago.setCvc(cvcInt);
         tarjetaPago.setFechaCaducidad(fechaCaducDate);
         tarjetaPago.setNombre(tarjetaData.getNombre().trim());
 
-        // Intentar reutilizar si ya existe en BD
+        // Intentar reutilizar si ya existe
         Optional<TarjetaPago> tarjetaExistenteOpt =
                 tarjetaPagoRepository.findByNumeroTarjeta(tarjetaPago.getNumeroTarjeta());
         if (tarjetaExistenteOpt.isPresent()) {
             TarjetaPago tarjetaExistente = tarjetaExistenteOpt.get();
-            // Actualizamos cvc, fechaCaducidad, nombre
             tarjetaExistente.setCvc(tarjetaPago.getCvc());
             tarjetaExistente.setFechaCaducidad(tarjetaPago.getFechaCaducidad());
             tarjetaExistente.setNombre(tarjetaPago.getNombre());
             tarjetaPago = tarjetaExistente;
         }
-        // Guardar Tarjeta en la BD
         tarjetaPagoRepository.save(tarjetaPago);
 
         Comercio comercio = comercioRepository.findByApiKey(apiKey).orElse(null);
@@ -154,15 +138,13 @@ public class PagoService {
         EstadoPago estadoPago = new EstadoPago("acept001", "Pago procesado correctamente.");
         estadoPagoRepository.save(estadoPago);
 
-        // Construir entidad Pago a partir de PagoData
+        // Construir entidad Pago
         Pago pago = new Pago();
         pago.setImporte(importeDouble);
         pago.setTicketExt(pagoData.getTicketExt());
         pago.setFecha(fechaDate);
         pago.setTarjetaPago(tarjetaPago);
         pago.setEstado(estadoPago);
-
-        // Asignar el comercio
         pago.setComercio(comercio);
 
         // Guardar el Pago
@@ -174,8 +156,15 @@ public class PagoService {
         pedidoCompletoRequest.setPagoId(pago.getId());
         pedidoCompletoRequest.setPedidoId(4L);
         pedidoCompletoRequest.setTicketExt(pago.getTicketExt());
-        pedidoCompletoRequest.setFecha(pago.getFecha());
-        pedidoCompletoRequest.setImporte(pago.getImporte());
+
+        // MODIFICADO: Convertir Date -> String con el mismo formato que esperamos (dd/MM/yyyy HH:mm)
+        SimpleDateFormat sdfOut = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        String fechaStr = sdfOut.format(pago.getFecha());
+        pedidoCompletoRequest.setFecha(fechaStr);
+
+        // MODIFICADO: Convertir double -> String
+        pedidoCompletoRequest.setImporte(String.valueOf(pago.getImporte()));
+
         pedidoCompletoRequest.setEstadoPago(pago.getEstado().getNombre());
         pedidoCompletoRequest.setComercioNombre(pago.getComercio().getNombre());
         pedidoCompletoRequest.setNumeroTarjeta(pago.getTarjetaPago().getNumeroTarjeta());

@@ -1,25 +1,33 @@
 package tpvv.dto;
 
-import java.util.Date;
 import java.util.Objects;
 
+/**
+ * Ahora 'fecha' será String y 'importe' será String.
+ * Se quitan los imports de Date y double, ya no se usan aquí.
+ */
 public class PedidoCompletoRequest {
 
     private Long id;
     private Long pagoId;
     private Long pedidoId;
     private String ticketExt;
-    private Date fecha;
-    private double importe;
+
+    // MODIFICADO: antes era 'Date fecha'
+    private String fecha;
+
+    // MODIFICADO: antes era 'double importe'
+    private String importe;
+
     private String estadoPago;
     private String comercioNombre;
     private String numeroTarjeta;
-
 
     // Constructor vacío
     public PedidoCompletoRequest() {}
 
     // Getters y Setters
+
     public Long getId() {
         return id;
     }
@@ -52,23 +60,25 @@ public class PedidoCompletoRequest {
         this.ticketExt = ticketExt;
     }
 
-    public Date getFecha() {
+    // MODIFICADO: ahora es String
+    public String getFecha() {
         return fecha;
     }
 
-    public void setFecha(Date fecha) {
+    // MODIFICADO: ahora recibe String
+    public void setFecha(String fecha) {
         this.fecha = fecha;
     }
 
-    public double getImporte() {
+    // MODIFICADO: ahora es String
+    public String getImporte() {
         return importe;
     }
 
-    public void setImporte(double importe) {
+    // MODIFICADO: ahora recibe String
+    public void setImporte(String importe) {
         this.importe = importe;
     }
-
-
 
     public String getEstadoPago() {
         return estadoPago;
@@ -105,13 +115,14 @@ public class PedidoCompletoRequest {
     public String toString() {
         return "PedidoCompletoRequest{" +
                 "id=" + id +
+                ", pagoId=" + pagoId +
+                ", pedidoId=" + pedidoId +
                 ", ticketExt='" + ticketExt + '\'' +
-                ", fecha=" + fecha +
-                ", importe=" + importe +
-                ", numeroTarjeta='" + numeroTarjeta + '\'' +
+                ", fecha='" + fecha + '\'' +                 // MODIFICADO en toString()
+                ", importe='" + importe + '\'' +             // MODIFICADO en toString()
                 ", estadoPago='" + estadoPago + '\'' +
                 ", comercioNombre='" + comercioNombre + '\'' +
-                ", tarjetaPagoNumero='" + numeroTarjeta + '\'' +
+                ", numeroTarjeta='" + numeroTarjeta + '\'' +
                 '}';
     }
 
