@@ -16,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Page;
+
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -189,4 +191,23 @@ public class ComercioService {
         }
         comercio.setActivo(activado);
     }
+
+    @Transactional(readOnly = true)
+    public List<ComercioData> filtrarComercios(
+            List<ComercioData> comercios,
+            Long id, String nombre, String cif, String pais,
+            LocalDate fechaDesde, LocalDate fechaHasta) {
+
+        final String paisFiltrado = (pais != null && pais.isEmpty()) ? null : pais;
+
+        return comercios.stream()
+                .filter(comercio -> id == null || comercio.getId().equals(id))
+                .filter(comercio -> nombre == null || comercio.getNombre().toLowerCase().contains(nombre.toLowerCase()))
+                .filter(comercio -> cif == null || comercio.getCif().toLowerCase().contains(cif.toLowerCase()))
+                .filter(comercio -> paisFiltrado == null || comercio.getPais().equalsIgnoreCase(paisFiltrado))
+                .filter(comercio -> fechaDesde == null || !comercio.getFechaAlta().isBefore(fechaDesde))
+                .filter(comercio -> fechaHasta == null || !comercio.getFechaAlta().isAfter(fechaHasta))
+                .collect(Collectors.toList());
+    }
+
 }

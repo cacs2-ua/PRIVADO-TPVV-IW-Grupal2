@@ -11,7 +11,7 @@
 <div th:replace="fragments::menuBar" class="navbar-container"></div>
 <div class="container">
     <h1 class="title">Comercios</h1>
-    <form class="busqueda">
+    <form class="busqueda" th:action="@{/api/admin/comercios}" method="get">
         <label>Id</label>
         <label>Nombre</label>
         <label>Cif</label>
@@ -19,14 +19,15 @@
         <label>Fecha Desde</label>
         <label>Fecha Hasta</label>
         <label></label>
-        <input type="text" class="search-input">
-        <input type="text" class="search-input">
-        <input type="text" class="search-input">
-        <select class="search-select">
-            <option>España</option>
+        <input type="text" name="id" class="search-input">
+        <input type="text" name="nombre" class="search-input">
+        <input type="text" name="cif" class="search-input">
+        <select id="pais" name="pais" class="form-select" aria-label="Default select example">
+            <option th:value="null" selected>Todos</option>
+            <option th:each="pais : ${paises}" th:value="${pais.nombre}" th:text="${pais.nombre}"></option>
         </select>
-        <input type="date" class="search-input">
-        <input type="date" class="search-input">
+        <input type="date" name="fechaDesde" class="search-input">
+        <input type="date" name="fechaHasta" class="search-input">
         <button type="submit" class="btn btn-light">Aplicar filtros</button>
     </form>
 

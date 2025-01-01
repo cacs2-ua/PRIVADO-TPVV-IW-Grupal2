@@ -3,6 +3,7 @@ package tpvv.controller;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.data.domain.PageRequest;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import tpvv.service.ComercioService;
 import tpvv.service.PaisService;
 import tpvv.service.UsuarioService;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,7 +71,7 @@ public class ComercioController {
             comercioService.asignarPersonaDeContactoAComercio(nuevoComercio.getId(), contacto.getId());
         }
         model.addAttribute("mensaje", "Comercio registrado con éxito");
-        return "redirect:/api/admin/crearcomercio";  // redirigir al formulario o a una página de confirmación
+        return "redirect:/api/admin/crearcomercio";
     }
 
     /*
@@ -83,16 +85,48 @@ public class ComercioController {
 
     }
 
-     */
+
 
     @GetMapping("/api/admin/comercios")
     public String getComercios(@RequestParam(defaultValue = "0") int page, Model model) {
         List<ComercioData> comerciosData = comercioService.recuperarTodosLosComercios();
         Page<ComercioData> comerciosPage = comercioService.recuperarComerciosPaginados(comerciosData, page, 8);
         int totalPages = comerciosPage.getTotalPages();
+        List<PaisData> paises = paisService.findAll();
+
+        model.addAttribute("paises", paises);
         model.addAttribute("comercios", comerciosPage.getContent());
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("currentPage", page);
+        return "listadoComercio";
+    }
+    /
+     */
+    @GetMapping("/api/admin/comercios")
+    public String getComercios(
+            @RequestParam(required = false) Long id,
+            @RequestParam(required = false) String nombre,
+            @RequestParam(required = false) String cif,
+            @RequestParam(required = false) String pais,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaDesde,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaHasta,
+            @RequestParam(defaultValue = "0") int page,
+            Model model) {
+        
+        List<ComercioData> todosLosComercios = comercioService.recuperarTodosLosComercios();
+        List<ComercioData> comerciosFiltrados = comercioService.filtrarComercios(todosLosComercios, id, nombre, cif, pais, fechaDesde, fechaHasta);
+
+        Page<ComercioData> comerciosPage = comercioService.recuperarComerciosPaginados(comerciosFiltrados, page, 8);
+        int totalPages = comerciosPage.getTotalPages();
+
+        List<PaisData> paises = paisService.findAll();
+
+        // Añadir atributos al modelo
+        model.addAttribute("paises", paises);
+        model.addAttribute("comercios", comerciosPage.getContent());
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("currentPage", page);
+
         return "listadoComercio";
     }
 
