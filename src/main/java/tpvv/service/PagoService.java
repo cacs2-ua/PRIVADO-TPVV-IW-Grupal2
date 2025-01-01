@@ -48,6 +48,15 @@ public class PagoService {
         return comercio.getUrl_back();
     }
 
+    @Transactional
+    public String obtenerNombreComercio(String apiKey) {
+        Comercio comercio = comercioRepository.findByApiKey(apiKey).orElse(null);
+        if (comercio == null) {
+            throw new IllegalArgumentException("Comercio no encontrado para la API Key proporcionada.");
+        }
+        return comercio.getNombre();
+    }
+
     /**
      * Procesa el pago recibido y persiste la información en la base de datos.
      *
