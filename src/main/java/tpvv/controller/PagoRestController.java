@@ -56,33 +56,36 @@ public class PagoRestController {
             errorMsg.append("PagoData no puede ser nulo. ");
         } else {
             if (pagoData.getImporte() == null || pagoData.getImporte().isBlank()) {
-                errorMsg.append("El importe no puede ser nulo o vacío. ");
+                errorMsg.append("El importe no puede estar vacío. ");
             }
             if (pagoData.getTicketExt() == null || pagoData.getTicketExt().isBlank()) {
-                errorMsg.append("El ticketExt no puede ser nulo o vacío. ");
+                errorMsg.append("El ticketExt no puede estar vacío. ");
             }
             if (pagoData.getFecha() == null || pagoData.getFecha().isBlank()) {
-                errorMsg.append("La fecha no puede ser nula o vacía. ");
+                errorMsg.append("La fecha no puede estar vacía. ");
             }
         }
 
         if (tarjetaData == null) {
             errorMsg.append("TarjetaPagoData no puede ser nulo. ");
         } else {
+            if (tarjetaData.getNombre() == null || tarjetaData.getNombre().isBlank()) {
+                errorMsg.append("El nombre del titular de la tarjeta no puede estar vacío. ");
+            }
             if (tarjetaData.getNumeroTarjeta() == null || tarjetaData.getNumeroTarjeta().isBlank()) {
-                errorMsg.append("El número de tarjeta no puede ser nulo o vacío. ");
+                errorMsg.append("El número de tarjeta no puede estar vacío. ");
             } else if (!tarjetaData.getNumeroTarjeta().matches("^\\d{16}$")) {
                 errorMsg.append("El número de tarjeta debe tener exactamente 16 dígitos. ");
             }
 
             if (tarjetaData.getFechaCaducidad() == null || tarjetaData.getFechaCaducidad().isBlank()) {
-                errorMsg.append("La fecha de caducidad no puede ser nula o vacía. ");
+                errorMsg.append("La fecha de caducidad no puede estar vacía. ");
             } else if (!tarjetaData.getFechaCaducidad().matches("^(0[1-9]|1[0-2])\\/\\d{2}$")) {
                 errorMsg.append("La fecha de caducidad debe tener el formato mm/yy. ");
             }
 
             if (tarjetaData.getCvc() == null || tarjetaData.getCvc().isBlank()) {
-                errorMsg.append("El código de seguridad no puede ser nulo o vacío. ");
+                errorMsg.append("El código de seguridad no puede estar vacío. ");
             } else if (!tarjetaData.getCvc().matches("^\\d{3}$")) {
                 errorMsg.append("El CVC debe tener exactamente 3 dígitos. ");
             }
