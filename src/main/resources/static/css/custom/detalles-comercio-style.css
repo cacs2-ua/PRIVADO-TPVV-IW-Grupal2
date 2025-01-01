@@ -1,0 +1,58 @@
+body.detalles-comercio {
+    background-color: #a2b5bf;
+}
+
+.container{
+    margin-top: 50px;
+}
+
+
+
+.tarjeta {
+    background-color: #F1F0E8;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.title {
+    font-size: 24px;
+    border-bottom: 2px solid #000;
+    display: inline-block;
+    margin-bottom: 20px;
+    padding-bottom: 5px;
+}
+
+.info-row {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.info-label {
+    width: 100px;
+    font-weight: bold;
+}
+
+.api-key {
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px 0;
+}
+
+body.detalles-comercio button.reset-button {
+    background-color: #b8c7d0;
+    border: none;
+    padding: 5px 15px;
+    border-radius: 5px;
+}
+
+.copy-icon {
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.user-email {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
