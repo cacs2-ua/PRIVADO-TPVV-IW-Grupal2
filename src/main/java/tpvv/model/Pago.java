@@ -23,7 +23,7 @@ public class Pago implements Serializable {
     private  String ticketExt;
 
     @NotNull
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date fecha;
 
     @NotNull
