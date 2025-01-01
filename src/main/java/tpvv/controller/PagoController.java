@@ -17,7 +17,6 @@ public class PagoController {
 
     @ModelAttribute("comercio")
     public Comercio inicializarComercio() {
-        // Aquí recuperas el comercio de la base de datos por su CIF, o lo creas por defecto
         return new Comercio("B12345678");
     }
 
@@ -35,12 +34,11 @@ public class PagoController {
                                         Model model) {
         PagoData pagoData = new PagoData();
 
-        // MODIFICADO: Convertir el double a String
-        pagoData.setImporte(Double.toString(importe));  // Se asigna como String
+        pagoData.setImporte(Double.toString(importe));
 
         pagoData.setTicketExt(ticketId);
         model.addAttribute("pagoData", pagoData);
-        model.addAttribute("fullPage", true); // Plantilla completa
+        model.addAttribute("fullPage", true);
         return "paymentForm";
     }
 

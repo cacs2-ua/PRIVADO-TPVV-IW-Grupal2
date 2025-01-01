@@ -12,7 +12,6 @@ import tpvv.dto.PagoData;
 import tpvv.dto.TarjetaPagoData;
 import tpvv.service.PagoService;
 
-// NUEVO: Importaciones adicionales para WebClient
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.BodyInserters;
 import reactor.core.publisher.Mono;
@@ -91,18 +90,14 @@ public class PagoRestController {
             }
         }
 
-        // ==============================
-        // NUEVO: En lugar de 400, devolvemos 200 con "ERROR|..."
-        // ==============================
         if (errorMsg.length() > 0) {
-            // Partes NUEVAS:
-            // En vez de BAD_REQUEST, devolvemos OK(200).
+
             // Comenzamos el body con "ERROR|" para que el cliente lo detecte.
             return ResponseEntity.ok("ERROR|" + errorMsg.toString());
         }
 
         // ==============================
-        // Si no hubo errores, procesamos:
+        // Si no hay errores, procesamos:
         // ==============================
         try {
             String urlBack = pagoService.obtenerUrlBack(apiKey);
@@ -119,12 +114,9 @@ public class PagoRestController {
             String storeResponse = response.block();
             log.debug("Respuesta desde la tienda (cliente) => " + storeResponse);
 
-            // Partes NUEVAS:
-            // Para éxito, también devolvemos un 200,
-            // y el body con "OK|" para distinguirlo de un error
             return ResponseEntity.ok("OK|Pago procesado correctamente.");
         } catch (IllegalArgumentException ex) {
-            // Podrías devolver un "ERROR|" o algo similar
+
             return ResponseEntity.ok("ERROR|Error 404");
         }
     }

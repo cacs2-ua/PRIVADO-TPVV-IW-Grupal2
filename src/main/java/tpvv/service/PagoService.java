@@ -84,7 +84,6 @@ public class PagoService {
         // Parsear la fecha de String a Date
         Date fechaDate;
         try {
-            // Asumiendo que la fecha viene en formato "dd/MM/yyyy HH:mm"
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
             fechaDate = sdf.parse(pagoData.getFecha());
         } catch (ParseException | NullPointerException e) {
@@ -116,7 +115,7 @@ public class PagoService {
             throw new IllegalArgumentException("Error: CVC no válido.");
         }
 
-        // Parseo de la fecha de caducidad (String -> Date), asumiendo formato "MM/yy"
+        // Parseo de la fecha de caducidad (String -> Date)
         Date fechaCaducDate;
         try {
             SimpleDateFormat sdfCaduc = new SimpleDateFormat("MM/yy");
@@ -157,9 +156,9 @@ public class PagoService {
 
         // Construir entidad Pago a partir de PagoData
         Pago pago = new Pago();
-        pago.setImporte(importeDouble);               // double
+        pago.setImporte(importeDouble);
         pago.setTicketExt(pagoData.getTicketExt());
-        pago.setFecha(fechaDate);                     // Date convertido desde String
+        pago.setFecha(fechaDate);
         pago.setTarjetaPago(tarjetaPago);
         pago.setEstado(estadoPago);
 
@@ -173,7 +172,7 @@ public class PagoService {
         PedidoCompletoRequest pedidoCompletoRequest = new PedidoCompletoRequest();
         pedidoCompletoRequest.setId(pago.getId());
         pedidoCompletoRequest.setPagoId(pago.getId());
-        pedidoCompletoRequest.setPedidoId(4L); // ID de prueba
+        pedidoCompletoRequest.setPedidoId(4L);
         pedidoCompletoRequest.setTicketExt(pago.getTicketExt());
         pedidoCompletoRequest.setFecha(pago.getFecha());
         pedidoCompletoRequest.setImporte(pago.getImporte());
