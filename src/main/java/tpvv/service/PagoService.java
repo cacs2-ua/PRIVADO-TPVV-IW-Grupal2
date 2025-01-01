@@ -112,10 +112,10 @@ public class PagoService {
 
         // Crear entidad TarjetaPago
         TarjetaPago tarjetaPago = new TarjetaPago();
-        tarjetaPago.setNumeroTarjeta(tarjetaData.getNumeroTarjeta().trim());
+        tarjetaPago.setNumeroTarjeta(tarjetaData.getNumeroTarjeta().replaceAll("\\s+", ""));
         tarjetaPago.setCvc(cvcInt);
         tarjetaPago.setFechaCaducidad(fechaCaducDate);
-        tarjetaPago.setNombre(tarjetaData.getNombre().trim());
+        tarjetaPago.setNombre(tarjetaData.getNombre().trim().replaceAll("\\s+", " "));
 
         // Intentar reutilizar si ya existe
         Optional<TarjetaPago> tarjetaExistenteOpt =
@@ -135,8 +135,18 @@ public class PagoService {
         }
 
         // Crear o asignar estado de pago
-        EstadoPago estadoPago = new EstadoPago("acept001", "Pago procesado correctamente.");
-        estadoPagoRepository.save(estadoPago);
+        EstadoPago estadoPago = obtenerEstadoPago(tarjetaPago.getNumeroTarjeta());
+
+        Optional<EstadoPago> estadoPagoExistenteOpt =
+                estadoPagoRepository.findByNombre(estadoPago.getNombre());
+
+        if (estadoPagoExistenteOpt.isPresent()) {
+            estadoPago = estadoPagoExistenteOpt.get();
+        }
+
+        else  {
+            estadoPagoRepository.save(estadoPago);
+        }
 
         // Construir entidad Pago
         Pago pago = new Pago();
@@ -170,5 +180,81 @@ public class PagoService {
         pedidoCompletoRequest.setNumeroTarjeta(pago.getTarjetaPago().getNumeroTarjeta());
 
         return pedidoCompletoRequest;
+    }
+
+
+    public EstadoPago obtenerEstadoPago(String numeroTarjeta) {
+        String cuatroPrimerosDigitos = numeroTarjeta.substring(0, 4);
+
+        EstadoPago estadoPago = new EstadoPago("default", "default");
+
+        switch (cuatroPrimerosDigitos) {
+            case "0000":
+                estadoPago.setNombre("RECH0001");
+                estadoPago.setRazonEstado("PAGO RECHAZADO: SALDO INSUFICIENTE");
+                break;
+
+            case "0001":
+                estadoPago.setNombre("RECH0002");
+                estadoPago.setRazonEstado("PAGO RECHAZADO: TARJETA BLOQUEADA");
+                break;
+
+            case "0002":
+                estadoPago.setNombre("RECH0003");
+                estadoPago.setRazonEstado("PAGO RECHAZADO: TARJETA VENCIDA");
+                break;
+
+            case "0003":
+                estadoPago.setNombre("RECH0004");
+                estadoPago.setRazonEstado("PAGO RECHAZADO: FALLO EN LA CONEXIÓN CON EL BANCO");
+                break;
+
+            case "1000":
+                estadoPago.setNombre("PEND0001");
+                estadoPago.setRazonEstado("PAGO PENDIENTE: VERIFICACIÓN MANUAL REQUERIDA");
+                break;
+
+            case "1001":
+                estadoPago.setNombre("PEND0002");
+                estadoPago.setRazonEstado("PAGO PENDIENTE: TRANSFERENCIA EN ESPERA DE COMPENSACIÓN");
+                break;
+
+            case "1002":
+                estadoPago.setNombre("PEND0003");
+                estadoPago.setRazonEstado("PAGO PENDIENTE: CONVERSIÓN DE MONEDA EN PROCESO");
+                break;
+
+            case "1003":
+                estadoPago.setNombre("PEND0004");
+                estadoPago.setRazonEstado("PAGO PENDIENTE: PROCESO DE CONCILIACIÓN BANCARIA EN CURSO");
+                break;
+
+            case "2000":
+                estadoPago.setNombre("ACEPT0001");
+                estadoPago.setRazonEstado("PAGO ACEPTADO: IDENTIDAD DEL TITULAR VERIFICADA");
+                break;
+
+            case "2001":
+                estadoPago.setNombre("ACEPT0002");
+                estadoPago.setRazonEstado("PAGO ACEPTADO: REVISIÓN ANTIFRAUDE SUPERADA CON ÉXITO");
+                break;
+
+            case "2002":
+                estadoPago.setNombre("ACEPT0003");
+                estadoPago.setRazonEstado("PAGO ACEPTADO: CONFIRMACIÓN INSTANTÁNEA POR PASARELA DE PAGO");
+                break;
+
+            case "2003":
+                estadoPago.setNombre("ACEPT0004");
+                estadoPago.setRazonEstado("PAGO ACEPTADO: MONEDA SOPORTADA POR EL PROCESADOR DE PAGOS");
+                break;
+
+            default:
+                estadoPago.setNombre("ACEPT1000");
+                estadoPago.setRazonEstado("PAGO ACEPTADO: PAGO PROCESADO CORRECTAMENTE");
+                break;
+        }
+
+        return estadoPago;
     }
 }
