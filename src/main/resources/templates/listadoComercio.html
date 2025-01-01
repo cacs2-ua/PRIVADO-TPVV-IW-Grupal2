@@ -57,7 +57,7 @@
                 <td th:if="${comercio.activo}" class="status-active">Activo</td>
                 <td th:if="${!comercio.activo}" class="status-inactive">Desactivado</td>
                 <td>
-                    <button class="btn btn-info">Detalles</button>
+                    <a th:href="@{'/api/tecnico-or-admin/comercios/detalles/' + ${comercio.id}}" class="btn btn-info">Detalles</a>
                     <form class="estado" th:action="@{/api/tecnico-or-admin/comercios/estado/{idComercio}(idComercio=${comercio.id})}" method="post">
                         <button  type="submit" th:if="${comercio.activo}"  class="btn btn-danger">Desactivar</button>
                         <button  type="submit" th:if="${!comercio.activo}"  class="btn btn-success">Activar</button>

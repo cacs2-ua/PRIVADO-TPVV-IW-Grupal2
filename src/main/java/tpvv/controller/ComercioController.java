@@ -110,4 +110,34 @@ public class ComercioController {
         comercioService.modificarEstadoComercio(idComercio, !comercio.getActivo());
         return "redirect:/api/tecnico-or-admin/comercios";
     }
+
+    @GetMapping("/api/tecnico-or-admin/comercios/detalles/{id}")
+    public String detallesComercio(@PathVariable(value="id") Long idComercio,Model model) {
+
+        ComercioData comercio = comercioService.recuperarComercio(idComercio);
+        PersonaContactoData personaContacto = comercioService.recuperarPersonaContactoByComercioId(idComercio);
+        List<UsuarioData> usuarios = usuarioService.findAllByIdComercio(idComercio);
+
+        model.addAttribute("comercio", comercio);
+        model.addAttribute("usuarios", usuarios);
+        model.addAttribute("personaContacto", personaContacto);
+
+
+        return "detallesComercio";
+
+    }
+
+    @PostMapping("/api/tecnico-or-admin/comercios/regenerar-api/{id}")
+    public String regenerarAPIKEYComercio(@PathVariable(value="id") Long idComercio, RedirectAttributes flash, HttpSession session) {
+        comercioService.regenerarAPIKeyComercio(idComercio);
+        return "redirect:/api/tecnico-or-admin/comercios/detalles/" + idComercio;
+    }
+
+    @PostMapping("/api/tecnico-or-admin/comercios/actualizar-url/{id}")
+    public String actualizarURL(@PathVariable("id") Long idComercio,
+                                @RequestParam("url") String url,
+                                RedirectAttributes flash) {
+        comercioService.actualizarURLComercio(idComercio, url);
+        return "redirect:/api/tecnico-or-admin/comercios/detalles/" + idComercio;
+    }
 }
