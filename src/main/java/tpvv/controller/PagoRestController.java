@@ -73,7 +73,7 @@ public class PagoRestController {
             }
             if (tarjetaData.getNumeroTarjeta() == null || tarjetaData.getNumeroTarjeta().isBlank()) {
                 errorMsg.append("El número de tarjeta no puede estar vacío. ");
-            } else if (!tarjetaData.getNumeroTarjeta().matches("^\\d{16}$")) {
+            } else if (!tarjetaData.getNumeroTarjeta().matches("^(\\d{16}|\\d{4} \\d{4} \\d{4} \\d{4})$")) {
                 errorMsg.append("El número de tarjeta debe tener exactamente 16 dígitos. ");
             }
 
