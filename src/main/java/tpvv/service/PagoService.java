@@ -52,11 +52,18 @@ public class PagoService {
     }
 
     @Transactional(readOnly = true)
-    public String obtenerNombreComercio(String apiKey) {
-        Comercio comercio = comercioRepository.findByApiKey(apiKey).orElse(null);
+    public String obtenerNombreComercio(Long id) {
+        // Buscar el Pago por ID
+        Pago pago = pagoRepository.findById(id).orElseThrow(() ->
+                new IllegalArgumentException("Pago no encontrado para el ID proporcionado.")
+        );
+
+        // Devolver el nombre del comercio asociado al Pago
+        Comercio comercio = pago.getComercio();
         if (comercio == null) {
-            throw new IllegalArgumentException("Comercio no encontrado para la API Key proporcionada.");
+            throw new IllegalArgumentException("El Pago no tiene un Comercio asociado.");
         }
+
         return comercio.getNombre();
     }
 
@@ -277,11 +284,20 @@ public class PagoService {
 
         // Convertir la lista de entidades a DTOs usando Java Stream API
         List<PagoRecursoData> pagoRecursoDataList = pagos.stream()
-                .map(pago -> modelMapper.map(pago, PagoRecursoData.class))
+                .map(pago -> {
+                    PagoRecursoData pagoRecursoData = modelMapper.map(pago, PagoRecursoData.class);
+
+                    pagoRecursoData.setComercioData(modelMapper.map(pago.getComercio(), ComercioData.class));
+                    pagoRecursoData.setEstadoPagoData(modelMapper.map(pago.getEstado(), EstadoPagoData.class));
+                    pagoRecursoData.setTarjetaPagoData(modelMapper.map(pago.getTarjetaPago(), TarjetaPagoData.class));
+
+                    return pagoRecursoData;
+                })
                 .sorted(Comparator.comparingLong(PagoRecursoData::getId)) // Ordenar por ID
                 .collect(Collectors.toList());
 
         return pagoRecursoDataList;
     }
+
 
 }

@@ -33,6 +33,8 @@ public class PagoRecursoController {
     public String allPagos(Model model) {
 
         List<PagoRecursoData> pagos = pagoService.allPagos();
+
+        model.addAttribute("pagos", pagos);
         return "listadoPagos";
     }
 }

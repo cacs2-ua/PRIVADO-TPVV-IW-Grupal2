@@ -14,13 +14,11 @@ public class PagoRecursoData {
 
     private double importe;
 
-    private String comercioNombre;
+    private ComercioData comercioData;
 
-    private  Long incidenciaId;
+    private EstadoPagoData estadoPagoData;
 
-    private String estadoNombre;
-
-    private String tarjetaPagoNombre;
+    private TarjetaPagoData tarjetaPagoData;
 
     // Constructor vacío
     public PagoRecursoData() {}
@@ -59,38 +57,29 @@ public class PagoRecursoData {
         this.importe = importe;
     }
 
-    public String getEstado() {
-        return estadoNombre;
+    public ComercioData getComercioData() {
+        return comercioData;
     }
 
-    public void setEstado(String estadoNombre) {
-        this.estadoNombre = estadoNombre;
+    public void setComercioData(ComercioData comercioData) {
+        this.comercioData = comercioData;
     }
 
-    public String getTarjetaPago() {
-        return tarjetaPagoNombre;
+    public EstadoPagoData getEstadoPagoData() {
+        return estadoPagoData;
     }
 
-    public void setTarjetaPago(String tarjetaPagoNombre) {
-        this.tarjetaPagoNombre = tarjetaPagoNombre;
+    public void setEstadoPagoData(EstadoPagoData estadoPagoData) {
+        this.estadoPagoData = estadoPagoData;
     }
 
-    public String getComercio() {
-        return comercioNombre;
+    public TarjetaPagoData getTarjetaPagoData() {
+        return tarjetaPagoData;
     }
 
-    public void setComercio(String comercioNombre) {
-        this.comercioNombre = comercioNombre;
+    public void setTarjetaPagoData(TarjetaPagoData tarjetaPagoData) {
+        this.tarjetaPagoData = tarjetaPagoData;
     }
-
-    public Long getIncidenciaId() {
-        return incidenciaId;
-    }
-
-    public void setIncidenciaId(Long incidenciaId) {
-        this.incidenciaId = incidenciaId;
-    }
-
 
 
     // Equals y HashCode
