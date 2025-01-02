@@ -144,7 +144,8 @@ public class ComercioController {
     @GetMapping("/api/comercio/mis-datos")
     public String perfilComercio(Model model) {
         UsuarioData usuario = usuarioService.findById(getUsuarioLogeadoId());
-        ComercioData comercio = comercioService.recuperarComercio(usuario.getId());
+        Long id_comercio = usuarioService.findComercio(usuario.getId());
+        ComercioData comercio = comercioService.recuperarComercio(id_comercio);
         PersonaContactoData personaContacto = comercioService.recuperarPersonaContactoByComercioId(comercio.getId());
         model.addAttribute("usuario", usuario);
         model.addAttribute("comercio", comercio);

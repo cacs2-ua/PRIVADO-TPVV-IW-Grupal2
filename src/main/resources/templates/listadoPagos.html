@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Comercios</title>
+
+    <div th:include="fragments :: head (titulo='Iniciar sesión')"></div>
+
+    <link rel="stylesheet" th:href="@{/css/custom/listadoPagosStyle.css}">
+</head>
+<body class="body-background">
+<div th:replace="fragments::menuBar"></div>
+<div class="container">
+    <h1 class="title">Comercios</h1>
+    <form class="busqueda">
+        <label>Id</label>
+        <label>Nombre</label>
+        <label>Cif</label>
+        <label>País</label>
+        <label>Fecha Desde</label>
+        <label>Fecha Hasta</label>
+        <label></label>
+        <input type="text" class="search-input">
+        <input type="text" class="search-input">
+        <input type="text" class="search-input">
+        <select class="search-select">
+            <option>España</option>
+        </select>
+        <input type="date" class="search-input">
+        <input type="date" class="search-input">
+        <button type="submit">Aplicar filtros</button>
+    </form>
+
+    <a href="">Crear nuevo comercio</a>
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Fecha Alta</th>
+                <th>Nombre</th>
+                <th>Cif</th>
+                <th>País</th>
+                <th>Provincia</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>00000000002</td>
+                <td>10/07/2024 16:44</td>
+                <td>Hotel 2 grupo 15</td>
+                <td>13243245R</td>
+                <td>España</td>
+                <td>Alicante</td>
+                <td class="status-active">Activo</td>
+                <td><a href="">Ver detalles</a> </td>
+            </tr>
+            <tr>
+                <td>00000000002</td>
+                <td>10/07/2024 16:44</td>
+                <td>Paquetería</td>
+                <td>13243245R</td>
+                <td>España</td>
+                <td>Alicante</td>
+                <td class="status-inactive">Desactivo</td>
+                <td><a href="">Ver detalles</a> </td>
+            </tr>
+            <tr>
+                <td>00000000002</td>
+                <td>10/07/2024 16:44</td>
+                <td>Hotel 2 grupo 15</td>
+                <td>13243245R</td>
+                <td>España</td>
+                <td>Alicante</td>
+                <td class="status-inactive">Desactivo</td>
+                <td><a href="">Ver detalles</a> </td>
+            </tr>
+            <tr>
+                <td>00000000002</td>
+                <td>10/07/2024 16:44</td>
+                <td>Hotel 2 grupo 15</td>
+                <td>13243245R</td>
+                <td>España</td>
+                <td>Alicante</td>
+                <td class="status-inactive">Desactivo</td>
+                <td><a href="">Ver detalles</a> </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div th:replace="fragments::javascript"></div>
+</body>
+</html>
