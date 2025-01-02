@@ -7,10 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import tpvv.dto.PagoCompletoRequest;
-import tpvv.dto.PagoData;
-import tpvv.dto.PedidoCompletoRequest;
-import tpvv.dto.TarjetaPagoData;
+import tpvv.dto.*;
 import tpvv.model.Comercio;
 import tpvv.model.EstadoPago;
 import tpvv.model.Pago;
@@ -272,20 +269,19 @@ public class PagoService {
     }
 
     @Transactional(readOnly = true)
-    public List<PagoData> allPagos() {
+    public List<PagoRecursoData> allPagos() {
         logger.debug("Devolviendo todos los pagos");
 
         // Obtener todos los pagos de la base de datos
         List<Pago> pagos = pagoRepository.findAll();
 
         // Convertir la lista de entidades a DTOs usando Java Stream API
-        List<PagoData> pagoDataList = pagos.stream()
-                .map(pago -> modelMapper.map(pago, PagoData.class))
-                .sorted(Comparator.comparingLong(PagoData::getId)) // Ordenar por ID
+        List<PagoRecursoData> pagoRecursoDataList = pagos.stream()
+                .map(pago -> modelMapper.map(pago, PagoRecursoData.class))
+                .sorted(Comparator.comparingLong(PagoRecursoData::getId)) // Ordenar por ID
                 .collect(Collectors.toList());
 
-        return pagoDataList;
+        return pagoRecursoDataList;
     }
-
 
 }

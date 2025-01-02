@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import tpvv.dto.PagoData;
+import tpvv.dto.PagoRecursoData;
 import tpvv.service.PagoService;
 
 import java.util.List;
@@ -31,7 +32,7 @@ public class PagoRecursoController {
     @GetMapping("/allPagos")
     public String allPagos(Model model) {
 
-        List<PagoData> pagos = pagoService.allPagos();
+        List<PagoRecursoData> pagos = pagoService.allPagos();
         return "listadoPagos";
     }
 }
