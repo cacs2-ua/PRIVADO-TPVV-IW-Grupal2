@@ -4,12 +4,9 @@ import tpvv.dto.PagoData;
 import tpvv.model.Comercio;
 import tpvv.service.PagoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/pago")
@@ -18,10 +15,8 @@ public class PagoController {
     @Autowired
     private PagoService pagoService;
 
-
     @ModelAttribute("comercio")
     public Comercio inicializarComercio() {
-        // Aquí recuperas el comercio de la base de datos por su CIF, o lo creas por defecto
         return new Comercio("B12345678");
     }
 
@@ -38,10 +33,13 @@ public class PagoController {
                                         @RequestParam("idTicket") String ticketId,
                                         Model model) {
         PagoData pagoData = new PagoData();
-        pagoData.setImporte(importe);
+
+        pagoData.setImporte(Double.toString(importe));
+
         pagoData.setTicketExt(ticketId);
-        model.addAttribute("pagoData", pagoData); // Nota: Asegúrate de usar "pagoData" como th:object
-        return "paymentForm"; // Esto devuelve la vista paymentForm.html
+        model.addAttribute("pagoData", pagoData);
+        model.addAttribute("fullPage", true);
+        return "paymentForm";
     }
 
 }

@@ -1,27 +1,148 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Formulario de Pago</title>
-    <meta charset="UTF-8" />
-</head>
-<body>
-<h1>Realizar Pago</h1>
-<form th:action="@{/pago/realizar}" th:object="${pagoData}" method="post">
-    <div>
-        <label for="importe">Importe:</label>
-        <input type="text" id="importe" th:field="*{importe}" readonly />
+<style>
+    .payment-background {
+        background-color: #F1F0E8;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+    }
+    .payment-container {
+        max-width: 900px;
+        width: 100%;
+        margin: 20px auto;
+        font-family: Arial, sans-serif;
+    }
+    .payment-title {
+        color: #89A8B2;
+        font-size: 24px;
+        margin-bottom: 30px;
+    }
+    .payment-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+    .purchase-details {
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 20px;
+    }
+    .purchase-title {
+        color: #95b3c6;
+        font-size: 20px;
+        margin-bottom: 20px;
+    }
+    .details-grid {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 10px;
+        color: #95b3c6;
+    }
+    .details-label {
+        font-weight: normal;
+    }
+    .details-value {
+        text-align: right;
+    }
+    .card-payment {
+        background: #89A8B2;
+        border-radius: 10px;
+        padding: 20px;
+        color: white;
+    }
+    .card-title {
+        font-size: 20px;
+        margin-bottom: 20px;
+    }
+    .card-form {
+        display: grid;
+        gap: 15px;
+    }
+    .form-group {
+        display: grid;
+        gap: 5px;
+    }
+    .card-input {
+        padding: 8px;
+        border: none;
+        border-radius: 5px;
+        background: #D9D9D9;
+    }
+    .security-code {
+        width: 60px;
+    }
+    .expiry-date {
+        width: 100px;
+    }
+    .accept-button {
+        background: #F1F0E8;
+        color: #666;
+        border: none;
+        border-radius: 5px;
+        padding: 8px 20px;
+        cursor: pointer;
+        justify-self: end;
+        margin-top: 10px;
+    }
+
+    .no-show{
+        display: none;
+    }
+
+</style>
+
+<div class="payment-background">
+    <div class="payment-container">
+        <h1 class="payment-title">TPVV BoarDalo</h1>
+
+        <div class="payment-grid">
+            <div class="purchase-details">
+                <h2 class="purchase-title">Datos de la Compra</h2>
+                <div class="details-grid">
+                    <span class="details-label">Importe:</span>
+                    <span class="details-value" style="font-weight: bold; text-decoration: underline;">218,42 €</span>
+
+                    <span class="details-label">Comercio:</span>
+                    <span class="details-value">Paquetería</span>
+
+                    <span class="details-label">Nº de pedido:</span>
+                    <span class="details-value">000000001</span>
+
+                    <span class="details-label">Fecha:</span>
+                    <span class="details-value">09/12/2024</span>
+
+                    <span class="details-label">Hora:</span>
+                    <span class="details-value">10:46</span>
+                </div>
+            </div>
+
+            <div class="card-payment">
+                <h2 class="card-title">Pago con tarjeta</h2>
+                <form class="card-form">
+                    <div class="form-group">
+                        <label>Nombre Completo</label>
+                        <input type="text" class="card-input" placeholder="Nombre Completo">
+                    </div>
+                    <div class="form-group">
+                        <label>Nº Tarjeta:</label>
+                        <input type="text" class="card-input" placeholder="0000 0000 0000 0000">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Caducidad</label>
+                        <input type="text" class="card-input expiry-date" placeholder="mm/aa">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Cód. Seguridad</label>
+                        <input type="password" class="card-input security-code" placeholder="***">
+                    </div>
+
+                    <button type="submit" class="accept-button">Aceptar</button>
+                </form>
+            </div>
+        </div>
     </div>
-    <div>
-        <label for="ticketExt">ID del Ticket:</label>
-        <input type="text" id="ticketExt" th:field="*{ticketExt}" readonly />
-    </div>
-    <div>
-        <label for="tarjeta">Número de Tarjeta:</label>
-        <input type="text" id="tarjeta" th:field="*{tarjeta}" required />
-    </div>
-    <div>
-        <button type="submit">Realizar Pago</button>
-    </div>
-</form>
-</body>
-</html>
+</div>

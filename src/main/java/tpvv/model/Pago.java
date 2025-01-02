@@ -23,14 +23,11 @@ public class Pago implements Serializable {
     private  String ticketExt;
 
     @NotNull
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date fecha;
 
     @NotNull
     private double importe;
-
-    @NotNull
-    private String tarjeta;
 
     @NotNull
     @ManyToOne
@@ -56,17 +53,15 @@ public class Pago implements Serializable {
         this.ticketExt = ticketExt;
         this.fecha = Date.from(LocalDate.of(2000, 12, 12).atStartOfDay(ZoneId.systemDefault()).toInstant());
         this.importe = 0.0;
-        this.tarjeta = "default";
         this.comercio = new Comercio("default");
         this.estado = new EstadoPago("default");
         this.tarjetaPago = new TarjetaPago("default");
     }
 
-    public Pago(String ticketExt, Date fecha, double importe, String tarjeta, Comercio comercio, TarjetaPago tarjetaPago) {
+    public Pago(String ticketExt, Date fecha, double importe, Comercio comercio, TarjetaPago tarjetaPago) {
         this.ticketExt = ticketExt;
         this.fecha = fecha;
         this.importe = importe;
-        this.tarjeta = tarjeta;
         this.comercio = comercio;
         this.estado = new EstadoPago("default");
         this.tarjetaPago = tarjetaPago;
@@ -102,14 +97,6 @@ public class Pago implements Serializable {
 
     public void setImporte(double importe) {
         this.importe = importe;
-    }
-
-    public String getTarjeta() {
-        return tarjeta;
-    }
-
-    public void setTarjeta(String tarjeta) {
-        this.tarjeta = tarjeta;
     }
 
     public Comercio getComercio() {

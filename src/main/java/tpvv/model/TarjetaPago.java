@@ -26,6 +26,7 @@ public class TarjetaPago implements Serializable {
     private int cvc;
 
     @NotNull
+    @Temporal(TemporalType.TIMESTAMP)
     private Date fechaCaducidad;
 
     @NotNull
