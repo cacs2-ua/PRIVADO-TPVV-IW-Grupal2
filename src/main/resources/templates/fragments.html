@@ -56,7 +56,7 @@
           <a class="nav-link" th:href="@{/}" style="font-weight: normal; text-decoration: none;" onclick="highlightLink(this)">Incidencias</a>
         </li>
         <li class="nav-item" th:if="${usuario != null and usuario.tipoId == 2}">
-          <a class="nav-link" th:href="@{/}" style="font-weight: normal; text-decoration: none;" onclick="highlightLink(this)">Nombre</a>
+          <a class="nav-link" th:href="@{/api/tecnico/mis-datos}" style="font-weight: normal; text-decoration: none;" onclick="highlightLink(this)">Nombre</a>
         </li>
 
         <!-- Comercio User -->
