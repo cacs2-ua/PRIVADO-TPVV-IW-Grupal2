@@ -4,9 +4,12 @@
     <meta charset="UTF-8">
     <title>Comercios</title>
 
+    <div th:include="fragments :: head (titulo='Iniciar sesión')"></div>
+
     <link rel="stylesheet" th:href="@{/css/custom/listadoPagosStyle.css}">
 </head>
 <body class="body-background">
+<div th:replace="fragments::menuBar"></div>
 <div class="container">
     <h1 class="title">Comercios</h1>
     <form class="busqueda">
@@ -88,5 +91,7 @@
         </table>
     </div>
 </div>
+
+<div th:replace="fragments::javascript"></div>
 </body>
 </html>
