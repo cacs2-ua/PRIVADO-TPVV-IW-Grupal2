@@ -74,7 +74,7 @@ public class PagoRestController {
             if (tarjetaData.getNumeroTarjeta() == null || tarjetaData.getNumeroTarjeta().isBlank()) {
                 errorMsg.append("El número de tarjeta no puede estar vacío. ");
             } else if (!tarjetaData.getNumeroTarjeta().matches("^(\\d{16}|\\d{4} \\d{4} \\d{4} \\d{4})$")) {
-                errorMsg.append("El número de tarjeta debe tener exactamente 16 dígitos. ");
+                errorMsg.append("El número de tarjeta debe tener exactamente 16 dígitos (los dígitos deben de introducirse todos seguidos o bien dejando un ÚNICO espacio en blanco entre cada grupo de cuatro dígitos). ");
             }
 
             if (tarjetaData.getFechaCaducidad() == null || tarjetaData.getFechaCaducidad().isBlank()) {
