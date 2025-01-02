@@ -9,8 +9,14 @@ import org.springframework.web.bind.annotation.*;
 public class PagoRecursoController {
 
     @GetMapping("/api/comercio/pagos")
-    public String listarPagos(Model model) {
+    public String listarPagosComercio(Model model) {
 
         return "listadoPagosComercio";
+    }
+
+    @GetMapping("/api/admin/pagos")
+    public String listarPagos(Model model) {
+
+        return "listadoPagos";
     }
 }
