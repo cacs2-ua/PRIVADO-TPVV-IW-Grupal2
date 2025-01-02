@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Comercios</title>
+    <style>
+
+        .busqueda{
+            margin-top: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+            grid-template-rows: 25px 1fr;
+            column-gap: 10px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+
+        .container > a {
+            color: rgba(255, 255, 255, 0.9);
+
+        }
+        .body-background {
+            background-color: #89A8B2;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+
+        .title {
+            color: white;
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-decoration: underline;
+        }
+
+        .search-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        .search-input {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+
+        .search-select {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            min-width: 120px;
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+
+        .table-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 20px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            background-color: #f5f5f5;
+            padding: 12px;
+            text-align: left;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .data-table td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .data-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .status-active {
+            color: #2d8a2d;
+        }
+
+        .status-inactive {
+            color: #8a2d2d;
+        }
+    </style>
+</head>
+<body class="body-background">
+<div class="container">
+    <h1 class="title">Comercios</h1>
+    <form class="busqueda">
+        <label>Id</label>
+        <label>Nombre</label>
+        <label>Cif</label>
+        <label>País</label>
+        <label>Fecha Desde</label>
+        <label>Fecha Hasta</label>
+        <label></label>
+        <input type="text" class="search-input">
+        <input type="text" class="search-input">
+        <input type="text" class="search-input">
+        <select class="search-select">
+            <option>España</option>
+        </select>
+        <input type="date" class="search-input">
+        <input type="date" class="search-input">
+        <button type="submit">Aplicar filtros</button>
+    </form>
+
+    <a href="">Crear nuevo comercio</a>
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Fecha Alta</th>
+                <th>Nombre</th>
+                <th>Cif</th>
+                <th>País</th>
+                <th>Provincia</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>00000000002</td>
+                <td>10/07/2024 16:44</td>
+                <td>Hotel 2 grupo 15</td>
+                <td>13243245R</td>
+                <td>España</td>
+                <td>Alicante</td>
+                <td class="status-active">Activo</td>
+                <td><a href="">Ver detalles</a> </td>
+            </tr>
+            <tr>
+                <td>00000000002</td>
+                <td>10/07/2024 16:44</td>
+                <td>Paquetería</td>
+                <td>13243245R</td>
+                <td>España</td>
+                <td>Alicante</td>
+                <td class="status-inactive">Desactivo</td>
+                <td><a href="">Ver detalles</a> </td>
+            </tr>
+            <tr>
+                <td>00000000002</td>
+                <td>10/07/2024 16:44</td>
+                <td>Hotel 2 grupo 15</td>
+                <td>13243245R</td>
+                <td>España</td>
+                <td>Alicante</td>
+                <td class="status-inactive">Desactivo</td>
+                <td><a href="">Ver detalles</a> </td>
+            </tr>
+            <tr>
+                <td>00000000002</td>
+                <td>10/07/2024 16:44</td>
+                <td>Hotel 2 grupo 15</td>
+                <td>13243245R</td>
+                <td>España</td>
+                <td>Alicante</td>
+                <td class="status-inactive">Desactivo</td>
+                <td><a href="">Ver detalles</a> </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
