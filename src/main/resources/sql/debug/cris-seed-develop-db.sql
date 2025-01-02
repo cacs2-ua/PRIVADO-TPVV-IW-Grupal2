@@ -35,6 +35,8 @@ INSERT INTO public.comercios (id, activo, api_key, cif, direccion, iban, nombre,
 INSERT INTO public.comercios (id, activo, api_key, cif, direccion, iban, nombre, pais, provincia, url_back, pais_id) VALUES (2, true, 'mi-api-key-12346', 'CIF123457', 'Calle Falsa 124', 'ES9121000418450200051333', 'Comercio Ejemplo 2', 'España', 'Madrid', 'http://localhost:8246/tienda/receivePedido', 1);
 
 
+INSERT INTO public.personas_contacto (id, email, nombre_contacto, telefono, comercio_id) VALUES (1, 'contacto1@gmail.com', 'contacto1', '123456789', 1);
+INSERT INTO public.personas_contacto (id, email, nombre_contacto, telefono, comercio_id) VALUES (2, 'contacto2@gmail.com', 'contacto2', '123456789', 2);
 
 
 
