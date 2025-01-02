@@ -140,4 +140,31 @@ public class ComercioController {
         comercioService.actualizarURLComercio(idComercio, url);
         return "redirect:/api/tecnico-or-admin/comercios/detalles/" + idComercio;
     }
+
+    @GetMapping("/api/comercio/mis-datos")
+    public String perfilComercio(Model model) {
+        UsuarioData usuario = usuarioService.findById(getUsuarioLogeadoId());
+        ComercioData comercio = comercioService.recuperarComercio(usuario.getId());
+        PersonaContactoData personaContacto = comercioService.recuperarPersonaContactoByComercioId(comercio.getId());
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("comercio", comercio);
+        model.addAttribute("personaContacto", personaContacto);
+
+
+        return "perfilComercio";
+    }
+
+    @PostMapping("/api/comercio/mis-datos/regenerar-api/{id}")
+    public String regenerarAPIKEYComercioUsuario(@PathVariable(value="id") Long idComercio, RedirectAttributes flash, HttpSession session) {
+        comercioService.regenerarAPIKeyComercio(idComercio);
+        return "redirect:/api/comercio/mis-datos";
+    }
+
+    @PostMapping("/api/comercio/mis-datos/actualizar-url/{id}")
+    public String actualizarURLComercioUsuario(@PathVariable("id") Long idComercio,
+                                @RequestParam("url") String url,
+                                RedirectAttributes flash) {
+        comercioService.actualizarURLComercio(idComercio, url);
+        return "redirect:/api/comercio/mis-datos";
+    }
 }
