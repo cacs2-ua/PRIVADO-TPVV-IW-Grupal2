@@ -11,6 +11,6 @@ public class PagoRecursoController {
     @GetMapping("/api/admin/pagos")
     public String listarPagos(Model model) {
 
-        return "listadoPagos";
+        return "listadoPagosComercio";
     }
 }
