@@ -8,6 +8,7 @@ import tpvv.dto.PersonaContactoData;
 import tpvv.model.Comercio;
 import tpvv.model.Pais;
 import tpvv.model.PersonaContacto;
+import tpvv.model.Usuario;
 import tpvv.repository.ComercioRepository;
 import org.modelmapper.ModelMapper;
 import tpvv.repository.PaisRepository;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Page;
+import tpvv.repository.UsuarioRepository;
 
 import java.time.LocalDate;
 import java.util.Comparator;
@@ -40,6 +42,8 @@ public class ComercioService {
     private static final SecureRandom RANDOM = new SecureRandom();
     @Autowired
     private PersonaContactoRepository personaContactoRepository;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     private String generateApiKey(int length) {
         if (length <= 0) {
@@ -188,6 +192,10 @@ public class ComercioService {
         Comercio comercio = comercioRepository.findById(id).orElse(null);
         if (comercio == null){
             throw new ComercioServiceException("El comercio " + id + " no existe");
+        }
+        List<Usuario> usuariosComercio = usuarioRepository.findByComercio(comercio);
+        for (Usuario usuario : usuariosComercio){
+            usuario.setActivo(activado);
         }
         comercio.setActivo(activado);
     }
