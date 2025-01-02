@@ -1,5 +1,6 @@
 package tpvv.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,7 @@ import tpvv.repository.UsuarioRepository;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import java.security.SecureRandom;
@@ -50,12 +52,26 @@ public class ComercioService {
             throw new IllegalArgumentException("Length must be greater than 0");
         }
 
-        StringBuilder apiKey = new StringBuilder(length);
-        for (int i = 0; i < length; i++) {
-            int index = RANDOM.nextInt(CHARACTERS.length());
-            apiKey.append(CHARACTERS.charAt(index));
+        String apiKey;
+        do {
+            StringBuilder apiKeyBuilder = new StringBuilder(length);
+            for (int i = 0; i < length; i++) {
+                int index = RANDOM.nextInt(CHARACTERS.length());
+                apiKeyBuilder.append(CHARACTERS.charAt(index));
+            }
+            apiKey = apiKeyBuilder.toString();
+        } while (isApiKeyDuplicate(apiKey));
+
+        return apiKey;
+    }
+
+    private boolean isApiKeyDuplicate(String apiKey) {
+        try {
+            obtenerComercioPorApiKey(apiKey);
+            return true;
+        } catch (EntityNotFoundException e) {
+            return false;
         }
-        return apiKey.toString();
     }
 
     private void checkCampos(ComercioData comercio){
@@ -217,5 +233,14 @@ public class ComercioService {
                 .filter(comercio -> fechaHasta == null || !comercio.getFechaAlta().isAfter(fechaHasta))
                 .collect(Collectors.toList());
     }
+
+    @Transactional(readOnly = true)
+    public ComercioData obtenerComercioPorApiKey(String apiKey) {
+        return comercioRepository.findByApiKey(apiKey)
+                .map(comercio -> modelMapper.map(comercio, ComercioData.class))
+                .orElseThrow(() -> new EntityNotFoundException("No se encontró un comercio con la API key proporcionada: " + apiKey));
+    }
+
+
 
 }

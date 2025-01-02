@@ -101,4 +101,14 @@ public class ComercioServiceTest {
         assertThat(comercio.getActivo()).isFalse();
     }
 
+    @Test
+    public void recuperarComercioPorApiKeyTest() {
+        ComercioData comercio1 = crearComercio();
+        ComercioData comercioRecuperado1 = comercioService.obtenerComercioPorApiKey(comercio1.getApiKey());
+
+        assertThat(comercioRecuperado1).isEqualTo(comercio1);
+
+    }
+
+
 }
