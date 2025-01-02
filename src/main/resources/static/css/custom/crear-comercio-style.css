@@ -1,0 +1,40 @@
+body.cuerpo-registro {
+    background-color: #89A8B2;
+
+}
+
+.terceracolumna {
+    display:grid;
+    grid-template-columns: 1fr 2fr 1fr;
+}
+
+.contenedor {
+    height: auto;
+    padding: 20px;
+    background-color: #B3C8CF;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    grid-column: 2;
+    padding-left: 40px;
+
+}
+.cuerpo-registro form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+.cuerpo-registro label + input, select {
+    display: block;
+    margin-bottom: 10px;
+    max-width: 400px;
+    min-width: 100px;
+}
+
+.cuerpo-registro h1 {
+    color: #F1F0E8;
+    text-decoration: underline;
+    grid-column: 2;
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 30px;
+    margin-top: 20px;
+}

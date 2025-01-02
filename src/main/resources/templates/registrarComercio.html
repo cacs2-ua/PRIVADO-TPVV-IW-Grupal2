@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Crear Comercio</title>
+    <link rel="stylesheet" th:href="@{/css/custom/crear-comercio-style.css}">
+    <div th:include="fragments :: head (titulo='Iniciar sesión')"></div>
+</head>
+<body class="cuerpo-registro">
+<div th:replace="fragments::menuBar" class="navbar-container"></div>
+
+<div class="terceracolumna">
+<h1>Crear Comercio</h1>
+<div class="contenedor">
+
+    <form th:action="@{/api/admin/crearcomercio}" method="post">
+    <div>
+        <h2>Datos generales</h2>
+            <label for="nombre" class="form-label">*Nombre</label>
+            <input type="text" id="nombre" th:field="${comercio.nombre}" class="form-control" required/>
+            <label for="cif" class="form-label">*Cif</label>
+            <input type="text" id="cif" th:field="${comercio.cif}" class="form-control" required/>
+            <label  class="form-label">*Pais</label>
+            <select id="pais" th:field="${comercio.pais}" class="form-select" aria-label="Default select example">
+                <option th:each="pais : ${paises}" th:value="${pais.nombre}" th:text="${pais.nombre}"></option>
+            </select>
+
+            <label for="provincia" class="form-label">*Provincia</label>
+            <input type="text" id="provincia" th:field="${comercio.provincia}" class="form-control" required/>
+            <label for="direccion" class="form-label">*Dirección</label>
+            <input type="text" id="direccion" th:field="${comercio.direccion}" class="form-control" required/>
+            <label for="iban" class="form-label">*IBAN</label>
+            <input type="text" id="iban" th:field="${comercio.iban}" class="form-control" required/>
+            <label for="url" class="form-label">*URL</label>
+            <input type="text" id="url" th:field="${comercio.url_back}" class="form-control" required/>
+
+    </div>
+    <div>
+        <h2>Persona de contacto</h2>
+        <label for="nombrep" class="form-label">*Nombre</label>
+        <input type="text" id="nombrep" th:field="${personaContacto.nombreContacto}"  class="form-control" required/>
+
+        <label for="email" class="form-label">*Email</label>
+        <input type="email" id="email" th:field="${personaContacto.email}" class="form-control" required/>
+
+        <label for="telefono" class="form-label">*Telefono</label>
+        <input type="number" id="telefono" th:field="${personaContacto.telefono}" class="form-control" required/>
+
+        <input type="submit" value="Registrar" class="btn btn-light"/>
+
+    </div>
+    </form>
+
+</div>
+</div>
+
+
+<div th:replace="fragments::javascript"></div>
+</body>
+
+</html>
