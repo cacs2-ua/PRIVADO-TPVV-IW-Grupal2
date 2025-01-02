@@ -1,26 +1,32 @@
 package tpvv.dto;
 
+import tpvv.model.Pago;
+
+import java.util.Date;
 import java.util.Objects;
 
-public class PagoRecursoData {    private Long id;
+public class PagoRecursoData {
+
+    private Long id;
     private String ticketExt;
 
-    private String fecha;
+    private Date fecha;
 
-    private String importe;
+    private double importe;
 
-    private String tarjeta;
-    private String estadoPago;
-    private String comercioNombre;
-    private String tarjetaPagoNumero;
+    private String estado;
+
+    private String tarjetaPago;
 
     // Constructor vacío
     public PagoRecursoData() {}
 
     // Getters y Setters
+
     public Long getId() {
         return id;
     }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -28,76 +34,63 @@ public class PagoRecursoData {    private Long id;
     public String getTicketExt() {
         return ticketExt;
     }
+
     public void setTicketExt(String ticketExt) {
         this.ticketExt = ticketExt;
     }
 
-    public String getFecha() {
+    public Date getFecha() {
         return fecha;
     }
-    public void setFecha(String fecha) {
+
+    public void setFecha(Date fecha) {
         this.fecha = fecha;
     }
 
-    public String getImporte() {
+    public double getImporte() {
         return importe;
     }
-    public void setImporte(String importe) {
+
+    public void setImporte(double importe) {
         this.importe = importe;
     }
 
-    public String getTarjeta() {
-        return tarjeta;
-    }
-    public void setTarjeta(String tarjeta) {
-        this.tarjeta = tarjeta;
+    public String getEstado() {
+        return estado;
     }
 
-    public String getEstadoPago() {
-        return estadoPago;
-    }
-    public void setEstadoPago(String estadoPago) {
-        this.estadoPago = estadoPago;
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 
-    public String getComercioNombre() {
-        return comercioNombre;
-    }
-    public void setComercioNombre(String comercioNombre) {
-        this.comercioNombre = comercioNombre;
+    public String getTarjetaPago() {
+        return tarjetaPago;
     }
 
-    public String getTarjetaPagoNumero() {
-        return tarjetaPagoNumero;
-    }
-    public void setTarjetaPagoNumero(String tarjetaPagoNumero) {
-        this.tarjetaPagoNumero = tarjetaPagoNumero;
+    public void setTarjetaPago(String tarjetaPago) {
+        this.tarjetaPago = tarjetaPago;
     }
 
+    // Equals y HashCode
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof PagoData that)) return false;
-        return Objects.equals(getId(), that.getId());
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PagoRecursoData that = (PagoRecursoData) o;
+
+        // Si ambos objetos tienen un ID no nulo, comparamos por ID
+        if (this.id != null && that.id != null) {
+            return Objects.equals(this.id, that.id);
+        }
+
+        // Si no se pueden comparar por ID, consideramos que son diferentes
+        return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId());
-    }
-
-    @Override
-    public String toString() {
-        return "PagoData{" +
-                "id=" + id +
-                ", ticketExt='" + ticketExt + '\'' +
-                ", fecha='" + fecha + '\'' +
-                ", importe='" + importe + '\'' +
-                ", tarjeta='" + tarjeta + '\'' +
-                ", estadoPago='" + estadoPago + '\'' +
-                ", comercioNombre='" + comercioNombre + '\'' +
-                ", tarjetaPagoNumero='" + tarjetaPagoNumero + '\'' +
-                '}';
+        return Objects.hash(id);
     }
 
 }
