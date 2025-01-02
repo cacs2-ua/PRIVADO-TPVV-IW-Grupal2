@@ -1,6 +1,10 @@
 package tpvv.service;
 
-import jakarta.transaction.Transactional;
+import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tpvv.dto.PagoCompletoRequest;
@@ -15,11 +19,16 @@ import tpvv.repository.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PagoService {
+    Logger logger = LoggerFactory.getLogger(PagoService.class);
+
 
     @Autowired
     private PagoRepository pagoRepository;
@@ -33,6 +42,9 @@ public class PagoService {
     @Autowired
     private ComercioRepository comercioRepository;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @Transactional
     public String obtenerUrlBack(String apiKey) {
         Comercio comercio = comercioRepository.findByApiKey(apiKey).orElse(null);
@@ -42,7 +54,7 @@ public class PagoService {
         return comercio.getUrl_back();
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public String obtenerNombreComercio(String apiKey) {
         Comercio comercio = comercioRepository.findByApiKey(apiKey).orElse(null);
         if (comercio == null) {
@@ -258,4 +270,22 @@ public class PagoService {
 
         return estadoPago;
     }
+
+    @Transactional(readOnly = true)
+    public List<PagoData> allPagos() {
+        logger.debug("Devolviendo todos los pagos");
+
+        // Obtener todos los pagos de la base de datos
+        List<Pago> pagos = pagoRepository.findAll();
+
+        // Convertir la lista de entidades a DTOs usando Java Stream API
+        List<PagoData> pagoDataList = pagos.stream()
+                .map(pago -> modelMapper.map(pago, PagoData.class))
+                .sorted(Comparator.comparingLong(PagoData::getId)) // Ordenar por ID
+                .collect(Collectors.toList());
+
+        return pagoDataList;
+    }
+
+
 }
