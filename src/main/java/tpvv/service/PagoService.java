@@ -176,6 +176,7 @@ public class PagoService {
         pedidoCompletoRequest.setImporte(String.valueOf(pago.getImporte()));
 
         pedidoCompletoRequest.setEstadoPago(pago.getEstado().getNombre());
+        pedidoCompletoRequest.setRazonEstadoPago(estadoPago.getRazonEstado());
         pedidoCompletoRequest.setComercioNombre(pago.getComercio().getNombre());
         pedidoCompletoRequest.setNumeroTarjeta(pago.getTarjetaPago().getNumeroTarjeta());
 

@@ -103,6 +103,9 @@ public class PagoRestController {
             String urlBack = pagoService.obtenerUrlBack(apiKey);
             PedidoCompletoRequest pedidoCompletoRequest = pagoService.procesarPago(request, apiKey);
 
+            String estadoPago = pedidoCompletoRequest.getEstadoPago();
+            String razonEstadoPago = pedidoCompletoRequest.getRazonEstadoPago();
+
             // Llamada POST al proyecto cliente, enviando pedidoCompletoRequest
             Mono<String> response = webClient.post()
                     .uri(urlBack)
@@ -114,7 +117,18 @@ public class PagoRestController {
             String storeResponse = response.block();
             log.debug("Respuesta desde la tienda (cliente) => " + storeResponse);
 
-            return ResponseEntity.ok("OK|Pago procesado correctamente.");
+            if (estadoPago.startsWith("RECH")) {
+                return ResponseEntity.ok("RECH|" + razonEstadoPago + ".");
+            }
+
+            else if (estadoPago.startsWith("PEND")) {
+                return ResponseEntity.ok("PEND|" + razonEstadoPago + ".");
+            }
+
+            else  {
+                return ResponseEntity.ok("OK|" + razonEstadoPago + ".");
+            }
+
         } catch (IllegalArgumentException ex) {
 
             return ResponseEntity.ok("ERROR|Error 404");
