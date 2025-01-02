@@ -6,7 +6,7 @@ public class PersonaContactoData {
 
     private Long id;
     private String telefono;
-    private String nombre;
+    private String nombreContacto;
     private String email;
 
     //getters y setters
@@ -27,12 +27,12 @@ public class PersonaContactoData {
         this.telefono = telefono;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getNombreContacto() {
+        return nombreContacto;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setNombreContacto(String nombreContacto) {
+        this.nombreContacto = nombreContacto;
     }
 
     public String getEmail() {

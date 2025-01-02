@@ -18,7 +18,7 @@ public class PersonaContacto implements Serializable {
     private String telefono;
 
     @NotNull
-    private String nombre;
+    private String nombreContacto;
 
     @NotNull
     @Column(unique = true)
@@ -33,13 +33,13 @@ public class PersonaContacto implements Serializable {
 
     public PersonaContacto(String email_ext) {
         this.email = email_ext;
-        this.nombre = "default-name";
+        this.nombreContacto = "default-name";
         this.telefono = "default-phone";
     }
 
     public PersonaContacto(String email_ext, String nombre_ext, String telefono_ext) {
         this.email = email_ext;
-        this.nombre = nombre_ext;
+        this.nombreContacto = nombre_ext;
         this.telefono = telefono_ext;
     }
 
@@ -55,12 +55,12 @@ public class PersonaContacto implements Serializable {
         this.telefono = telefono;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getNombreContacto() {
+        return nombreContacto;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setNombreContacto(String nombreContacto) {
+        this.nombreContacto = nombreContacto;
     }
 
     public String getEmail() {

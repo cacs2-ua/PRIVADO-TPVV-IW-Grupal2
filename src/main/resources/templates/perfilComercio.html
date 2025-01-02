@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles comercio</title>
+    <link rel="stylesheet" th:href="@{/css/custom/detalles-comercio-style.css}">
+    <div th:include="fragments :: head (titulo='Iniciar sesión')"></div>
+
+</head>
+<body class="detalles-comercio">
+<div th:replace="fragments::menuBar" class="navbar-container"></div>
+<div class="container">
+    <div class="row g-4">
+        <!-- Left Card -->
+        <div class="col-md-6 ">
+            <div class="tarjeta p-4">
+                <h2 th:text="${comercio.nombre}" class="title"></h2>
+
+                <div class="info-row">
+                    <span class="info-label">Fecha de alta:</span>
+                    <span th:text="${comercio.fechaAlta}"></span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-label">País:</span>
+                    <span th:text="${comercio.pais}"></span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-label">Provincia:</span>
+                    <span th:text="${comercio.provincia}"></span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-label">Dirección:</span>
+                    <span th:text="${comercio.direccion}"></span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-label">CIF:</span>
+                    <span th:text="${comercio.cif}"></span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-label">Iban:</span>
+                    <span th:text="${comercio.iban}"></span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-label">Url:</span>
+                    <span th:text="${comercio.url_back}"></span>
+                </div>
+                <br>
+                <h2 class="title">Persona de contacto</h2>
+                <div class="mb-4">
+
+
+                    <div class="info-row">
+                        <span class="info-label">Nombre:</span>
+                        <span th:text="${personaContacto.nombreContacto}"></span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="info-label">Teléfono:</span>
+                        <span th:text="${personaContacto.telefono}"></span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="info-label">Email:</span>
+                        <span th:text="${personaContacto.email}"></span>
+                    </div>
+
+
+                </div>
+                <div class="mt-3">
+                    <div class="mb-2">API KEY:</div>
+                    <div th:text="${comercio.apiKey}" class="api-key"></div>
+                    <form th:action="@{'/api/comercio/mis-datos/regenerar-api/' + ${comercio.id}}" method="post"><button type="submit" class="reset-button mt-2">Resetear api key</button></form>
+                </div>
+                <div class="mt-3">
+                    <div class="mb-2">Actualizar URL:</div>
+                    <form th:action="@{'/api/comercio/mis-datos/actualizar-url/' + ${comercio.id}}" method="post">
+                        <input type="text" id="url" name="url" class="form-control" required/>
+                        <button type="submit" class="reset-button mt-2">Actualizar</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Card -->
+        <div class="col-md-6">
+            <div class="tarjeta p-4">
+                <h2 class="title">Mis datos de usuario</h2>
+
+                <div class="user-email">
+                    <span class="info-label">Correo:</span>
+                    <span th:text="${usuario.email}"></span>
+                </div>
+                <div class="user-email">
+                    <span class="info-label">Nombre:</span>
+                    <span th:text="${usuario.getNombre()}"></span>
+                </div>
+
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="fragments::javascript"></div>
+</body>
+</html>

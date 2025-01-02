@@ -76,7 +76,7 @@ public class ComercioServiceTest {
     public void crearRecuperarYAsignarPersonaContactoAComercioTest() {
         ComercioData comercio = crearComercio();
         PersonaContactoData personaContacto = new PersonaContactoData();
-        personaContacto.setNombre("Persona Contacto");
+        personaContacto.setNombreContacto("Persona Contacto");
         personaContacto.setEmail("email@email.com");
         personaContacto.setTelefono("12345678");
         personaContacto = comercioService.crearPersonaContacto(personaContacto);
@@ -93,12 +93,22 @@ public class ComercioServiceTest {
     public void cambiarEstadoComercioTest() {
         ComercioData comercio = crearComercio();
 
-        assertThat(comercio.getActivo()).isFalse();
+        assertThat(comercio.getActivo()).isTrue();
 
-        comercioService.modificarEstadoComercio(comercio.getId(), true);
+        comercioService.modificarEstadoComercio(comercio.getId(), false);
         comercio = comercioService.recuperarComercio(comercio.getId());
 
-        assertThat(comercio.getActivo()).isTrue();
+        assertThat(comercio.getActivo()).isFalse();
     }
+
+    @Test
+    public void recuperarComercioPorApiKeyTest() {
+        ComercioData comercio1 = crearComercio();
+        ComercioData comercioRecuperado1 = comercioService.obtenerComercioPorApiKey(comercio1.getApiKey());
+
+        assertThat(comercioRecuperado1).isEqualTo(comercio1);
+
+    }
+
 
 }

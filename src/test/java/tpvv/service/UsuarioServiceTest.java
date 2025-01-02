@@ -118,5 +118,22 @@ public class UsuarioServiceTest {
         assertThat((usuariosComercio).size()>1).isTrue();
     }
 
+    @Test
+    public void cambiarEstadoComercioModificaEstadoUsuariosTest() {
+        UsuarioData usuario = crearUsuario();
+        Long idComercio = usuarioService.findComercio(usuario.getId());
+        ComercioData comercio = comercioService.recuperarComercio(idComercio);
+
+        assertThat(comercio.getActivo()).isTrue();
+        assertThat(usuario.getActivo()).isTrue();
+
+        comercioService.modificarEstadoComercio(comercio.getId(), false);
+        comercio = comercioService.recuperarComercio(comercio.getId());
+        usuario = usuarioService.findById(usuario.getId());
+
+        assertThat(comercio.getActivo()).isFalse();
+        assertThat(usuario.getActivo()).isFalse();
+    }
+
 
 }
