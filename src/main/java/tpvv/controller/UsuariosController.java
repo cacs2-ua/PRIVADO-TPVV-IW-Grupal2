@@ -2,6 +2,7 @@ package tpvv.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,7 @@ import tpvv.service.ComercioService;
 import tpvv.service.PaisService;
 import tpvv.service.UsuarioService;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -44,11 +46,18 @@ public class UsuariosController {
     }
 
     @GetMapping("/api/admin/usuarios")
-    public String listadoUsuarios(@RequestParam(defaultValue = "0") int page, Model model) {
+    public String listadoUsuarios(
+            @RequestParam(required = false) Long id,
+            @RequestParam(required = false) Long comercio,
+            @RequestParam(required = false) Boolean estado,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaDesde,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaHasta,
+            @RequestParam(defaultValue = "0") int page,
+            Model model) {
 
         List<ComercioData> comercios = comercioService.recuperarTodosLosComercios();
-        List<UsuarioData> usuarios = usuarioService.findAll();
-        List<UsuarioData> usuariosFiltrados = usuarioService.findAll();
+        List<UsuarioData> todosLosUsuarios = usuarioService.findAll();
+        List<UsuarioData> usuariosFiltrados = usuarioService.filtrarUsuarios(todosLosUsuarios, id, comercio, estado, fechaDesde, fechaHasta);
 
         Page<UsuarioData> usuariosPage = usuarioService.recuperarUsuariosPaginados(usuariosFiltrados, page, 8);
         int totalPages = usuariosPage.getTotalPages();

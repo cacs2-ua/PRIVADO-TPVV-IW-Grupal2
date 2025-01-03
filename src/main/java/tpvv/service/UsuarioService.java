@@ -22,6 +22,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tpvv.service.exception.UsuarioServiceException;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,6 +33,8 @@ import java.util.stream.Collectors;
 public class UsuarioService {
 
     Logger logger = LoggerFactory.getLogger(UsuarioService.class);
+    @Autowired
+    private ComercioService comercioService;
 
     public enum LoginStatus {LOGIN_OK, USER_NOT_FOUND, ERROR_PASSWORD}
 
@@ -133,6 +138,7 @@ public class UsuarioService {
         List<Usuario> usuarios = usuarioRepository.findAll();
 
         return usuarios.stream()
+                .sorted(Comparator.comparing(Usuario::getId))
                 .map(usuario -> modelMapper.map(usuario, UsuarioData.class))
                 .collect(Collectors.toList());
 
@@ -180,6 +186,21 @@ public class UsuarioService {
 
         List<UsuarioData> usuariosPaginados = usuariosData.subList(start, end);
         return new PageImpl<>(usuariosPaginados, PageRequest.of(page, size), usuariosData.size());
+    }
+
+    @Transactional(readOnly = true)
+    public List<UsuarioData> filtrarUsuarios(
+            List<UsuarioData> usuarios,
+            Long id, Long comercio, Boolean estado,
+            LocalDate fechaDesde, LocalDate fechaHasta) {
+
+        return usuarios.stream()
+                .filter(usuario -> id == null || usuario.getId().equals(id))
+                .filter(usuario -> comercio == null || usuario.getComercio().getId().equals(comercio))
+                .filter(usuario -> estado == null || usuario.getActivo() == estado)
+                .filter(usuario -> fechaDesde == null || !usuario.getFechaAlta().before(Timestamp.valueOf(fechaDesde.atStartOfDay())))
+                .filter(usuario -> fechaHasta == null || !usuario.getFechaAlta().after(Timestamp.valueOf(fechaHasta.atStartOfDay())))
+                .collect(Collectors.toList());
     }
 
 
