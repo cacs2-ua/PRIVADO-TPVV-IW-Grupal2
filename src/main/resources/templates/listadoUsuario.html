@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Usuarios</title>
+    <link rel="stylesheet" th:href="@{/css/custom/listado-usuarios-style.css}">
+    <div th:include="fragments :: head (titulo='Iniciar sesión')"></div>
+
+</head>
+<body class="body-background">
+<div th:replace="fragments::menuBar" class="navbar-container"></div>
+<div class="container">
+    <h1 class="title">Usuarios</h1>
+    <form class="busqueda" th:action="@{/api/admin/usuarios}" method="get">
+        <label>Id</label>
+        <label>Comercio</label>
+        <label>Estado</label>
+        <label>Fecha Desde</label>
+        <label>Fecha Hasta</label>
+        <label></label>
+        <input type="text" name="id" class="search-input">
+        <select id="comercio" name="comercio" class="form-select" aria-label="Default select example">
+            <option th:value="null" selected>Todos</option>
+            <option th:each="comercio : ${comercios}" th:value="${comercio.id}" th:text="${comercio.nombre}"></option>
+        </select>
+        <select id="estado" name="estado" class="form-select" aria-label="Default select example">
+            <option th:value="null" selected>Cualquiera</option>
+            <option th:value="true" > Activo</option>
+            <option th:value="false" > Desactivado</option>
+        </select>
+        <input type="date" name="fechaDesde" class="search-input">
+        <input type="date" name="fechaHasta" class="search-input">
+        <button type="submit" class="btn btn-light">Aplicar filtros</button>
+    </form>
+
+    <a th:href="@{/api/admin/crearusuario}">Crear nuevo usuario</a>
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Fecha Alta</th>
+                <th>Tipo</th>
+                <th>Comercio</th>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="usuario: ${usuarios}">
+                <td th:text="${usuario.id}"></td>
+                <td th:text="${usuario.fechaAlta}"></td>
+                <td th:text="${usuario.getTipoId() == 1 ? 'Admin' : (usuario.getTipoId() == 2 ? 'Técnico' : (usuario.getTipoId() == 3 ? 'Comercio' : 'Desconocido'))}"></td>
+                <td th:text="${usuario.getComercio() != null ? usuario.getComercio().getNombre() : '-'}"></td>
+                <td th:text="${usuario.nombre}"></td>
+                <td th:text="${usuario.email}"></td>
+                <td th:if="${usuario.activo}" class="status-active">Activo</td>
+                <td th:if="${!usuario.activo}" class="status-inactive">Desactivado</td>
+                <td>
+                    <form class="estado" th:action="@{/api/admin/usuarios/estado/{idUsuario}(idUsuario=${usuario.id})}" method="post">
+                        <button  type="submit" th:if="${usuario.activo}"  class="btn btn-danger">Desactivar</button>
+                        <button  type="submit" th:if="${!usuario.activo}"  class="btn btn-success">Activar</button>
+                    </form>
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="pagination">
+    <a th:text="${currentPage}" th:href="@{'/api/admin/usuarios?page=' + ${currentPage - 1}}" th:if="${currentPage > 0}">&lsaquo; Anterior</a>
+    <span class="page-item active">
+        <span th:text="${currentPage + 1}"></span>
+    </span>
+    <a th:text="${currentPage +2}" th:href="@{'/api/admin/usuarios?page=' + ${currentPage + 1}}" th:if="${currentPage < totalPages - 1}">Siguiente &rsaquo;</a>
+</div>
+
+
+<script type="text/javascript">
+
+
+
+</script>
+<div th:replace="fragments::javascript"></div>
+</body>
+</html>

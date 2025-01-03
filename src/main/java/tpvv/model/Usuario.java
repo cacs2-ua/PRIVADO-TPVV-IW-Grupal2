@@ -5,6 +5,8 @@ package tpvv.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -30,6 +32,8 @@ public class Usuario implements Serializable {
     private String contrasenya;
 
     private boolean activo = true;
+
+    private Timestamp fechaAlta;
 
     // Relación Many-to-One con Comercio
     @NotNull
@@ -107,6 +111,9 @@ public class Usuario implements Serializable {
         this.contrasenya = contrasenya;
     }
 
+    public Timestamp getFechaAlta() { return fechaAlta; }
+
+    public void setFechaAlta(Timestamp fechaAlta) { this.fechaAlta = fechaAlta; }
 
     public boolean getActivo() {
         return activo;
