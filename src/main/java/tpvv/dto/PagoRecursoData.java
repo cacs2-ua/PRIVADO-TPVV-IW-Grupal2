@@ -20,6 +20,8 @@ public class PagoRecursoData {
 
     private TarjetaPagoData tarjetaPagoData;
 
+    private String shownState;
+
     // Constructor vacío
     public PagoRecursoData() {}
 
@@ -79,6 +81,14 @@ public class PagoRecursoData {
 
     public void setTarjetaPagoData(TarjetaPagoData tarjetaPagoData) {
         this.tarjetaPagoData = tarjetaPagoData;
+    }
+
+    public String getShownState() {
+        return shownState;
+    }
+
+    public void setShownState(String shownState) {
+        this.shownState = shownState;
     }
 
 

@@ -24,15 +24,24 @@ public class PagoRecursoController {
     }
 
     @GetMapping("/api/admin/pagos")
-    public String listarPagos(Model model) {
-
-        return "listadoPagos";
-    }
-
-    @GetMapping("/allPagos")
     public String allPagos(Model model) {
 
         List<PagoRecursoData> pagos = pagoService.allPagos();
+
+        for (PagoRecursoData pago : pagos) {
+            if (pago.getEstadoPagoData().getNombre().startsWith("ACEPT")) {
+                pago.setShownState("Aceptado");
+            }
+
+            else if (pago.getEstadoPagoData().getNombre().startsWith("PEND")) {
+                pago.setShownState("Pendiente");
+            }
+
+            else if (pago.getEstadoPagoData().getNombre().startsWith("RECH")) {
+                pago.setShownState("Rechazado");
+            }
+
+        }
 
         model.addAttribute("pagos", pagos);
         return "listadoPagos";

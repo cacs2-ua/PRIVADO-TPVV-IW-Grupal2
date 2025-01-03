@@ -77,9 +77,9 @@
                      Pendiente => 'status-pending'
                      Rechazado => 'status-inactive'
                 -->
-                <td th:text="${p.estadoPagoData.nombre}"
-                    th:classappend="${p.estadoPagoData.nombre == 'Aceptado' ? 'status-active' :
-                    (p.estadoPagoData.nombre == 'Pendiente' ? 'status-pending' :
+                <td th:text="${p.shownState}"
+                    th:classappend="${p.shownState == 'Aceptado' ? 'status-active' :
+                    (p.shownState == 'Pendiente' ? 'status-pending' :
                     'status-inactive')}">
                 </td>
 
