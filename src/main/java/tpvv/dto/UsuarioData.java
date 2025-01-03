@@ -1,5 +1,13 @@
 package tpvv.dto;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import tpvv.model.Comercio;
+import tpvv.service.ComercioService;
+import tpvv.service.UsuarioService;
+
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class UsuarioData {
@@ -10,6 +18,9 @@ public class UsuarioData {
     private String contrasenya;
     private Long tipoId;
     private boolean activo;
+    private Timestamp fechaAlta = Timestamp.from(Instant.now());
+    private Comercio comercio;
+
 
     // Getters y setters
     public Long getId() {
@@ -55,6 +66,19 @@ public class UsuarioData {
     public boolean getActivo() { return activo; }
 
     public void setActivo(boolean activo) { this.activo = activo; }
+
+    public Timestamp getFechaAlta() { return fechaAlta; }
+
+    public void setFechaAlta(Timestamp fechaAlta) { this.fechaAlta = fechaAlta; }
+
+    public Comercio getComercio() { return comercio; }
+
+    public void setComercio(Comercio comercio) { this.comercio = comercio; }
+
+
+
+
+
 
     // equals, hashCode
     @Override

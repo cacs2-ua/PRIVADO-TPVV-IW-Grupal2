@@ -1,6 +1,9 @@
 package tpvv.service;
 
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import tpvv.dto.ComercioData;
 import tpvv.dto.RegistroData;
 import tpvv.dto.UsuarioData;
@@ -165,6 +168,18 @@ public class UsuarioService {
         }
         usuario.setActivo(activo);
 
+    }
+
+    @Transactional(readOnly = true)
+    public Page<UsuarioData> recuperarUsuariosPaginados(List<UsuarioData> usuariosData, int page, int size) {
+        if (usuariosData == null || usuariosData.isEmpty()) {
+            return new PageImpl<>(List.of(), PageRequest.of(page, size), 0);
+        }
+        int start = page * size;
+        int end = Math.min(start + size, usuariosData.size());
+
+        List<UsuarioData> usuariosPaginados = usuariosData.subList(start, end);
+        return new PageImpl<>(usuariosPaginados, PageRequest.of(page, size), usuariosData.size());
     }
 
 
