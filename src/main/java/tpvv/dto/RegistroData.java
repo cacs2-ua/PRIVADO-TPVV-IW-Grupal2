@@ -1,5 +1,7 @@
 package tpvv.dto;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Objects;
 
 public class RegistroData {
@@ -9,6 +11,7 @@ public class RegistroData {
     private String nombre;
     private String contrasenya;
     private Long comercioId;
+    private Timestamp fechaAlta = Timestamp.from(Instant.now());
 
     // Campo adicional para capturar el tipo de usuario desde el formulario
     private Long tipoId;
@@ -61,6 +64,11 @@ public class RegistroData {
     public void setComercioId(Long comercioId) {
         this.comercioId = comercioId;
     }
+
+    public Timestamp getFechaAlta() {return fechaAlta;}
+
+    public void setFechaAlta(Timestamp fechaAlta) {this.fechaAlta = fechaAlta;}
+
 
     // equals, hashCode
     @Override

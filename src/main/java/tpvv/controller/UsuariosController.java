@@ -12,9 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import tpvv.authentication.ManagerUserSession;
-import tpvv.dto.ComercioData;
-import tpvv.dto.PersonaContactoData;
-import tpvv.dto.UsuarioData;
+import tpvv.dto.*;
 import tpvv.service.ComercioService;
 import tpvv.service.PaisService;
 import tpvv.service.UsuarioService;
@@ -79,5 +77,26 @@ public class UsuariosController {
         UsuarioData usuario = usuarioService.findById(idUsuario);
         usuarioService.borradoUsuarioLogico(idUsuario, !usuario.getActivo());
         return "redirect:/api/admin/usuarios";
+    }
+
+    @GetMapping("/api/admin/crearusuario")
+    public String formularioUsuario(Model model) {
+        //getUsuarioLogeadoId();
+        RegistroData nuevoUsuario = new RegistroData();
+        //UsuarioData nuevoUsuario = new UsuarioData();
+        List<ComercioData> comercios = comercioService.recuperarTodosLosComercios();
+
+        model.addAttribute("comercios", comercios);
+        model.addAttribute("nuevoUsuario", nuevoUsuario);
+
+        return "registrarUsuario";
+
+    }
+
+    @PostMapping("/api/admin/crearusuario")
+    public String registrarComercio(RegistroData registro, Model model) {
+        UsuarioData nuevoUsuario = usuarioService.registrar(registro);
+        model.addAttribute("mensaje", "Usuario registrado con éxito");
+        return "redirect:/api/admin/crearusuario";
     }
 }

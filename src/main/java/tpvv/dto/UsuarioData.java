@@ -18,7 +18,7 @@ public class UsuarioData {
     private String contrasenya;
     private Long tipoId;
     private boolean activo;
-    private Timestamp fechaAlta = Timestamp.from(Instant.now());
+    private Timestamp fechaAlta;
     private Comercio comercio;
 
 
