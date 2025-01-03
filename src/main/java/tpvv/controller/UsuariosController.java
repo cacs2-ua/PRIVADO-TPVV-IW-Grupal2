@@ -1,12 +1,16 @@
 package tpvv.controller;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import tpvv.authentication.ManagerUserSession;
 import tpvv.dto.ComercioData;
 import tpvv.dto.PersonaContactoData;
@@ -68,5 +72,12 @@ public class UsuariosController {
         model.addAttribute("currentPage", page);
 
         return "listadoUsuario";
+    }
+
+    @PostMapping("/api/admin/usuarios/estado/{id}")
+    public String desactivarComercio(@PathVariable(value="id") Long idUsuario, RedirectAttributes flash, HttpSession session) {
+        UsuarioData usuario = usuarioService.findById(idUsuario);
+        usuarioService.borradoUsuarioLogico(idUsuario, !usuario.getActivo());
+        return "redirect:/api/admin/usuarios";
     }
 }
