@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Pagos del Comercio</title>
 
-  <link rel="stylesheet" th:href="@{/css/custom/listadoPagosStyle.css}">
+  <link rel="stylesheet" th:href="@{/css/custom/listadoPagosComercioStyle.css}">
   <div th:include="fragments :: head (titulo='Pagos del Comercio')"></div>
 </head>
 <body class="body-background">
@@ -14,12 +14,10 @@
   <form class="busqueda">
     <label>Id</label>
     <label>Ticket</label>
-    <label>CIF del comercio</label>
     <label>Estados</label>
     <label>Fecha Desde</label>
     <label>Fecha Hasta</label>
     <label></label>
-    <input type="text" class="search-input">
     <input type="text" class="search-input">
     <input type="text" class="search-input">
     <select class="search-select">
@@ -40,8 +38,6 @@
         <th>#</th>
         <th>Fecha</th>
         <th>Ticket</th>
-        <th>Comercio</th>
-        <th>CIF</th>
         <th>Importe</th>
         <th>Estado</th>
         <th>Acciones</th>
@@ -63,10 +59,6 @@
 
         <!-- NUEVO o MODIFICADO: Ticket -->
         <td th:text="${p.ticketExt}"></td>
-
-        <!-- NUEVO o MODIFICADO: Comercio.nombre y Comercio.cif -->
-        <td th:text="${p.comercioData.nombre}"></td>
-        <td th:text="${p.comercioData.cif}"></td>
 
         <!-- NUEVO o MODIFICADO: Importe, añadiendo el símbolo de euro -->
         <td th:text="${p.importe + '€'}"></td>
