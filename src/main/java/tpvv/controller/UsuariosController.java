@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import tpvv.authentication.ManagerUserSession;
 import tpvv.dto.*;
+import tpvv.model.Comercio;
 import tpvv.service.ComercioService;
 import tpvv.service.PaisService;
 import tpvv.service.UsuarioService;
@@ -47,6 +48,14 @@ public class UsuariosController {
         return "perfilTecnico";
     }
 
+    @GetMapping("/api/admin/mis-datos")
+    public String perfilAdmin(Model model) {
+        UsuarioData usuario = usuarioService.findById(getUsuarioLogeadoId());
+        model.addAttribute("usuario", usuario);
+
+        return "perfilAdmin";
+    }
+
     @GetMapping("/api/admin/usuarios")
     public String listadoUsuarios(
             @RequestParam(required = false) Long id,
@@ -75,7 +84,11 @@ public class UsuariosController {
     @PostMapping("/api/admin/usuarios/estado/{id}")
     public String desactivarComercio(@PathVariable(value="id") Long idUsuario, RedirectAttributes flash, HttpSession session) {
         UsuarioData usuario = usuarioService.findById(idUsuario);
-        usuarioService.borradoUsuarioLogico(idUsuario, !usuario.getActivo());
+        ComercioData comercioData = usuarioService.obtenerComercio(idUsuario);
+
+        if (comercioData.getActivo())
+            usuarioService.borradoUsuarioLogico(idUsuario, !usuario.getActivo());
+
         return "redirect:/api/admin/usuarios";
     }
 

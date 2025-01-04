@@ -152,6 +152,14 @@ public class UsuarioService {
     }
 
     @Transactional(readOnly = true)
+    public ComercioData obtenerComercio(Long usuarioId) {
+        return usuarioRepository.findById(usuarioId)
+                .map(Usuario::getComercio)
+                .map(comercio -> modelMapper.map(comercio, ComercioData.class))
+                .orElse(null);
+    }
+
+    @Transactional(readOnly = true)
     public List<UsuarioData> findAllByIdComercio(Long idComercio) {
         Comercio comercio = comercioRepository.findById(idComercio).orElse(null);
         if (comercio == null){
