@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Pagos del Comercio</title>
+    <title>Pagos de todos los comercios</title>
 
     <link rel="stylesheet" th:href="@{/css/custom/listadoPagosStyle.css}">
     <div th:include="fragments :: head (titulo='Pagos del Comercio')"></div>
@@ -10,7 +10,7 @@
 <body class="body-background">
 <div th:replace="fragments::menuBar"></div>
 <div class="container">
-    <h1 class="title">Pagos del Comercio</h1>
+    <h1 class="title">Pagos de todos los comercios</h1>
 
     <form class="busqueda" th:action="@{/api/admin/pagos}" method="get">
         <label>Id</label>
@@ -30,8 +30,11 @@
             <option th:selected="${estadoFilter=='Pendiente'}">Pendiente</option>
             <option th:selected="${estadoFilter=='Rechazado'}">Rechazado</option>
         </select>
-        <input type="date" class="search-input" name="fechaDesde" th:value="${fechaDesdeFilter}">
-        <input type="date" class="search-input" name="fechaHasta" th:value="${fechaHastaFilter}">
+
+        <!-- IMPORTANTE: Usamos fechaDesdeStr en lugar de la Date entera -->
+        <input type="date" class="search-input" name="fechaDesde" th:value="${fechaDesdeStr}">
+        <input type="date" class="search-input" name="fechaHasta" th:value="${fechaHastaStr}">
+
         <button type="submit">Aplicar filtros</button>
     </form>
 
@@ -79,8 +82,8 @@
          ticket=${ticketFilter},
          cif=${cifFilter},
          estado=${estadoFilter},
-         fechaDesde=${fechaDesdeFilter},
-         fechaHasta=${fechaHastaFilter}
+         fechaDesde=${fechaDesdeStr},
+         fechaHasta=${fechaHastaStr}
        )}"
        th:text="${currentPage}">&lsaquo; Anterior</a>
 
@@ -96,8 +99,8 @@
          ticket=${ticketFilter},
          cif=${cifFilter},
          estado=${estadoFilter},
-         fechaDesde=${fechaDesdeFilter},
-         fechaHasta=${fechaHastaFilter}
+         fechaDesde=${fechaDesdeStr},
+         fechaHasta=${fechaHastaStr}
        )}"
        th:text="${currentPage + 2}">
         Siguiente &rsaquo;
