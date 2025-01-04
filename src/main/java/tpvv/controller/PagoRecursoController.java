@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import tpvv.authentication.ManagerUserSession;
 import tpvv.controller.exception.UsuarioNoLogeadoException;
 import tpvv.dto.ComercioData;
-import tpvv.dto.PagoData;
 import tpvv.dto.PagoRecursoData;
 import tpvv.service.PagoService;
 
@@ -89,7 +88,7 @@ public class PagoRecursoController {
     @GetMapping("/api/comercio/pagos/{id}")
     public String detallesPago(@PathVariable(value="id") Long idPago,
                                Model model) {
-        PagoRecursoData pago = pagoService.filtrarPagosPorId(idPago);
+        PagoRecursoData pago = pagoService.obtenerPagoPorId(idPago);
 
         model.addAttribute("pago", pago);
 
@@ -99,7 +98,7 @@ public class PagoRecursoController {
     @GetMapping("/api/admin/pagos/{id}")
     public String detallesPagoAdmin(@PathVariable(value="id") Long idPago,
                                     Model model) {
-        PagoRecursoData pago = pagoService.filtrarPagosPorId(idPago);
+        PagoRecursoData pago = pagoService.obtenerPagoPorId(idPago);
 
         model.addAttribute("pago", pago);
 

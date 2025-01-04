@@ -300,7 +300,7 @@ public class PagoService {
     }
 
     @Transactional(readOnly = true)
-    public PagoRecursoData filtrarPagosPorId(Long id) {
+    public PagoRecursoData obtenerPagoPorId(Long id) {
         // Buscar el Pago por ID
         Pago pago = pagoRepository.findById(id).orElseThrow(() ->
                 new IllegalArgumentException("Pago no encontrado para el ID proporcionado.")
