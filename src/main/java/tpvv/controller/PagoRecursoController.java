@@ -86,8 +86,23 @@ public class PagoRecursoController {
         return "listadoPagos";
     }
 
-    @GetMapping("/detallesPago")
-    public String detallesPago(Model model) {
+    @GetMapping("/api/comercio/pagos/{id}")
+    public String detallesPago(@PathVariable(value="id") Long idPago,
+                               Model model) {
+        PagoRecursoData pago = pagoService.filtrarPagosPorId(idPago);
+
+        model.addAttribute("pago", pago);
+
         return  "detallesPago";
+    }
+
+    @GetMapping("/api/admin/pagos/{id}")
+    public String detallesPagoAdmin(@PathVariable(value="id") Long idPago,
+                                    Model model) {
+        PagoRecursoData pago = pagoService.filtrarPagosPorId(idPago);
+
+        model.addAttribute("pago", pago);
+
+        return  "detallesPagoAdmin";
     }
 }

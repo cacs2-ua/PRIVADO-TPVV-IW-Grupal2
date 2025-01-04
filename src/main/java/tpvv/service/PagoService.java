@@ -300,6 +300,25 @@ public class PagoService {
     }
 
     @Transactional(readOnly = true)
+    public PagoRecursoData filtrarPagosPorId(Long id) {
+        // Buscar el Pago por ID
+        Pago pago = pagoRepository.findById(id).orElseThrow(() ->
+                new IllegalArgumentException("Pago no encontrado para el ID proporcionado.")
+        );
+
+        // Mapeo detallado similar al de allPagos
+        PagoRecursoData pagoRecursoData = modelMapper.map(pago, PagoRecursoData.class);
+
+        // Mapeo de entidades relacionadas
+        pagoRecursoData.setComercioData(modelMapper.map(pago.getComercio(), ComercioData.class));
+        pagoRecursoData.setEstadoPagoData(modelMapper.map(pago.getEstado(), EstadoPagoData.class));
+        pagoRecursoData.setTarjetaPagoData(modelMapper.map(pago.getTarjetaPago(), TarjetaPagoData.class));
+
+        return pagoRecursoData;
+    }
+
+
+    @Transactional(readOnly = true)
     public List<PagoRecursoData> obtenerPagosDeUnComercio(Long comercioId) {
         logger.debug("Obteniendo pagos para el Comercio con ID: {}", comercioId);
 
