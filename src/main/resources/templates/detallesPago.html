@@ -1,66 +1,131 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalle de Pago</title>
+    <!-- La siguiente línea estaba en el original, se mantiene tal cual -->
     <div th:include="fragments :: head (titulo='Detalles de Pago')"></div>
     <link rel="stylesheet" th:href="@{/css/custom/detalles-pago-style.css}">
 </head>
 <body class="body">
-    <div th:replace="fragments::menuBar" class="navbar-container"></div>
-    <div class="container">
-        <br>
-        <h1 class="title">Detalle pago nº 0000000002</h1>
+<div th:replace="fragments::menuBar" class="navbar-container"></div>
+<div class="container">
+    <br>
 
-        <div class="main-card">
-            <div class="content-grid">
+    <!--
+        NUEVO: Se sustituye el título estático por el uso de thymeleaf para mostrar el ID del pago.
+    -->
+    <h1 class="title">
+        Detalle pago nº <span th:text="${pago.id}">0000000002</span>
+    </h1>
+
+    <div class="main-card">
+        <div class="content-grid">
+            <div class="section">
+                <h2 class="section-title">Detalles del pago</h2>
+                <div class="details-grid">
+
+                    <!--
+                        NUEVO: Se sustituye la fecha estática por la fecha proveniente de "pago",
+                        formateada con el #temporals de Thymeleaf.
+                    -->
+                    <span class="label">Fecha:</span>
+                    <p class="value"
+                       th:text="${pago.fecha}">
+                        10/07/2024 16:44
+                    </p>
+
+                    <!--
+                        NUEVO: Mostramos el ticket del pago mediante thymeleaf.
+                    -->
+                    <span class="label">Ticket:</span>
+                    <p class="value" th:text="${pago.ticketExt}">
+                        0000000002aj-23
+                    </p>
+
+                    <!--
+                        NUEVO: Mostramos el importe mediante thymeleaf.
+                        Añadimos el símbolo de € con una concatenación.
+                    -->
+                    <span class="label">Importe:</span>
+                    <p class="value"
+                       th:text="${pago.importe + ' €'}">
+                        34,99€
+                    </p>
+
+                    <!--
+                        NUEVO: Mostramos el estado proveniente de estadoPagoData.nombre
+                    -->
+                    <span class="label">Estado:</span>
+                    <p class="value"
+                       th:text="${pago.estadoPagoData.nombre}">
+                        Pendiente-PendBanc
+                    </p>
+
+                    <!--
+                        NUEVO: Mostramos la razón del estado proveniente de estadoPagoData.razonEstado
+                    -->
+                    <span class="label">Razón estado:</span>
+                    <p class="value"
+                       th:text="${pago.estadoPagoData.razonEstado}">
+                        El pago aún no ha llegado a la entidad bancaria
+                    </p>
+
+                    <!--
+                        Si quisieras repetir el importe aquí o mostrar cualquier otro dato,
+                        podrías hacerlo de forma similar; por ejemplo:
+
+                        <span class="label">Importe (de nuevo):</span>
+                        <p class="value" th:text="${pago.importe + ' €'}"></p>
+
+                        Por ahora, he eliminado el segundo "Importe:" duplicado del HTML original.
+                    -->
+                </div>
+            </div>
+
+            <div>
                 <div class="section">
-                    <h2 class="section-title">Detalles del pago</h2>
+                    <h2 class="section-title">Pagador</h2>
                     <div class="details-grid">
-                        <span class="label">Fecha:</span>
-                        <p class="value">10/07/2024 16:44</p>
 
-                        <span class="label">Ticket:</span>
-                        <p class="value">0000000002aj-23</p>
+                        <!--
+                            NUEVO: Mostramos el número de tarjeta proveniente de pago.tarjetaPagoData.numeroTarjeta
+                        -->
+                        <span class="label">Numero tarjeta:</span>
+                        <p class="value"
+                           th:text="${pago.tarjetaPagoData.numeroTarjeta}">
+                            **** **** **** 1111
+                        </p>
 
-                        <span class="label">Importe:</span>
-                        <p class="value">34,99€</p>
-
-                        <span class="label">Estado:</span>
-                        <p class="value">Pendiente-PendBanc</p>
-
-                        <span class="label">Razón estado:</span>
-                        <p class="value">El pago aún no ha llegado a la entidad bancaria</p>
-
-                        <span class="label">Importe:</span>
-                        <p class="value">34,99€</p>
+                        <!--
+                            NUEVO: Mostramos el nombre del titular de la tarjeta proveniente de pago.tarjetaPagoData.nombre
+                        -->
+                        <span class="label">Nombre tarjeta:</span>
+                        <p class="value"
+                           th:text="${pago.tarjetaPagoData.nombre}">
+                            Juan Jimenez Gonzalez
+                        </p>
                     </div>
                 </div>
 
-                <div>
-                    <div class="section">
-                        <h2 class="section-title">Pagador</h2>
-                        <div class="details-grid">
-                            <span class="label">Numero tarjeta:</span>
-                            <p class="value">**** **** **** 1111</p>
-
-                            <span class="label">Nombre tarjeta:</span>
-                            <p class="value">Juan Jimenez Gonzalez</p>
-                        </div>
-                    </div>
-                    <div class="section" style="margin-top: 20px;">
-                        <h2 class="section-title">Incidencia</h2>
-                        <div class="incident-section">
-                            <p>Este pago no tiene una incidencia asociada</p>
-                            <button class="create-button">Crear</button>
-                        </div>
+                <!--
+                    IMPORTANTE: El <div> de incidencia NO se modifica.
+                    Por lo tanto, mantenemos este bloque tal cual.
+                -->
+                <div class="section" style="margin-top: 20px;">
+                    <h2 class="section-title">Incidencia</h2>
+                    <div class="incident-section">
+                        <p>Este pago no tiene una incidencia asociada</p>
+                        <button class="create-button">Crear</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <div th:replace="fragments::javascript"></div>
+<div th:replace="fragments::javascript"></div>
 </body>
 </html>
