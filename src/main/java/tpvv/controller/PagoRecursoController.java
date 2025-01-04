@@ -35,6 +35,7 @@ public class PagoRecursoController {
     @GetMapping("/api/comercio/{id}/pagos")
     public String listarPagosComercio(@PathVariable(value="id") Long idUsuario,
                                       Model model,
+                                      @RequestParam(defaultValue = "0") int page,
                                       @RequestParam(required = false) Long id,
                                       @RequestParam(required = false) String ticket,
                                       @RequestParam(required = false) String estado,
@@ -83,6 +84,7 @@ public class PagoRecursoController {
 
     @GetMapping("/api/admin/pagos")
     public String allPagos(Model model,
+                           @RequestParam(defaultValue = "0") int page,
                            @RequestParam(required = false) Long id,
                            @RequestParam(required = false) String ticket,
                            @RequestParam(required = false) String cif,
