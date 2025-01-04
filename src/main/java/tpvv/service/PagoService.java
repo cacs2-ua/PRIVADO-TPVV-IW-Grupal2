@@ -322,13 +322,13 @@ public class PagoService {
 
         if (ticket != null && !ticket.trim().isEmpty()) {
             streamPagos = streamPagos.filter(p ->
-                    p.getTicketExt() != null && p.getTicketExt().equals(ticket.trim())
+                    p.getTicketExt() != null && p.getTicketExt().equalsIgnoreCase(ticket.trim())
             );
         }
 
         if (cif != null && !cif.trim().isEmpty()) {
             streamPagos = streamPagos.filter(p ->
-                    p.getComercio().getCif() != null && p.getComercio().getCif().equals(cif.trim())
+                    p.getComercio().getCif() != null && p.getComercio().getCif().equalsIgnoreCase(cif.trim())
             );
         }
 
@@ -448,7 +448,7 @@ public class PagoService {
 
         if (ticket != null && !ticket.trim().isEmpty()) {
             streamPagos = streamPagos.filter(p ->
-                    p.getTicketExt() != null && p.getTicketExt().equals(ticket.trim())
+                    p.getTicketExt() != null && p.getTicketExt().equalsIgnoreCase(ticket.trim())
             );
         }
 
@@ -498,6 +498,107 @@ public class PagoService {
         return resultado.stream()
                 .sorted(Comparator.comparingLong(PagoRecursoData::getId))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * NUEVO: filtrarPagosDeUnComercioPaginado
+     * Aplica la misma lógica de filtrarPagosDeUnComercio(...) pero con paginación.
+     * Usamos 4 elementos por página.
+     *
+     * @param page       Página actual (0-based).
+     * @param size       Tamaño de página (4).
+     * @param comercioId ID del comercio.
+     * @param id         Filtro de ID (opcional).
+     * @param ticket     Filtro de ticket (opcional).
+     * @param estado     Filtro de estado (opcional, "Aceptado", "Pendiente", "Rechazado", "Todos").
+     * @param fechaDesde Fecha mínima (opcional).
+     * @param fechaHasta Fecha máxima (opcional).
+     * @return Page<PagoRecursoData> con la sublista de elementos y la info de paginación.
+     */
+    @Transactional(readOnly = true)
+    public Page<PagoRecursoData> filtrarPagosDeUnComercioPaginado(int page,
+                                                                  int size,
+                                                                  Long comercioId,
+                                                                  Long id,
+                                                                  String ticket,
+                                                                  String estado,
+                                                                  Date fechaDesde,
+                                                                  Date fechaHasta) {
+        // 1) Obtenemos TODOS los pagos de ese comercio
+        List<Pago> pagos = pagoRepository.findByComercioId(comercioId);
+
+        // 2) Filtro en memoria por ID, ticket, fechas
+        Stream<Pago> streamPagos = pagos.stream();
+
+        if (id != null) {
+            streamPagos = streamPagos.filter(p -> p.getId().equals(id));
+        }
+
+        if (ticket != null && !ticket.trim().isEmpty()) {
+            streamPagos = streamPagos.filter(p ->
+                    p.getTicketExt() != null && p.getTicketExt().equalsIgnoreCase(ticket.trim())
+            );
+        }
+
+        if (fechaDesde != null) {
+            streamPagos = streamPagos.filter(p -> !p.getFecha().before(fechaDesde));
+        }
+
+        if (fechaHasta != null) {
+            streamPagos = streamPagos.filter(p -> !p.getFecha().after(fechaHasta));
+        }
+
+        // 3) Recogemos la lista filtrada
+        List<Pago> pagosFiltrados = streamPagos.collect(Collectors.toList());
+
+        // 4) Mapeamos cada pago a PagoRecursoData
+        List<PagoRecursoData> resultado = pagosFiltrados.stream()
+                .map(p -> {
+                    PagoRecursoData prd = modelMapper.map(p, PagoRecursoData.class);
+                    prd.setComercioData(modelMapper.map(p.getComercio(), ComercioData.class));
+                    prd.setEstadoPagoData(modelMapper.map(p.getEstado(), EstadoPagoData.class));
+                    prd.setTarjetaPagoData(modelMapper.map(p.getTarjetaPago(), TarjetaPagoData.class));
+                    return prd;
+                })
+                .collect(Collectors.toList());
+
+        // 5) Asignamos shownState ("Aceptado","Pendiente","Rechazado")
+        for (PagoRecursoData prd : resultado) {
+            if (prd.getEstadoPagoData() != null && prd.getEstadoPagoData().getNombre() != null) {
+                if (prd.getEstadoPagoData().getNombre().startsWith("ACEPT")) {
+                    prd.setShownState("Aceptado");
+                } else if (prd.getEstadoPagoData().getNombre().startsWith("PEND")) {
+                    prd.setShownState("Pendiente");
+                } else if (prd.getEstadoPagoData().getNombre().startsWith("RECH")) {
+                    prd.setShownState("Rechazado");
+                }
+            }
+        }
+
+        // 6) Si el usuario seleccionó un estado (y no "Todos"), filtramos por shownState
+        if (estado != null && !estado.trim().isEmpty() && !"Todos".equalsIgnoreCase(estado.trim())) {
+            resultado = resultado.stream()
+                    .filter(prd -> estado.equalsIgnoreCase(prd.getShownState()))
+                    .collect(Collectors.toList());
+        }
+
+        // 7) Ordenamos y paginamos manualmente en memoria
+        resultado.sort(Comparator.comparingLong(PagoRecursoData::getId));
+
+        int total = resultado.size();
+        int start = page * size;
+        int end = Math.min(start + size, total);
+
+        if (start > end) {
+            // Página fuera de rango
+            List<PagoRecursoData> vacia = Collections.emptyList();
+            return new PageImpl<>(vacia, PageRequest.of(page, size), total);
+        }
+
+        List<PagoRecursoData> subLista = resultado.subList(start, end);
+
+        // Construimos la Page
+        return new PageImpl<>(subLista, PageRequest.of(page, size), total);
     }
 
     @Transactional(readOnly = true)

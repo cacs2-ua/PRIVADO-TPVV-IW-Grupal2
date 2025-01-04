@@ -33,7 +33,6 @@ public class PagoRecursoController {
     @Autowired
     PagoService pagoService;
 
-    // =========================== LISTAR PAGOS DEL COMERCIO ===========================
     @GetMapping("/api/comercio/{id}/pagos")
     public String listarPagosComercio(@PathVariable(value="id") Long idUsuario,
                                       Model model,
@@ -53,19 +52,23 @@ public class PagoRecursoController {
             throw new UsuarioNoLogeadoException();
         }
 
+        // 1) Obtener comercio
         ComercioData comercioData = pagoService.obtenerComercioDeUsuarioLogeado(idUsuarioLogeado);
 
+        // 2) Convertir fechas a Timestamp si existen
         Timestamp tsDesde = null;
         if (fechaDesde != null) {
             tsDesde = new Timestamp(fechaDesde.getTime());
         }
-
         Timestamp tsHasta = null;
         if (fechaHasta != null) {
             tsHasta = new Timestamp(fechaHasta.getTime());
         }
 
-        List<PagoRecursoData> pagos = pagoService.filtrarPagosDeUnComercio(
+        // 3) Usar el NUEVO método filtrarPagosDeUnComercioPaginado(...) con 4 elementos/página
+        Page<PagoRecursoData> pageResult = pagoService.filtrarPagosDeUnComercioPaginado(
+                page,
+                4,  // 4 elementos por página
                 comercioData.getId(),
                 id,
                 ticket,
@@ -74,22 +77,28 @@ public class PagoRecursoController {
                 tsHasta
         );
 
-        // === NUEVO: Convertir fechaDesde y fechaHasta a string 'yyyy-MM-dd' para ponerlo en el input date ===
-        String fechaDesdeStr = (fechaDesde != null) ? new SimpleDateFormat("yyyy-MM-dd").format(fechaDesde) : "";
-        String fechaHastaStr = (fechaHasta != null) ? new SimpleDateFormat("yyyy-MM-dd").format(fechaHasta) : "";
+        // 4) Obtenemos la lista subpaginada
+        List<PagoRecursoData> pagos = pageResult.getContent();
 
-        // Meter en el modelo para repintar el input date
-        model.addAttribute("fechaDesdeStr", fechaDesdeStr);
-        model.addAttribute("fechaHastaStr", fechaHastaStr);
+        // 5) Convertir fechaDesde, fechaHasta a String "yyyy-MM-dd" para repintar inputs
+        String fechaDesdeStr = (fechaDesde != null)
+                ? new SimpleDateFormat("yyyy-MM-dd").format(fechaDesde) : "";
+        String fechaHastaStr = (fechaHasta != null)
+                ? new SimpleDateFormat("yyyy-MM-dd").format(fechaHasta) : "";
 
-        // Otros filtros
+        // 6) Guardar datos en el modelo
+        model.addAttribute("pagos", pagos);
+
+        // Paginación
+        model.addAttribute("currentPage", pageResult.getNumber());
+        model.addAttribute("totalPages", pageResult.getTotalPages());
+
+        // Filtros
         model.addAttribute("idFilter", id);
         model.addAttribute("ticketFilter", ticket);
         model.addAttribute("estadoFilter", estado);
-
-        model.addAttribute("pagos", pagos);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", 1); // Si no paginas aquí, pon un 1 fijo, o lo que requieras.
+        model.addAttribute("fechaDesdeStr", fechaDesdeStr);
+        model.addAttribute("fechaHastaStr", fechaHastaStr);
 
         return "listadoPagosComercio";
     }
