@@ -2,6 +2,7 @@ package tpvv.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -90,16 +91,12 @@ public class PagoRecursoController {
                            @RequestParam(required = false) String cif,
                            @RequestParam(required = false) String estado,
 
-                           // IMPORTANTE: Con @DateTimeFormat, si viene "" => null,
-                           // y si viene "2025-01-04" => se parsea a Date con la hora a 00:00:00.
                            @RequestParam(required = false)
                            @DateTimeFormat(pattern = "yyyy-MM-dd") Date fechaDesde,
 
                            @RequestParam(required = false)
                            @DateTimeFormat(pattern = "yyyy-MM-dd") Date fechaHasta) {
 
-        // 1) Convertir las fechas a Timestamp (si tu servicio necesita Timestamps).
-        //    Si no, pásale Date directamente.
         Timestamp tsDesde = null;
         if (fechaDesde != null) {
             tsDesde = new Timestamp(fechaDesde.getTime());
@@ -107,18 +104,39 @@ public class PagoRecursoController {
 
         Timestamp tsHasta = null;
         if (fechaHasta != null) {
-            // Opcional: si quieres incluir todo el día "fechaHasta"
-            // podrías sumarle 23h59m59s. Aquí lo dejamos tal cual.
             tsHasta = new Timestamp(fechaHasta.getTime());
         }
 
-        // 2) Invocar la lógica de filtrado en PagoService
-        List<PagoRecursoData> pagos = pagoService.filtrarPagos(id, ticket, cif, estado, tsDesde, tsHasta);
+        Page<PagoRecursoData> pageResult = pagoService.filtrarPagosPaginado(
+                page,
+                4, // 4 elementos por página
+                id,
+                ticket,
+                cif,
+                estado,
+                tsDesde,
+                tsHasta
+        );
 
-        // 3) Pasar los datos a la vista
+
+        List<PagoRecursoData> pagos = pageResult.getContent();
+
         model.addAttribute("pagos", pagos);
+
+
+        model.addAttribute("currentPage", pageResult.getNumber());
+        model.addAttribute("totalPages", pageResult.getTotalPages());
+
+        model.addAttribute("idFilter", id);
+        model.addAttribute("ticketFilter", ticket);
+        model.addAttribute("cifFilter", cif);
+        model.addAttribute("estadoFilter", estado);
+        model.addAttribute("fechaDesdeFilter", fechaDesde);
+        model.addAttribute("fechaHastaFilter", fechaHasta);
+
         return "listadoPagos";
     }
+
 
 
     private String formatCardNumberWithMask(String numeroTarjeta) {

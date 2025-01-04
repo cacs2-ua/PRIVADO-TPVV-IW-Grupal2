@@ -6,6 +6,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;               // <-- NUEVO
+import org.springframework.data.domain.PageImpl;     // <-- NUEVO
+import org.springframework.data.domain.PageRequest;  // <-- NUEVO
+import org.springframework.data.domain.Pageable;     // <-- NUEVO
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import tpvv.dto.*;
 import tpvv.model.*;
@@ -13,10 +18,7 @@ import tpvv.repository.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -376,6 +378,54 @@ public class PagoService {
         return resultado.stream()
                 .sorted(Comparator.comparingLong(PagoRecursoData::getId))
                 .collect(Collectors.toList());
+    }
+
+
+    /**
+     * Aplica los mismos filtros en memoria que filtrarPagos(...), pero además
+     * añade paginación (4 elementos por página).
+     *
+     * @param page         Página actual (0-based).
+     * @param size         Tamaño de página (4).
+     * @param id           Filtro de ID (opcional).
+     * @param ticket       Filtro de ticket (opcional).
+     * @param cif          Filtro de cif (opcional).
+     * @param estado       Filtro de estado (opcional, "Aceptado", "Pendiente", "Rechazado", "Todos").
+     * @param fechaDesde   Fecha mínima (opcional).
+     * @param fechaHasta   Fecha máxima (opcional).
+     * @return Page<PagoRecursoData> con la sublista de elementos y la info de paginación.
+     */
+    @Transactional(readOnly = true)
+    public Page<PagoRecursoData> filtrarPagosPaginado(int page,
+                                                      int size,
+                                                      Long id,
+                                                      String ticket,
+                                                      String cif,
+                                                      String estado,
+                                                      Date fechaDesde,
+                                                      Date fechaHasta) {
+
+        // 1) Usamos la lógica anterior de filtrarPagos(...) para no repetir
+        List<PagoRecursoData> todosFiltrados = filtrarPagos(id, ticket, cif, estado, fechaDesde, fechaHasta);
+
+        // 2) Ordenamos por ID de forma ascendente (ya lo hacía filtrarPagos, pero aseguramos)
+        //    (Realmente filtrarPagos() ya lo ordena, pero lo dejamos por claridad.)
+        List<PagoRecursoData> ordenados = new ArrayList<>(todosFiltrados);
+
+        // 3) Paginamos manualmente.  (Podríamos usar una Query con paginación de JPA,
+        //    pero aquí lo hacemos en memoria para no reescribir la lógica de filtrado.)
+        int total = ordenados.size();
+        int start = page * size;
+        int end = Math.min(start + size, total);
+        if (start > end) {
+            // Si la página está fuera de rango, devolvemos una lista vacía
+            List<PagoRecursoData> vacia = Collections.emptyList();
+            return new PageImpl<>(vacia, PageRequest.of(page, size), total);
+        }
+
+        List<PagoRecursoData> subLista = ordenados.subList(start, end);
+
+        return new PageImpl<>(subLista, PageRequest.of(page, size), total);
     }
 
 
