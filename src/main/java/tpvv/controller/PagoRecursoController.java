@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import tpvv.authentication.ManagerUserSession;
 import tpvv.controller.exception.UsuarioNoLogeadoException;
 import tpvv.dto.ComercioData;
-import tpvv.dto.PagoData;
 import tpvv.dto.PagoRecursoData;
 import tpvv.service.PagoService;
 
@@ -84,5 +83,52 @@ public class PagoRecursoController {
 
         model.addAttribute("pagos", pagos);
         return "listadoPagos";
+    }
+
+    private String formatCardNumberWithMask(String numeroTarjeta) {
+        if (numeroTarjeta.length() != 16) {
+            throw new IllegalArgumentException("El número de tarjeta debe tener exactamente 16 dígitos.");
+        }
+
+        // Máscara de los primeros 12 dígitos con '*'
+        String maskedPart = "**** **** ****";
+        // Últimos 4 dígitos del número de tarjeta
+        String visiblePart = numeroTarjeta.substring(12);
+
+        // Combinar ambos con un espacio entre los bloques
+        return maskedPart + " " + visiblePart;
+    }
+
+
+    @GetMapping("/api/comercio/pagos/{id}")
+    public String detallesPago(@PathVariable(value = "id") Long idPago,
+                               Model model) {
+        PagoRecursoData pago = pagoService.obtenerPagoPorId(idPago);
+
+        if (pago.getTarjetaPagoData() != null && pago.getTarjetaPagoData().getNumeroTarjeta() != null) {
+            String numeroTarjeta = pago.getTarjetaPagoData().getNumeroTarjeta();
+            String numeroTarjetaFormateado = formatCardNumberWithMask(numeroTarjeta);
+            pago.setFormatedCardNumber(numeroTarjetaFormateado);
+        }
+
+        model.addAttribute("pago", pago);
+
+        return "detallesPago";
+    }
+
+    @GetMapping("/api/admin/pagos/{id}")
+    public String detallesPagoAdmin(@PathVariable(value="id") Long idPago,
+                                    Model model) {
+        PagoRecursoData pago = pagoService.obtenerPagoPorId(idPago);
+
+        if (pago.getTarjetaPagoData() != null && pago.getTarjetaPagoData().getNumeroTarjeta() != null) {
+            String numeroTarjeta = pago.getTarjetaPagoData().getNumeroTarjeta();
+            String numeroTarjetaFormateado = formatCardNumberWithMask(numeroTarjeta);
+            pago.setFormatedCardNumber(numeroTarjetaFormateado);
+        }
+
+        model.addAttribute("pago", pago);
+
+        return "detallesPagoAdmin";
     }
 }

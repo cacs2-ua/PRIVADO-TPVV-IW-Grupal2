@@ -86,7 +86,7 @@
 
                 <!-- NUEVO o MODIFICADO: Botón de Detalles (enlaza con un detalle hipotético) -->
                 <td>
-                    <a th:href="@{/}" class="btn btn-info">Detalles</a>
+                    <a th:href="@{'/api/admin/pagos/' + ${p.id}}" class="btn btn-info">Detalles</a>
                 </td>
             </tr>
             </tbody>
