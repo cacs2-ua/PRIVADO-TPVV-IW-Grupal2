@@ -63,7 +63,13 @@ public class PagoRecursoController {
     }
 
     @GetMapping("/api/admin/pagos")
-    public String allPagos(Model model) {
+    public String allPagos(Model model,
+                           @RequestParam(required = false) Long id,
+                           @RequestParam(required = false) String ticket,
+                           @RequestParam(required = false) String cif,
+                           @RequestParam(required = false) String estado,
+                           @RequestParam(required = false) Timestamp fechaDesde,
+                           @RequestParam(required = false) Timestamp fechaHasta) {
 
         List<PagoRecursoData> pagos = pagoService.allPagos();
 
@@ -85,6 +91,7 @@ public class PagoRecursoController {
         model.addAttribute("pagos", pagos);
         return "listadoPagos";
     }
+
 
     private String formatCardNumberWithMask(String numeroTarjeta) {
         if (numeroTarjeta.length() != 16) {
