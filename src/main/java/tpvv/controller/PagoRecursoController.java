@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import tpvv.authentication.ManagerUserSession;
+import tpvv.controller.exception.UsuarioNoLogeadoException;
 import tpvv.dto.PagoData;
 import tpvv.dto.PagoRecursoData;
 import tpvv.service.PagoService;
@@ -15,9 +17,19 @@ import java.util.List;
 public class PagoRecursoController {
 
     @Autowired
+    ManagerUserSession managerUserSession;
+
+    private Long devolverIdUsuarioLogeado(Long idUsuario) {
+        Long idUsuarioLogeado = managerUserSession.usuarioLogeado();
+        if (!idUsuario.equals(idUsuarioLogeado))
+            throw new UsuarioNoLogeadoException();
+        return idUsuarioLogeado;
+    }
+
+    @Autowired
     PagoService pagoService;
 
-    @GetMapping("/api/comercio/pagos")
+    @GetMapping("/comercioPagos")
     public String listarPagosComercio(Model model) {
 
         return "listadoPagosComercio";

@@ -8,10 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tpvv.dto.*;
-import tpvv.model.Comercio;
-import tpvv.model.EstadoPago;
-import tpvv.model.Pago;
-import tpvv.model.TarjetaPago;
+import tpvv.model.*;
 import tpvv.repository.*;
 
 import java.text.ParseException;
@@ -38,6 +35,9 @@ public class PagoService {
 
     @Autowired
     private ComercioRepository comercioRepository;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -327,5 +327,21 @@ public class PagoService {
 
         return pagoRecursoDataList;
     }
+
+    @Transactional(readOnly = true)
+    public ComercioData obtenerComercioDeUsuarioLogeado(Long idUsuario) {
+        Usuario usuario = usuarioRepository.findById(idUsuario)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Usuario no encontrado para el ID proporcionado: " + idUsuario));
+
+        Comercio comercio = usuario.getComercio();
+        if (comercio == null) {
+            throw new IllegalArgumentException("El usuario no tiene un comercio asociado.");
+        }
+
+        ComercioData comercioData = modelMapper.map(comercio, ComercioData.class);
+        return comercioData;
+    }
+
 
 }

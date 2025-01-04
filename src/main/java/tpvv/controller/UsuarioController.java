@@ -5,15 +5,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import tpvv.authentication.ManagerUserSession;
-import tpvv.dto.ComercioData;
-import tpvv.dto.PersonaContactoData;
 import tpvv.dto.UsuarioData;
 import tpvv.service.ComercioService;
 import tpvv.service.PaisService;
 import tpvv.service.UsuarioService;
 
 @Controller
-public class UsuariosController {
+public class UsuarioController {
 
 
     @Autowired
