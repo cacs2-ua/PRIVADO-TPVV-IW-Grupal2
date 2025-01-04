@@ -4,9 +4,8 @@
   <meta charset="UTF-8">
   <title>Pagos del Comercio</title>
 
+  <link rel="stylesheet" th:href="@{/css/custom/listadoPagosStyle.css}">
   <div th:include="fragments :: head (titulo='Pagos del Comercio')"></div>
-
-  <link rel="stylesheet" th:href="@{/css/custom/listadoPagosComercioStyle.css}">
 </head>
 <body class="body-background">
 <div th:replace="fragments::menuBar"></div>
@@ -15,10 +14,12 @@
   <form class="busqueda">
     <label>Id</label>
     <label>Ticket</label>
+    <label>CIF del comercio</label>
     <label>Estados</label>
     <label>Fecha Desde</label>
     <label>Fecha Hasta</label>
     <label></label>
+    <input type="text" class="search-input">
     <input type="text" class="search-input">
     <input type="text" class="search-input">
     <select class="search-select">
@@ -39,35 +40,54 @@
         <th>#</th>
         <th>Fecha</th>
         <th>Ticket</th>
+        <th>Comercio</th>
+        <th>CIF</th>
         <th>Importe</th>
         <th>Estado</th>
         <th>Acciones</th>
       </tr>
       </thead>
       <tbody>
-      <tr>
-        <td>00000000001</td>
-        <td>10/07/2024 16:44</td>
-        <td>TICKET-XXX</td>
-        <td>314.999€</td>
-        <td class="status-active">Aceptado</td>
-        <td><a href="" class="btn btn-info">Detalles</a> </td>
-      </tr>
-      <tr>
-        <td>00000000002</td>
-        <td>11/08/2024 18:21</td>
-        <td>TICKET-YYY</td>
-        <td>12.99€</td>
-        <td class="status-pending">Pendiente</td>
-        <td><a href="" class="btn btn-info">Detalles</a> </td>
-      </tr>
-      <tr>
-        <td>00000000003</td>
-        <td>12/00/2024 13:56</td>
-        <td>TICKET-ZZZ</td>
-        <td>9.49€</td>
-        <td class="status-inactive">Rechazado</td>
-        <td><a href="" class="btn btn-info">Detalles</a> </td>
+      <!-- NUEVO o MODIFICADO: Borrar o comentar las filas estáticas y usar Thymeleaf para iterar. -->
+      <tr th:each="p : ${pagos}">  <!-- NUEVO o MODIFICADO -->
+        <!-- NUEVO o MODIFICADO: Se muestra el ID -->
+        <td th:text="${p.id}"></td>
+
+        <!-- NUEVO o MODIFICADO:
+             Se formatea la fecha usando #temporals.format(p.fecha, 'dd/MM/yyyy HH:mm').
+             Asegúrate de que tu config de Thymeleaf incluya las utilidades de fecha
+             o ajusta este formato a tu conveniencia.
+        -->
+        <td th:text="${p.fecha}"></td>
+
+
+        <!-- NUEVO o MODIFICADO: Ticket -->
+        <td th:text="${p.ticketExt}"></td>
+
+        <!-- NUEVO o MODIFICADO: Comercio.nombre y Comercio.cif -->
+        <td th:text="${p.comercioData.nombre}"></td>
+        <td th:text="${p.comercioData.cif}"></td>
+
+        <!-- NUEVO o MODIFICADO: Importe, añadiendo el símbolo de euro -->
+        <td th:text="${p.importe + '€'}"></td>
+
+        <!-- NUEVO o MODIFICADO:
+             Se muestra el estado y se añade una clase condicional para colorearlo:
+             Aceptado => 'status-active'
+             Pendiente => 'status-pending'
+             Rechazado => 'status-inactive'
+        -->
+        <td th:text="${p.shownState}"
+            th:classappend="${p.shownState == 'Aceptado' ? 'status-active' :
+                    (p.shownState == 'Pendiente' ? 'status-pending' :
+                    'status-inactive')}">
+        </td>
+
+
+        <!-- NUEVO o MODIFICADO: Botón de Detalles (enlaza con un detalle hipotético) -->
+        <td>
+          <a th:href="@{/}" class="btn btn-info">Detalles</a>
+        </td>
       </tr>
       </tbody>
     </table>

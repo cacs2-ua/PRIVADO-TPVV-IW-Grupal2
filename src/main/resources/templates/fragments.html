@@ -64,7 +64,7 @@
           <a class="nav-link" th:href="@{/}" style="font-weight: normal; text-decoration: none;" onclick="highlightLink(this)">Incidencias</a>
         </li>
         <li class="nav-item" th:if="${usuario != null and usuario.tipoId == 3}">
-          <a class="nav-link" th:href="@{/api/comercio/pagos}" style="font-weight: normal; text-decoration: none;" onclick="highlightLink(this)">Pagos</a>
+          <a class="nav-link" th:href="@{'/api/comercio/' + ${usuario.id} + '/pagos'}" style="font-weight: normal; text-decoration: none;" onclick="highlightLink(this)">Pagos</a>
         </li>
         <li class="nav-item" th:if="${usuario != null and usuario.tipoId == 3}">
           <a class="nav-link" th:href="@{/api/comercio/mis-datos}" style="font-weight: normal; text-decoration: none;" onclick="highlightLink(this)">Nombre</a>
