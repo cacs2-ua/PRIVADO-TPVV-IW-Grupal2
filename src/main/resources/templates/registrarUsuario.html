@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Crear Usuario</title>
+    <link rel="stylesheet" th:href="@{/css/custom/crear-usuario-style.css}">
+    <div th:include="fragments :: head (titulo='Iniciar sesión')"></div>
+</head>
+<body class="cuerpo-registro">
+<div th:replace="fragments::menuBar" class="navbar-container"></div>
+
+<div class="terceracolumna">
+<h1>Crear Usuario</h1>
+<div class="contenedor">
+
+    <form th:action="@{/api/admin/crearusuario}" method="post">
+        <h2>Datos generales</h2>
+            <label for="tipo" class="form-label">*Tipo usuario</label>
+            <select id="tipo" name="tipo" class="form-select" aria-label="Default select example" th:field="${nuevoUsuario.tipoId}">
+                <option th:value="1" >Admin</option>
+                <option th:value="2" > Técnico</option>
+                <option th:value="3" selected> Comercio</option>
+            </select>
+            <label for="comercio" class="form-label">*Comercio</label>
+            <select id="comercio" name="comercio" class="form-select" aria-label="Default select example" th:field="${nuevoUsuario.comercioId}">
+                <option th:each="comercio : ${comercios}" th:value="${comercio.id}" th:text="${comercio.nombre}"></option>
+            </select>
+            <label for="nombre" class="form-label">*Nombre</label>
+            <input type="text" id="nombre" th:field="${nuevoUsuario.nombre}" class="form-control" required/>
+            <label for="email" class="form-label">*Email</label>
+            <input type="email" id="email" th:field="${nuevoUsuario.email}" class="form-control" required/>
+
+            <label for="password" class="form-label">*Contraseña</label>
+            <input type="password" id="password" th:field="${nuevoUsuario.contrasenya}" class="form-control" required/>
+
+        <input type="submit" value="Registrar" class="btn btn-light"/>
+    </form>
+
+</div>
+</div>
+
+<div th:replace="fragments::javascript"></div>
+</body>
+
+</html>
