@@ -37,40 +37,45 @@ public class PagoRecursoController {
                                       Model model,
                                       @RequestParam(required = false) Long id,
                                       @RequestParam(required = false) String ticket,
-                                      @RequestParam(required = false) String cif,
                                       @RequestParam(required = false) String estado,
 
-                                      // IMPORTANTE: Con @DateTimeFormat, si viene "" => null,
-                                      // y si viene "2025-01-04" => se parsea a Date con la hora a 00:00:00.
+                                      // Fechas
                                       @RequestParam(required = false)
-                                          @DateTimeFormat(pattern = "yyyy-MM-dd") Date fechaDesde,
+                                      @DateTimeFormat(pattern = "yyyy-MM-dd") Date fechaDesde,
 
                                       @RequestParam(required = false)
-                                          @DateTimeFormat(pattern = "yyyy-MM-dd") Date fechaHasta) {
+                                      @DateTimeFormat(pattern = "yyyy-MM-dd") Date fechaHasta) {
+
         Long idUsuarioLogeado = devolverIdUsuarioLogeado();
-
-        if (!idUsuario.equals(idUsuarioLogeado))
+        if (!idUsuario.equals(idUsuarioLogeado)) {
             throw new UsuarioNoLogeadoException();
-
-        ComercioData comercioData = pagoService.obtenerComercioDeUsuarioLogeado(idUsuarioLogeado);
-
-        List<PagoRecursoData> pagos = pagoService.obtenerPagosDeUnComercio(comercioData.getId());
-
-        for (PagoRecursoData pago : pagos) {
-            if (pago.getEstadoPagoData().getNombre().startsWith("ACEPT")) {
-                pago.setShownState("Aceptado");
-            }
-
-            else if (pago.getEstadoPagoData().getNombre().startsWith("PEND")) {
-                pago.setShownState("Pendiente");
-            }
-
-            else if (pago.getEstadoPagoData().getNombre().startsWith("RECH")) {
-                pago.setShownState("Rechazado");
-            }
-
         }
 
+        // 1) Obtener el comercio
+        ComercioData comercioData = pagoService.obtenerComercioDeUsuarioLogeado(idUsuarioLogeado);
+
+        // 2) Convertir las fechas a Timestamp (si hace falta)
+        Timestamp tsDesde = null;
+        if (fechaDesde != null) {
+            tsDesde = new Timestamp(fechaDesde.getTime());
+        }
+
+        Timestamp tsHasta = null;
+        if (fechaHasta != null) {
+            tsHasta = new Timestamp(fechaHasta.getTime());
+        }
+
+        // 3) Invocar el NUEVO método filtrarPagosDeUnComercio(...) en PagoService
+        List<PagoRecursoData> pagos = pagoService.filtrarPagosDeUnComercio(
+                comercioData.getId(), // ID del comercio
+                id,
+                ticket,
+                estado,
+                tsDesde,
+                tsHasta
+        );
+
+        // 4) Pasar los datos a la vista
         model.addAttribute("pagos", pagos);
 
         return "listadoPagosComercio";

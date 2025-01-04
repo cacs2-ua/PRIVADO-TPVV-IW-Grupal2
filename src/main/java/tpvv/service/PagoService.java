@@ -378,6 +378,78 @@ public class PagoService {
                 .collect(Collectors.toList());
     }
 
+
+    @Transactional(readOnly = true)
+    public List<PagoRecursoData> filtrarPagosDeUnComercio(Long comercioId,
+                                                          Long id,
+                                                          String ticket,
+                                                          String estado,
+                                                          Date fechaDesde,
+                                                          Date fechaHasta) {
+        // 1) Obtenemos los pagos de ese comercio
+        List<Pago> pagos = pagoRepository.findByComercioId(comercioId);
+
+        // 2) Filtro en memoria por ID, ticket, fechas
+        Stream<Pago> streamPagos = pagos.stream();
+
+        if (id != null) {
+            streamPagos = streamPagos.filter(p -> p.getId().equals(id));
+        }
+
+        if (ticket != null && !ticket.trim().isEmpty()) {
+            streamPagos = streamPagos.filter(p ->
+                    p.getTicketExt() != null && p.getTicketExt().equals(ticket.trim())
+            );
+        }
+
+        if (fechaDesde != null) {
+            streamPagos = streamPagos.filter(p -> !p.getFecha().before(fechaDesde));
+        }
+
+        if (fechaHasta != null) {
+            streamPagos = streamPagos.filter(p -> !p.getFecha().after(fechaHasta));
+        }
+
+        // 3) Recogemos la lista filtrada
+        List<Pago> pagosFiltrados = streamPagos.collect(Collectors.toList());
+
+        // 4) Mapeamos cada pago a PagoRecursoData
+        List<PagoRecursoData> resultado = pagosFiltrados.stream()
+                .map(p -> {
+                    PagoRecursoData prd = modelMapper.map(p, PagoRecursoData.class);
+                    prd.setComercioData(modelMapper.map(p.getComercio(), ComercioData.class));
+                    prd.setEstadoPagoData(modelMapper.map(p.getEstado(), EstadoPagoData.class));
+                    prd.setTarjetaPagoData(modelMapper.map(p.getTarjetaPago(), TarjetaPagoData.class));
+                    return prd;
+                })
+                .collect(Collectors.toList());
+
+        // 5) Asignamos shownState ("Aceptado","Pendiente","Rechazado")
+        for (PagoRecursoData prd : resultado) {
+            if (prd.getEstadoPagoData() != null && prd.getEstadoPagoData().getNombre() != null) {
+                if (prd.getEstadoPagoData().getNombre().startsWith("ACEPT")) {
+                    prd.setShownState("Aceptado");
+                } else if (prd.getEstadoPagoData().getNombre().startsWith("PEND")) {
+                    prd.setShownState("Pendiente");
+                } else if (prd.getEstadoPagoData().getNombre().startsWith("RECH")) {
+                    prd.setShownState("Rechazado");
+                }
+            }
+        }
+
+        // 6) Si el usuario seleccionó un estado (y no "Todos"), filtramos por shownState
+        if (estado != null && !estado.trim().isEmpty() && !"Todos".equalsIgnoreCase(estado.trim())) {
+            resultado = resultado.stream()
+                    .filter(prd -> estado.equalsIgnoreCase(prd.getShownState()))
+                    .collect(Collectors.toList());
+        }
+
+        // 7) Devolvemos la lista ordenada por ID
+        return resultado.stream()
+                .sorted(Comparator.comparingLong(PagoRecursoData::getId))
+                .collect(Collectors.toList());
+    }
+
     @Transactional(readOnly = true)
     public PagoRecursoData obtenerPagoPorId(Long id) {
         // Buscar el Pago por ID
