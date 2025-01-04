@@ -299,5 +299,33 @@ public class PagoService {
         return pagoRecursoDataList;
     }
 
+    @Transactional(readOnly = true)
+    public List<PagoRecursoData> obtenerPagosDeUnComercio(Long comercioId) {
+        logger.debug("Obteniendo pagos para el Comercio con ID: {}", comercioId);
+
+        // Verificar si el Comercio existe
+        Comercio comercio = comercioRepository.findById(comercioId).orElseThrow(() ->
+                new IllegalArgumentException("Comercio no encontrado para el ID proporcionado.")
+        );
+
+        // Obtener los pagos asociados al Comercio
+        List<Pago> pagos = pagoRepository.findByComercioId(comercioId);
+
+        // Convertir la lista de entidades a DTOs usando ModelMapper
+        List<PagoRecursoData> pagoRecursoDataList = pagos.stream()
+                .map(pago -> {
+                    PagoRecursoData pagoRecursoData = modelMapper.map(pago, PagoRecursoData.class);
+
+                    pagoRecursoData.setComercioData(modelMapper.map(pago.getComercio(), ComercioData.class));
+                    pagoRecursoData.setEstadoPagoData(modelMapper.map(pago.getEstado(), EstadoPagoData.class));
+                    pagoRecursoData.setTarjetaPagoData(modelMapper.map(pago.getTarjetaPago(), TarjetaPagoData.class));
+
+                    return pagoRecursoData;
+                })
+                .sorted(Comparator.comparingLong(PagoRecursoData::getId)) // Ordenar por ID
+                .collect(Collectors.toList());
+
+        return pagoRecursoDataList;
+    }
 
 }
