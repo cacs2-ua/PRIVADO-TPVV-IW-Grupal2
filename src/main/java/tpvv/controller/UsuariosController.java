@@ -48,6 +48,14 @@ public class UsuariosController {
         return "perfilTecnico";
     }
 
+    @GetMapping("/api/admin/mis-datos")
+    public String perfilAdmin(Model model) {
+        UsuarioData usuario = usuarioService.findById(getUsuarioLogeadoId());
+        model.addAttribute("usuario", usuario);
+
+        return "perfilAdmin";
+    }
+
     @GetMapping("/api/admin/usuarios")
     public String listadoUsuarios(
             @RequestParam(required = false) Long id,
