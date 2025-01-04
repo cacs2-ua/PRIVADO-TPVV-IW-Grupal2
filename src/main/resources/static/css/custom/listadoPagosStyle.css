@@ -85,6 +85,10 @@
     color: #2d8a2d;
 }
 
+.status-pending {
+    color: #8a8a2d;
+}
+
 .status-inactive {
     color: #8a2d2d;
 }

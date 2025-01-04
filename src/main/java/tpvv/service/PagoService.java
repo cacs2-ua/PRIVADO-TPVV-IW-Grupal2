@@ -1,25 +1,28 @@
 package tpvv.service;
 
-import jakarta.transaction.Transactional;
+import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import tpvv.dto.PagoCompletoRequest;
-import tpvv.dto.PagoData;
-import tpvv.dto.PedidoCompletoRequest;
-import tpvv.dto.TarjetaPagoData;
-import tpvv.model.Comercio;
-import tpvv.model.EstadoPago;
-import tpvv.model.Pago;
-import tpvv.model.TarjetaPago;
+import tpvv.dto.*;
+import tpvv.model.*;
 import tpvv.repository.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PagoService {
+    Logger logger = LoggerFactory.getLogger(PagoService.class);
+
 
     @Autowired
     private PagoRepository pagoRepository;
@@ -33,6 +36,12 @@ public class PagoService {
     @Autowired
     private ComercioRepository comercioRepository;
 
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private ModelMapper modelMapper;
+
     @Transactional
     public String obtenerUrlBack(String apiKey) {
         Comercio comercio = comercioRepository.findByApiKey(apiKey).orElse(null);
@@ -42,12 +51,19 @@ public class PagoService {
         return comercio.getUrl_back();
     }
 
-    @Transactional
-    public String obtenerNombreComercio(String apiKey) {
-        Comercio comercio = comercioRepository.findByApiKey(apiKey).orElse(null);
+    @Transactional(readOnly = true)
+    public String obtenerNombreComercio(Long id) {
+        // Buscar el Pago por ID
+        Pago pago = pagoRepository.findById(id).orElseThrow(() ->
+                new IllegalArgumentException("Pago no encontrado para el ID proporcionado.")
+        );
+
+        // Devolver el nombre del comercio asociado al Pago
+        Comercio comercio = pago.getComercio();
         if (comercio == null) {
-            throw new IllegalArgumentException("Comercio no encontrado para la API Key proporcionada.");
+            throw new IllegalArgumentException("El Pago no tiene un Comercio asociado.");
         }
+
         return comercio.getNombre();
     }
 
@@ -258,4 +274,74 @@ public class PagoService {
 
         return estadoPago;
     }
+
+    @Transactional(readOnly = true)
+    public List<PagoRecursoData> allPagos() {
+        logger.debug("Devolviendo todos los pagos");
+
+        // Obtener todos los pagos de la base de datos
+        List<Pago> pagos = pagoRepository.findAll();
+
+        // Convertir la lista de entidades a DTOs usando Java Stream API
+        List<PagoRecursoData> pagoRecursoDataList = pagos.stream()
+                .map(pago -> {
+                    PagoRecursoData pagoRecursoData = modelMapper.map(pago, PagoRecursoData.class);
+
+                    pagoRecursoData.setComercioData(modelMapper.map(pago.getComercio(), ComercioData.class));
+                    pagoRecursoData.setEstadoPagoData(modelMapper.map(pago.getEstado(), EstadoPagoData.class));
+                    pagoRecursoData.setTarjetaPagoData(modelMapper.map(pago.getTarjetaPago(), TarjetaPagoData.class));
+
+                    return pagoRecursoData;
+                })
+                .sorted(Comparator.comparingLong(PagoRecursoData::getId)) // Ordenar por ID
+                .collect(Collectors.toList());
+
+        return pagoRecursoDataList;
+    }
+
+    @Transactional(readOnly = true)
+    public List<PagoRecursoData> obtenerPagosDeUnComercio(Long comercioId) {
+        logger.debug("Obteniendo pagos para el Comercio con ID: {}", comercioId);
+
+        // Verificar si el Comercio existe
+        Comercio comercio = comercioRepository.findById(comercioId).orElseThrow(() ->
+                new IllegalArgumentException("Comercio no encontrado para el ID proporcionado.")
+        );
+
+        // Obtener los pagos asociados al Comercio
+        List<Pago> pagos = pagoRepository.findByComercioId(comercioId);
+
+        // Convertir la lista de entidades a DTOs usando ModelMapper
+        List<PagoRecursoData> pagoRecursoDataList = pagos.stream()
+                .map(pago -> {
+                    PagoRecursoData pagoRecursoData = modelMapper.map(pago, PagoRecursoData.class);
+
+                    pagoRecursoData.setComercioData(modelMapper.map(pago.getComercio(), ComercioData.class));
+                    pagoRecursoData.setEstadoPagoData(modelMapper.map(pago.getEstado(), EstadoPagoData.class));
+                    pagoRecursoData.setTarjetaPagoData(modelMapper.map(pago.getTarjetaPago(), TarjetaPagoData.class));
+
+                    return pagoRecursoData;
+                })
+                .sorted(Comparator.comparingLong(PagoRecursoData::getId)) // Ordenar por ID
+                .collect(Collectors.toList());
+
+        return pagoRecursoDataList;
+    }
+
+    @Transactional(readOnly = true)
+    public ComercioData obtenerComercioDeUsuarioLogeado(Long idUsuario) {
+        Usuario usuario = usuarioRepository.findById(idUsuario)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Usuario no encontrado para el ID proporcionado: " + idUsuario));
+
+        Comercio comercio = usuario.getComercio();
+        if (comercio == null) {
+            throw new IllegalArgumentException("El usuario no tiene un comercio asociado.");
+        }
+
+        ComercioData comercioData = modelMapper.map(comercio, ComercioData.class);
+        return comercioData;
+    }
+
+
 }
