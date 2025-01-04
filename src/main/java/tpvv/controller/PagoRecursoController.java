@@ -2,6 +2,7 @@ package tpvv.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import tpvv.dto.PagoRecursoData;
 import tpvv.service.PagoService;
 
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -68,26 +70,33 @@ public class PagoRecursoController {
                            @RequestParam(required = false) String ticket,
                            @RequestParam(required = false) String cif,
                            @RequestParam(required = false) String estado,
-                           @RequestParam(required = false) Timestamp fechaDesde,
-                           @RequestParam(required = false) Timestamp fechaHasta) {
 
-        List<PagoRecursoData> pagos = pagoService.allPagos();
+                           // IMPORTANTE: Con @DateTimeFormat, si viene "" => null,
+                           // y si viene "2025-01-04" => se parsea a Date con la hora a 00:00:00.
+                           @RequestParam(required = false)
+                           @DateTimeFormat(pattern = "yyyy-MM-dd") Date fechaDesde,
 
-        for (PagoRecursoData pago : pagos) {
-            if (pago.getEstadoPagoData().getNombre().startsWith("ACEPT")) {
-                pago.setShownState("Aceptado");
-            }
+                           @RequestParam(required = false)
+                           @DateTimeFormat(pattern = "yyyy-MM-dd") Date fechaHasta) {
 
-            else if (pago.getEstadoPagoData().getNombre().startsWith("PEND")) {
-                pago.setShownState("Pendiente");
-            }
-
-            else if (pago.getEstadoPagoData().getNombre().startsWith("RECH")) {
-                pago.setShownState("Rechazado");
-            }
-
+        // 1) Convertir las fechas a Timestamp (si tu servicio necesita Timestamps).
+        //    Si no, pásale Date directamente.
+        Timestamp tsDesde = null;
+        if (fechaDesde != null) {
+            tsDesde = new Timestamp(fechaDesde.getTime());
         }
 
+        Timestamp tsHasta = null;
+        if (fechaHasta != null) {
+            // Opcional: si quieres incluir todo el día "fechaHasta"
+            // podrías sumarle 23h59m59s. Aquí lo dejamos tal cual.
+            tsHasta = new Timestamp(fechaHasta.getTime());
+        }
+
+        // 2) Invocar la lógica de filtrado en PagoService
+        List<PagoRecursoData> pagos = pagoService.filtrarPagos(id, ticket, cif, estado, tsDesde, tsHasta);
+
+        // 3) Pasar los datos a la vista
         model.addAttribute("pagos", pagos);
         return "listadoPagos";
     }
@@ -126,13 +135,7 @@ public class PagoRecursoController {
 
     @GetMapping("/api/admin/pagos/{id}")
     public String detallesPagoAdmin(@PathVariable(value="id") Long idPago,
-                                    Model model,
-                                    @RequestParam(required = false) Long id,
-                                    @RequestParam(required = false) String ticket,
-                                    @RequestParam(required = false) String cif,
-                                    @RequestParam(required = false) String estado,
-                                    @RequestParam(required = false) Timestamp fechaDesde,
-                                    @RequestParam(required = false) Timestamp fechaHasta) {
+                                    Model model) {
         PagoRecursoData pago = pagoService.obtenerPagoPorId(idPago);
 
         if (pago.getTarjetaPagoData() != null && pago.getTarjetaPagoData().getNumeroTarjeta() != null) {
