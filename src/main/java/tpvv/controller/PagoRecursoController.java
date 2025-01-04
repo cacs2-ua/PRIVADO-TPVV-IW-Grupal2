@@ -34,7 +34,19 @@ public class PagoRecursoController {
 
     @GetMapping("/api/comercio/{id}/pagos")
     public String listarPagosComercio(@PathVariable(value="id") Long idUsuario,
-                                      Model model) {
+                                      Model model,
+                                      @RequestParam(required = false) Long id,
+                                      @RequestParam(required = false) String ticket,
+                                      @RequestParam(required = false) String cif,
+                                      @RequestParam(required = false) String estado,
+
+                                      // IMPORTANTE: Con @DateTimeFormat, si viene "" => null,
+                                      // y si viene "2025-01-04" => se parsea a Date con la hora a 00:00:00.
+                                      @RequestParam(required = false)
+                                          @DateTimeFormat(pattern = "yyyy-MM-dd") Date fechaDesde,
+
+                                      @RequestParam(required = false)
+                                          @DateTimeFormat(pattern = "yyyy-MM-dd") Date fechaHasta) {
         Long idUsuarioLogeado = devolverIdUsuarioLogeado();
 
         if (!idUsuario.equals(idUsuarioLogeado))
