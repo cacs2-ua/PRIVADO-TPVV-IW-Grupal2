@@ -11,7 +11,7 @@ import tpvv.service.PaisService;
 import tpvv.service.UsuarioService;
 
 @Controller
-public class UsuarioController {
+public class UsuariosController {
 
 
     @Autowired
