@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Pagos del Comercio</title>
+    <title>Pagos de todos los comercios</title>
 
     <link rel="stylesheet" th:href="@{/css/custom/listadoPagosStyle.css}">
     <div th:include="fragments :: head (titulo='Pagos del Comercio')"></div>
@@ -10,16 +10,9 @@
 <body class="body-background">
 <div th:replace="fragments::menuBar"></div>
 <div class="container">
-    <h1 class="title">Pagos del Comercio</h1>
+    <h1 class="title">Pagos de todos los comercios</h1>
 
-    <!--
-         Mantenemos la misma estructura de 7 columnas x 2 filas.
-         ÚNICOS cambios:
-         1) th:action y method="get"
-         2) name="..." en cada <input>/<select>
-    -->
     <form class="busqueda" th:action="@{/api/admin/pagos}" method="get">
-        <!-- Fila de labels -->
         <label>Id</label>
         <label>Ticket</label>
         <label>CIF del comercio</label>
@@ -28,18 +21,20 @@
         <label>Fecha Hasta</label>
         <label></label>
 
-        <!-- Fila de inputs -->
-        <input type="text" class="search-input" name="id">
-        <input type="text" class="search-input" name="ticket">
-        <input type="text" class="search-input" name="cif">
+        <input type="text" class="search-input" name="id" th:value="${idFilter}">
+        <input type="text" class="search-input" name="ticket" th:value="${ticketFilter}">
+        <input type="text" class="search-input" name="cif" th:value="${cifFilter}">
         <select class="search-select" name="estado">
-            <option selected>Todos</option>
-            <option>Aceptado</option>
-            <option>Pendiente</option>
-            <option>Rechazado</option>
+            <option th:selected="${estadoFilter == null or estadoFilter=='Todos'}">Todos</option>
+            <option th:selected="${estadoFilter=='Aceptado'}">Aceptado</option>
+            <option th:selected="${estadoFilter=='Pendiente'}">Pendiente</option>
+            <option th:selected="${estadoFilter=='Rechazado'}">Rechazado</option>
         </select>
-        <input type="date" class="search-input" name="fechaDesde">
-        <input type="date" class="search-input" name="fechaHasta">
+
+        <!-- IMPORTANTE: Usamos fechaDesdeStr en lugar de la Date entera -->
+        <input type="date" class="search-input" name="fechaDesde" th:value="${fechaDesdeStr}">
+        <input type="date" class="search-input" name="fechaHasta" th:value="${fechaHastaStr}">
+
         <button type="submit">Aplicar filtros</button>
     </form>
 
@@ -58,12 +53,8 @@
             </tr>
             </thead>
             <tbody>
-            <!-- Se usa Thymeleaf para iterar sobre la lista de pagos -->
             <tr th:each="p : ${pagos}">
                 <td th:text="${p.id}"></td>
-                <!-- Aquí puedes formatear la fecha si lo deseas, por ejemplo:
-                     th:text="${#temporals.format(p.fecha, 'dd/MM/yyyy HH:mm')}"
-                -->
                 <td th:text="${p.fecha}"></td>
                 <td th:text="${p.ticketExt}"></td>
                 <td th:text="${p.comercioData.nombre}"></td>
@@ -80,6 +71,40 @@
             </tbody>
         </table>
     </div>
+</div>
+
+<div class="pagination">
+    <!-- Link "Anterior" -->
+    <a th:if="${currentPage > 0}"
+       th:href="@{/api/admin/pagos(
+         page=${currentPage - 1},
+         id=${idFilter},
+         ticket=${ticketFilter},
+         cif=${cifFilter},
+         estado=${estadoFilter},
+         fechaDesde=${fechaDesdeStr},
+         fechaHasta=${fechaHastaStr}
+       )}"
+       th:text="${currentPage}">&lsaquo; Anterior</a>
+
+    <span class="page-item active">
+        <span th:text="${currentPage + 1}"></span>
+    </span>
+
+    <!-- Link "Siguiente" -->
+    <a th:if="${currentPage < totalPages - 1}"
+       th:href="@{/api/admin/pagos(
+         page=${currentPage + 1},
+         id=${idFilter},
+         ticket=${ticketFilter},
+         cif=${cifFilter},
+         estado=${estadoFilter},
+         fechaDesde=${fechaDesdeStr},
+         fechaHasta=${fechaHastaStr}
+       )}"
+       th:text="${currentPage + 2}">
+        Siguiente &rsaquo;
+    </a>
 </div>
 
 <div th:replace="fragments::javascript"></div>

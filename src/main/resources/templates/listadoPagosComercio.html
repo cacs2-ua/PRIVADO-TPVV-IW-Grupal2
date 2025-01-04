@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Pagos del Comercio</title>
+  <title>Pagos de tu comercio</title>
 
   <link rel="stylesheet" th:href="@{/css/custom/listadoPagosComercioStyle.css}">
   <div th:include="fragments :: head (titulo='Pagos del Comercio')"></div>
@@ -10,16 +10,13 @@
 <body class="body-background">
 <div th:replace="fragments::menuBar"></div>
 <div class="container">
-  <h1 class="title">Pagos del Comercio</h1>
+  <h1 class="title">Pagos de tu comercio</h1>
 
-  <!-- =========================================================== -->
-  <!-- NUEVO o MODIFICADO: Se añade el th:action y method="get",   -->
-  <!-- y los name=... en los inputs/select. Se quita "CIF".       -->
-  <!-- =========================================================== -->
+  <!-- Formulario con los filtros -->
   <form class="busqueda"
         th:action="@{ '/api/comercio/' + ${usuario.id} + '/pagos' }"
         method="get">
-    <!-- Fila de labels -->
+
     <label>Id</label>
     <label>Ticket</label>
     <label>Estados</label>
@@ -27,17 +24,19 @@
     <label>Fecha Hasta</label>
     <label></label>
 
-    <!-- Fila de inputs -->
-    <input type="text" class="search-input" name="id">
-    <input type="text" class="search-input" name="ticket">
+    <!-- Mantenemos los valores de filtros en each input -->
+    <input type="text" class="search-input" name="id" th:value="${idFilter}">
+    <input type="text" class="search-input" name="ticket" th:value="${ticketFilter}">
+
     <select class="search-select" name="estado">
-      <option selected>Todos</option>
-      <option>Aceptado</option>
-      <option>Pendiente</option>
-      <option>Rechazado</option>
+      <option th:selected="${estadoFilter == null or estadoFilter=='Todos'}">Todos</option>
+      <option th:selected="${estadoFilter=='Aceptado'}">Aceptado</option>
+      <option th:selected="${estadoFilter=='Pendiente'}">Pendiente</option>
+      <option th:selected="${estadoFilter=='Rechazado'}">Rechazado</option>
     </select>
-    <input type="date" class="search-input" name="fechaDesde">
-    <input type="date" class="search-input" name="fechaHasta">
+
+    <input type="date" class="search-input" name="fechaDesde" th:value="${fechaDesdeStr}">
+    <input type="date" class="search-input" name="fechaHasta" th:value="${fechaHastaStr}">
     <button type="submit">Aplicar filtros</button>
   </form>
 
@@ -54,17 +53,14 @@
       </tr>
       </thead>
       <tbody>
-      <!-- Se usa Thymeleaf para iterar sobre la lista de pagos -->
       <tr th:each="p : ${pagos}">
         <td th:text="${p.id}"></td>
-
         <td th:text="${p.fecha}"></td>
         <td th:text="${p.ticketExt}"></td>
         <td th:text="${p.importe + ' €'}"></td>
         <td th:text="${p.shownState}"
             th:classappend="${p.shownState == 'Aceptado' ? 'status-active' :
-                            (p.shownState == 'Pendiente' ? 'status-pending' : 'status-inactive')}">
-        </td>
+                            (p.shownState == 'Pendiente' ? 'status-pending' : 'status-inactive')}"></td>
         <td>
           <a th:href="@{'/api/comercio/pagos/' + ${p.id}}" class="btn btn-info">Detalles</a>
         </td>
@@ -72,6 +68,39 @@
       </tbody>
     </table>
   </div>
+</div>
+
+<!-- Paginación -->
+<div class="pagination">
+  <a th:text="${currentPage}"
+     th:href="@{'/api/comercio/' + ${usuario.id} + '/pagos'(
+       page=${currentPage - 1},
+       id=${idFilter},
+       ticket=${ticketFilter},
+       estado=${estadoFilter},
+       fechaDesde=${fechaDesdeStr},
+       fechaHasta=${fechaHastaStr}
+     )}"
+     th:if="${currentPage > 0}">
+    &lsaquo; Anterior
+  </a>
+
+  <span class="page-item active">
+    <span th:text="${currentPage + 1}"></span>
+  </span>
+
+  <a th:text="${currentPage + 2}"
+     th:href="@{'/api/comercio/' + ${usuario.id} + '/pagos'(
+       page=${currentPage + 1},
+       id=${idFilter},
+       ticket=${ticketFilter},
+       estado=${estadoFilter},
+       fechaDesde=${fechaDesdeStr},
+       fechaHasta=${fechaHastaStr}
+     )}"
+     th:if="${currentPage < totalPages - 1}">
+    Siguiente &rsaquo;
+  </a>
 </div>
 
 <div th:replace="fragments::javascript"></div>
