@@ -85,4 +85,9 @@ public class PagoRecursoController {
         model.addAttribute("pagos", pagos);
         return "listadoPagos";
     }
+
+    @GetMapping("/detallesPago")
+    public String detallesPago(Model model) {
+        return  "detallesPago";
+    }
 }
