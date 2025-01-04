@@ -11,6 +11,7 @@ import tpvv.dto.ComercioData;
 import tpvv.dto.PagoRecursoData;
 import tpvv.service.PagoService;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Controller
@@ -118,7 +119,13 @@ public class PagoRecursoController {
 
     @GetMapping("/api/admin/pagos/{id}")
     public String detallesPagoAdmin(@PathVariable(value="id") Long idPago,
-                                    Model model) {
+                                    Model model,
+                                    @RequestParam(required = false) Long id,
+                                    @RequestParam(required = false) String ticket,
+                                    @RequestParam(required = false) String cif,
+                                    @RequestParam(required = false) String estado,
+                                    @RequestParam(required = false) Timestamp fechaDesde,
+                                    @RequestParam(required = false) Timestamp fechaHasta) {
         PagoRecursoData pago = pagoService.obtenerPagoPorId(idPago);
 
         if (pago.getTarjetaPagoData() != null && pago.getTarjetaPagoData().getNumeroTarjeta() != null) {
