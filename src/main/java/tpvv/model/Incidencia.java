@@ -38,12 +38,12 @@ public class Incidencia implements Serializable {
     @NotNull
     @ManyToOne
     @JoinColumn(name = "usuario_comercio_id", nullable = false)
-    private Usuario usuario_comercio;
+    private Usuario usuarioComercio;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "usuario_tecnico_id", nullable = false)
-    private Usuario usuario_tecnico;
+
+    @ManyToOne
+    @JoinColumn(name = "usuario_tecnico_id")
+    private Usuario usuarioTecnico;
 
     @OneToMany(mappedBy = "incidencia", cascade = CascadeType.ALL, orphanRemoval = true)
     Set<Mensaje> mensajes = new HashSet<>();
@@ -64,17 +64,17 @@ public class Incidencia implements Serializable {
         this.titulo = titulo;
         this.descripcion = "default";
         Usuario usuario_comercio = new Usuario("email", "nombre", "contrasenya", new Comercio("nombre"));
-        this.setUsuario_comercio(usuario_comercio);
+        this.setUsuarioComercio(usuario_comercio);
         Usuario usuario_tecnico = new Usuario("email", "nombre", "contrasenya", new Comercio("nombre"));
-        this.setUsuario_tecnico(usuario_tecnico);
+        this.setUsuarioTecnico(usuario_tecnico);
         this.fecha = Date.from(LocalDate.of(2000, 12, 12).atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
 
-    public Incidencia(String titulo, String descripcion, Usuario usuario_comercio, Usuario usuario_tecnico) {
+    public Incidencia(String titulo, String descripcion, Usuario usuarioComercio, Usuario usuarioTecnico) {
         this.titulo = titulo;
         this.descripcion = descripcion;
-        this.setUsuario_comercio(usuario_comercio);
-        this.setUsuario_tecnico(usuario_tecnico);
+        this.setUsuarioComercio(usuarioComercio);
+        this.setUsuarioTecnico(usuarioTecnico);
         this.fecha = Date.from(LocalDate.of(2000, 12, 12).atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
 
@@ -126,24 +126,24 @@ public class Incidencia implements Serializable {
         this.razon_valoracion = razon_valoracion;
     }
 
-    public Usuario getUsuario_comercio() {
-        return usuario_comercio;
+    public Usuario getUsuarioComercio() {
+        return usuarioComercio;
     }
 
 
-    public void setUsuario_comercio(Usuario usuario_comercio) {
+    public void setUsuarioComercio(Usuario usuario_comercio) {
         // Si el nuevo usuario_comercio es el mismo que el actual, no hace nada
-        if (this.usuario_comercio == usuario_comercio || usuario_comercio == null) {
+        if (this.usuarioComercio == usuario_comercio || usuario_comercio == null) {
             return;
         }
 
         // Si ya tiene un usuario_comercio, lo desvincula de la lista de incidencias_comercio de ese usuario_comercio
-        if (this.usuario_comercio != null) {
-            this.usuario_comercio.getIncidencias_comercio().remove(this);
+        if (this.usuarioComercio != null) {
+            this.usuarioComercio.getIncidencias_comercio().remove(this);
         }
 
         // Asigna el nuevo usuario_comercio
-        this.usuario_comercio = usuario_comercio;
+        this.usuarioComercio = usuario_comercio;
 
         // Si el usuario_comercio no es nulo, lo añade a la lista de incidencias_comercio de ese usuario_comercio
         if (!usuario_comercio.getIncidencias_comercio().contains(this)) {
@@ -152,23 +152,23 @@ public class Incidencia implements Serializable {
     }
 
 
-    public Usuario getUsuario_tecnico() {
-        return usuario_tecnico;
+    public Usuario getUsuarioTecnico() {
+        return usuarioTecnico;
     }
 
-    public void setUsuario_tecnico(Usuario usuario_tecnico) {
+    public void setUsuarioTecnico(Usuario usuario_tecnico) {
         // Si el nuevo usuario_tecnico es el mismo que el actual, no hace nada
-        if (this.usuario_tecnico == usuario_tecnico || usuario_tecnico == null) {
+        if (this.usuarioTecnico == usuario_tecnico || usuario_tecnico == null) {
             return;
         }
 
         // Si ya tiene un usuario_tecnico, lo desvincula de la lista de incidencias_tecnico de ese usuario_tecnico
-        if (this.usuario_tecnico != null) {
-            this.usuario_tecnico.getIncidencias_tecnico().remove(this);
+        if (this.usuarioTecnico != null) {
+            this.usuarioTecnico.getIncidencias_tecnico().remove(this);
         }
 
         // Asigna el nuevo usuario_tecnico
-        this.usuario_tecnico = usuario_tecnico;
+        this.usuarioTecnico = usuario_tecnico;
 
         // Si el usuario_tecnico no es nulo, lo añade a la lista de incidencias_tecnico de ese usuario_tecnico
         if (!usuario_tecnico.getIncidencias_tecnico().contains(this)) {

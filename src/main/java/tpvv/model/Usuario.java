@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -41,10 +40,10 @@ public class Usuario implements Serializable {
     @JoinColumn(name = "comercio_id", nullable = false)
     private Comercio comercio;
 
-    @OneToMany(mappedBy = "usuario_comercio", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "usuarioComercio", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     Set<Incidencia> incidencias_comercio = new HashSet<>();
 
-    @OneToMany(mappedBy = "usuario_tecnico", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "usuarioTecnico", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     Set<Incidencia> incidencias_tecnico = new HashSet<>();
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -157,8 +156,8 @@ public class Usuario implements Serializable {
     public void addIncidencia_comercio(Incidencia incidencia) {
         if (incidencias_comercio.contains(incidencia)) return;
         incidencias_comercio.add(incidencia);
-        if (incidencia.getUsuario_comercio() != this) {
-            incidencia.setUsuario_comercio(this);
+        if (incidencia.getUsuarioComercio() != this) {
+            incidencia.setUsuarioComercio(this);
         }
     }
 
@@ -169,8 +168,8 @@ public class Usuario implements Serializable {
     public void addIncidencia_tecnico(Incidencia incidencia) {
         if (incidencias_tecnico.contains(incidencia)) return;
         incidencias_tecnico.add(incidencia);
-        if (incidencia.getUsuario_tecnico() != this) {
-            incidencia.setUsuario_tecnico(this);
+        if (incidencia.getUsuarioTecnico() != this) {
+            incidencia.setUsuarioTecnico(this);
         }
     }
 

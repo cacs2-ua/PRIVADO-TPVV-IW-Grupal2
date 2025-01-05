@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Pagos del Comercio</title>
+
+    <link rel="stylesheet" th:href="@{/css/custom/listadoPagosComercioStyle.css}">
+    <div th:include="fragments :: head (titulo='Pagos del Comercio')"></div>
+</head>
+<body class="body-background">
+<div th:replace="fragments::menuBar"></div>
+<div class="container">
+    <h1 class="title">Pagos del Comercio</h1>
+    <form class="busqueda">
+        <label>Id</label>
+        <label>Estados</label>
+        <label>Fecha Desde</label>
+        <label>Fecha Hasta</label>
+        <label></label>
+        <label></label>
+        <input type="text" class="search-input">
+        <select class="search-select">
+            <option selected>Todos</option>
+            <option>Nueva</option>
+            <option>Sin asignar</option>
+            <option>Resuelta</option>
+        </select>
+        <input type="date" class="search-input">
+        <input type="date" class="search-input">
+        <button type="submit">Aplicar filtros</button>
+        <button type="button" class="btn btn-success" onclick="crearIncidencia()">Crear incidencia</button>
+    </form>
+
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Fecha</th>
+                <th>Técnico</th>
+                <th>Título</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- NUEVO o MODIFICADO: Borrar o comentar las filas estáticas y usar Thymeleaf para iterar. -->
+            <tr th:each="i : ${listIncidencias}">  <!-- NUEVO o MODIFICADO -->
+                <!-- NUEVO o MODIFICADO: Se muestra el ID -->
+                <td th:text="${i.id}"></td>
+
+                <!-- NUEVO o MODIFICADO:
+                     Se formatea la fecha usando #temporals.format(p.fecha, 'dd/MM/yyyy HH:mm').
+                     Asegúrate de que tu config de Thymeleaf incluya las utilidades de fecha
+                     o ajusta este formato a tu conveniencia.
+                -->
+                <td th:text="${i.fecha}"></td>
+
+
+                <!-- NUEVO o MODIFICADO: Importe, añadiendo el símbolo de euro -->
+                <td th:text="${i.usuarioTecnico == null ? '-' : i.usuarioTecnico.nombre}"></td>
+
+                <td th:text="${i.titulo}"></td>
+
+                <!-- NUEVO o MODIFICADO:
+                     Se muestra el estado y se añade una clase condicional para colorearlo:
+                     Aceptado => 'status-active'
+                     Pendiente => 'status-pending'
+                     Rechazado => 'status-inactive'
+                -->
+                <td th:text="${i.estado.getNombre() == 'NUEVA' ? 'Nueva' :
+                    (i.estado.getNombre() == 'ASIGN' ? 'Asignada' :
+                        'Resuelta')}"
+                    th:classappend="${i.estado.getNombre() == 'NUEVA' ? 'status-active' :
+                    (i.estado.getNombre() == 'ASIGN' ? 'status-pending' :
+                    'status-inactive')}">
+                </td>
+
+
+                <!-- @{'/api/comercio/pagos/' + ${p.id}} NUEVO o MODIFICADO: Botón de Detalles (enlaza con un detalle hipotético) -->
+                <td>
+                    <a class="btn btn-info">Detalles</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div th:replace="fragments::javascript"></div>
+</body>
+<script>
+    function crearIncidencia(){
+        window.location.href='/tpvv/boardalo/api/comercio/crear-incidencia';
+    }
+</script>
+</html>

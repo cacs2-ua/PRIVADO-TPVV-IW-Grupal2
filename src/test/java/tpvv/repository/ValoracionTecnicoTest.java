@@ -77,29 +77,29 @@ public class ValoracionTecnicoTest {
         estadoIncidenciaRepository.save(estadoIncidencia);
 
         Incidencia incidencia = new Incidencia("default-title");
-        incidencia.setUsuario_comercio(usuario);
-        incidencia.setUsuario_tecnico(usuario2);
+        incidencia.setUsuarioComercio(usuario);
+        incidencia.setUsuarioTecnico(usuario2);
         incidencia.setEstado(estadoIncidencia);
 
         incidenciaRepository.save(incidencia);
 
         Incidencia incidencia2 = new Incidencia("default-title2");
-        incidencia2.setUsuario_tecnico(usuario);
-        incidencia2.setUsuario_comercio(usuario2);
+        incidencia2.setUsuarioTecnico(usuario);
+        incidencia2.setUsuarioComercio(usuario2);
         incidencia2.setEstado(estadoIncidencia);
 
         incidenciaRepository.save(incidencia2);
 
         Incidencia incidencia3 = new Incidencia("default-title3");
-        incidencia3.setUsuario_comercio(usuario);
-        incidencia3.setUsuario_tecnico(usuario2);
+        incidencia3.setUsuarioComercio(usuario);
+        incidencia3.setUsuarioTecnico(usuario2);
         incidencia3.setEstado(estadoIncidencia);
 
         incidenciaRepository.save(incidencia3);
 
         Incidencia incidencia4 = new Incidencia("default-title2");
-        incidencia4.setUsuario_tecnico(usuario);
-        incidencia4.setUsuario_comercio(usuario2);
+        incidencia4.setUsuarioTecnico(usuario);
+        incidencia4.setUsuarioComercio(usuario2);
         incidencia4.setEstado(estadoIncidencia);
 
         incidenciaRepository.save(incidencia4);

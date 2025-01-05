@@ -11,7 +11,10 @@ public class IncidenciaData {
     private String descripcion;
     private int valoracion;
     private String razon_valoracion;
-
+    private UsuarioData usuarioComercio;
+    private UsuarioData usuarioTecnico;
+    private Long pago_id;
+    private EstadoIncidenciaData estado;
 
     public Long getId() {
         return id;
@@ -60,6 +63,22 @@ public class IncidenciaData {
     public void setRazon_valoracion(String razon_valoracion) {
         this.razon_valoracion = razon_valoracion;
     }
+
+    public UsuarioData getUsuarioComercio() {return usuarioComercio;}
+
+    public void setUsuarioComercio(UsuarioData usuarioComercio) {this.usuarioComercio = usuarioComercio;}
+
+    public UsuarioData getUsuarioTecnico() {return usuarioTecnico;}
+
+    public void setUsuarioTecnico(UsuarioData usuarioTecnico) {this.usuarioTecnico = usuarioTecnico;}
+
+    public Long getPago_id() {return pago_id;}
+
+    public void setPago_id(Long pago_id) {this.pago_id = pago_id;}
+
+    public EstadoIncidenciaData getEstado() {return estado;}
+
+    public void setEstado(EstadoIncidenciaData estado_incidencia) {this.estado = estado_incidencia;}
 
 
     @Override

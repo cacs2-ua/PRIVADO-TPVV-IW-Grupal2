@@ -80,8 +80,8 @@ public class MensajeTest {
 
 
         Incidencia incidencia = new Incidencia("titulo");
-        incidencia.setUsuario_comercio(usuario);
-        incidencia.setUsuario_tecnico(usuario2);
+        incidencia.setUsuarioComercio(usuario);
+        incidencia.setUsuarioTecnico(usuario2);
         incidencia.setEstado(estadoIncidencia);
 
         incidenciaRepository.save(incidencia);
