@@ -92,3 +92,68 @@
 .status-inactive {
     color: #8a2d2d;
 }
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.pagination a, .pagination span {
+    color: #F1F0E8;
+    text-decoration: none;
+    padding: 10px 20px;
+    margin: 0 5px;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+}
+
+.pagination a:hover {
+    background-color: #F1F0E8;
+    color: black;
+    transform: translateY(-3px);
+}
+
+.pagination a:active {
+    background-color: #0056b3;
+}
+
+.pagination .disabled {
+    color: #ccc;
+    pointer-events: none;
+}
+
+.pagination .disabled:hover {
+    background-color: transparent;
+    color: #ccc;
+}
+
+/* Estilo para el número de página actual (circular y desactivado) */
+.pagination .page-item.active span {
+    background-color: #B3C8CF;
+    color: #fff;
+    border-radius: 50%;
+    padding: 10px 15px;
+    pointer-events: none;
+    font-weight: bold;
+}
+
+.pagination span {
+    font-size: 16px;
+    color: #555;
+}
+
+.pagination .page-item {
+    border-radius: 50px;
+}
+
+.pagination .page-item.active a {
+    background-color: #007bff;
+    color: white;
+}
+
+.pagination .page-item.disabled a {
+    background-color: #f0f0f0;
+    color: #ccc;
+}
