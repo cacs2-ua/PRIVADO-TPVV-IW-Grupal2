@@ -22,6 +22,8 @@ public class PagoRecursoData {
 
     private String shownState;
 
+    private String formatedCardNumber;
+
     // Constructor vacío
     public PagoRecursoData() {}
 
@@ -91,6 +93,13 @@ public class PagoRecursoData {
         this.shownState = shownState;
     }
 
+    public String getFormatedCardNumber() {
+        return formatedCardNumber;
+    }
+
+    public void setFormatedCardNumber(String formatedCardNumber) {
+        this.formatedCardNumber = formatedCardNumber;
+    }
 
     // Equals y HashCode
     @Override

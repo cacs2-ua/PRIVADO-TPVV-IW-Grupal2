@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Pagos del Comercio</title>
+  <title>Pagos de tu comercio</title>
 
   <link rel="stylesheet" th:href="@{/css/custom/listadoPagosComercioStyle.css}">
   <div th:include="fragments :: head (titulo='Pagos del Comercio')"></div>
@@ -10,24 +10,33 @@
 <body class="body-background">
 <div th:replace="fragments::menuBar"></div>
 <div class="container">
-  <h1 class="title">Pagos del Comercio</h1>
-  <form class="busqueda">
+  <h1 class="title">Pagos de tu comercio</h1>
+
+  <!-- Formulario con los filtros -->
+  <form class="busqueda"
+        th:action="@{ '/api/comercio/' + ${usuario.id} + '/pagos' }"
+        method="get">
+
     <label>Id</label>
     <label>Ticket</label>
     <label>Estados</label>
     <label>Fecha Desde</label>
     <label>Fecha Hasta</label>
     <label></label>
-    <input type="text" class="search-input">
-    <input type="text" class="search-input">
-    <select class="search-select">
-      <option selected>Todos</option>
-      <option>Aceptado</option>
-      <option>Pendiente</option>
-      <option>Rechazado</option>
+
+    <!-- Mantenemos los valores de filtros en each input -->
+    <input type="text" class="search-input" name="id" th:value="${idFilter}">
+    <input type="text" class="search-input" name="ticket" th:value="${ticketFilter}">
+
+    <select class="search-select" name="estado">
+      <option th:selected="${estadoFilter == null or estadoFilter=='Todos'}">Todos</option>
+      <option th:selected="${estadoFilter=='Aceptado'}">Aceptado</option>
+      <option th:selected="${estadoFilter=='Pendiente'}">Pendiente</option>
+      <option th:selected="${estadoFilter=='Rechazado'}">Rechazado</option>
     </select>
-    <input type="date" class="search-input">
-    <input type="date" class="search-input">
+
+    <input type="date" class="search-input" name="fechaDesde" th:value="${fechaDesdeStr}">
+    <input type="date" class="search-input" name="fechaHasta" th:value="${fechaHastaStr}">
     <button type="submit">Aplicar filtros</button>
   </form>
 
@@ -44,46 +53,54 @@
       </tr>
       </thead>
       <tbody>
-      <!-- NUEVO o MODIFICADO: Borrar o comentar las filas estáticas y usar Thymeleaf para iterar. -->
-      <tr th:each="p : ${pagos}">  <!-- NUEVO o MODIFICADO -->
-        <!-- NUEVO o MODIFICADO: Se muestra el ID -->
+      <tr th:each="p : ${pagos}">
         <td th:text="${p.id}"></td>
-
-        <!-- NUEVO o MODIFICADO:
-             Se formatea la fecha usando #temporals.format(p.fecha, 'dd/MM/yyyy HH:mm').
-             Asegúrate de que tu config de Thymeleaf incluya las utilidades de fecha
-             o ajusta este formato a tu conveniencia.
-        -->
         <td th:text="${p.fecha}"></td>
-
-
-        <!-- NUEVO o MODIFICADO: Ticket -->
         <td th:text="${p.ticketExt}"></td>
-
-        <!-- NUEVO o MODIFICADO: Importe, añadiendo el símbolo de euro -->
-        <td th:text="${p.importe + '€'}"></td>
-
-        <!-- NUEVO o MODIFICADO:
-             Se muestra el estado y se añade una clase condicional para colorearlo:
-             Aceptado => 'status-active'
-             Pendiente => 'status-pending'
-             Rechazado => 'status-inactive'
-        -->
+        <td th:text="${p.importe + ' €'}"></td>
         <td th:text="${p.shownState}"
             th:classappend="${p.shownState == 'Aceptado' ? 'status-active' :
-                    (p.shownState == 'Pendiente' ? 'status-pending' :
-                    'status-inactive')}">
-        </td>
-
-
-        <!-- NUEVO o MODIFICADO: Botón de Detalles (enlaza con un detalle hipotético) -->
+                            (p.shownState == 'Pendiente' ? 'status-pending' : 'status-inactive')}"></td>
         <td>
-          <a th:href="@{/}" class="btn btn-info">Detalles</a>
+          <a th:href="@{'/api/comercio/pagos/' + ${p.id}}" class="btn btn-info">Detalles</a>
         </td>
       </tr>
       </tbody>
     </table>
   </div>
+</div>
+
+<!-- Paginación -->
+<div class="pagination">
+  <a th:text="${currentPage}"
+     th:href="@{'/api/comercio/' + ${usuario.id} + '/pagos'(
+       page=${currentPage - 1},
+       id=${idFilter},
+       ticket=${ticketFilter},
+       estado=${estadoFilter},
+       fechaDesde=${fechaDesdeStr},
+       fechaHasta=${fechaHastaStr}
+     )}"
+     th:if="${currentPage > 0}">
+    &lsaquo; Anterior
+  </a>
+
+  <span class="page-item active">
+    <span th:text="${currentPage + 1}"></span>
+  </span>
+
+  <a th:text="${currentPage + 2}"
+     th:href="@{'/api/comercio/' + ${usuario.id} + '/pagos'(
+       page=${currentPage + 1},
+       id=${idFilter},
+       ticket=${ticketFilter},
+       estado=${estadoFilter},
+       fechaDesde=${fechaDesdeStr},
+       fechaHasta=${fechaHastaStr}
+     )}"
+     th:if="${currentPage < totalPages - 1}">
+    Siguiente &rsaquo;
+  </a>
 </div>
 
 <div th:replace="fragments::javascript"></div>
