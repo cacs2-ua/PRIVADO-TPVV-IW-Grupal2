@@ -89,7 +89,7 @@ public class ComercioController {
         List<ComercioData> todosLosComercios = comercioService.recuperarTodosLosComercios();
         List<ComercioData> comerciosFiltrados = comercioService.filtrarComercios(todosLosComercios, id, nombre, cif, pais, fechaDesde, fechaHasta);
 
-        Page<ComercioData> comerciosPage = comercioService.recuperarComerciosPaginados(comerciosFiltrados, page, 8);
+        Page<ComercioData> comerciosPage = comercioService.recuperarComerciosPaginados(comerciosFiltrados, page, 4);
         int totalPages = comerciosPage.getTotalPages();
 
         List<PaisData> paises = paisService.findAll();
@@ -99,6 +99,13 @@ public class ComercioController {
         model.addAttribute("comercios", comerciosPage.getContent());
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("currentPage", page);
+
+        model.addAttribute("idFilter", id);
+        model.addAttribute("nombreFilter", nombre);
+        model.addAttribute("cifFilter", cif);
+        model.addAttribute("paisFilter", pais);
+        model.addAttribute("fechaDesdeStr", fechaDesde);
+        model.addAttribute("fechaHastaStr", fechaHasta);
 
         return "listadoComercio";
     }

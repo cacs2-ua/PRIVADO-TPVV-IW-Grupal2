@@ -70,13 +70,19 @@ public class UsuariosController {
         List<UsuarioData> todosLosUsuarios = usuarioService.findAll();
         List<UsuarioData> usuariosFiltrados = usuarioService.filtrarUsuarios(todosLosUsuarios, id, comercio, estado, fechaDesde, fechaHasta);
 
-        Page<UsuarioData> usuariosPage = usuarioService.recuperarUsuariosPaginados(usuariosFiltrados, page, 8);
+        Page<UsuarioData> usuariosPage = usuarioService.recuperarUsuariosPaginados(usuariosFiltrados, page, 4);
         int totalPages = usuariosPage.getTotalPages();
 
         model.addAttribute("usuarios", usuariosPage.getContent());
         model.addAttribute("comercios", comercios);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("currentPage", page);
+
+        model.addAttribute("idFilter", id);
+        model.addAttribute("comercioFilter", comercio);
+        model.addAttribute("estadoFilter", estado);
+        model.addAttribute("fechaDesdeStr", fechaDesde);
+        model.addAttribute("fechaHastaStr", fechaHasta);
 
         return "listadoUsuario";
     }
