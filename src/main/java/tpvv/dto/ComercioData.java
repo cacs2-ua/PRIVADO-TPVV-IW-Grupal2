@@ -1,5 +1,7 @@
 package tpvv.dto;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -15,7 +17,7 @@ public class ComercioData {
     private String apiKey;
     private String url_back;
     private boolean activo = true;
-    private LocalDate fechaAlta = LocalDate.now();
+    private Timestamp fechaAlta = Timestamp.from(Instant.now());
 
     public Long getId() {
         return id;
@@ -93,9 +95,9 @@ public class ComercioData {
 
     public void setActivo(boolean activo) { this.activo = activo; }
 
-    public LocalDate getFechaAlta() { return fechaAlta; }
+    public Timestamp getFechaAlta() { return fechaAlta; }
 
-    public void setFechaAlta(LocalDate fechaAlta) { this.fechaAlta = fechaAlta; }
+    public void setFechaAlta(Timestamp fechaAlta) { this.fechaAlta = fechaAlta; }
 
     @Override
     public boolean equals(Object o) {
