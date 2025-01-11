@@ -5,6 +5,8 @@ package tpvv.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -48,7 +50,7 @@ public class Comercio implements Serializable {
 
     private boolean activo = true;
 
-    private LocalDate fechaAlta;
+    private Timestamp fechaAlta;
 
     // Relación One-to-Many con Usuario
     @OneToMany(mappedBy = "comercio", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -76,7 +78,7 @@ public class Comercio implements Serializable {
         this.iban = "default-iban";
         this.apiKey = "default-apiKey";
         this.url_back = "default-url_back";
-        this.fechaAlta = LocalDate.now();
+        this.fechaAlta = Timestamp.from(Instant.now());
         this.activo = true;
         this.pais_id = new Pais("default-country");
     }
@@ -91,7 +93,7 @@ public class Comercio implements Serializable {
         this.apiKey = apiKey;
         this.url_back = url_back;
         this.activo = true;
-        this.fechaAlta = LocalDate.now();
+        this.fechaAlta = Timestamp.from(Instant.now());
         this.pais_id = new Pais("default-country");
     }
 
@@ -177,9 +179,9 @@ public class Comercio implements Serializable {
 
     public void setActivo(boolean activo) { this.activo = activo; }
 
-    public LocalDate getFechaAlta() { return fechaAlta; }
+    public Timestamp getFechaAlta() { return fechaAlta; }
 
-    public void setFechaAlta(LocalDate fechaAlta) { this.fechaAlta = fechaAlta; }
+    public void setFechaAlta(Timestamp fechaAlta) { this.fechaAlta = fechaAlta; }
 
     public void setPais_id(Pais pais_id) {
         // Si el nuevo pais_id es el mismo que el actual, no hace nada
