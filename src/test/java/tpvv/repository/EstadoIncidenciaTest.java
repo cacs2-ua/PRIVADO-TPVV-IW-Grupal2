@@ -64,22 +64,22 @@ public class EstadoIncidenciaTest {
         estadoIncidenciaRepository.save(estadoIncidencia);
 
         Incidencia incidencia = new Incidencia("default-title");
-        incidencia.setUsuario_comercio(usuario);
-        incidencia.setUsuario_tecnico(usuario2);
+        incidencia.setUsuarioComercio(usuario);
+        incidencia.setUsuarioTecnico(usuario2);
         incidencia.setEstado(estadoIncidencia);
 
         incidenciaRepository.save(incidencia);
 
         Incidencia incidencia2 = new Incidencia("default-title2");
-        incidencia2.setUsuario_comercio(usuario);
-        incidencia2.setUsuario_tecnico(usuario2);
+        incidencia2.setUsuarioComercio(usuario);
+        incidencia2.setUsuarioTecnico(usuario2);
         incidencia2.setEstado(estadoIncidencia);
 
         incidenciaRepository.save(incidencia2);
 
         Incidencia incidencia3 = new Incidencia("default-title2");
-        incidencia3.setUsuario_comercio(usuario);
-        incidencia3.setUsuario_tecnico(usuario2);
+        incidencia3.setUsuarioComercio(usuario);
+        incidencia3.setUsuarioTecnico(usuario2);
         incidencia3.setEstado(estadoIncidencia);
 
         incidenciaRepository.save(incidencia3);

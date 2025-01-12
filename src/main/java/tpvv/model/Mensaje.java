@@ -19,7 +19,7 @@ public class Mensaje implements Serializable {
     private Long id;
 
     @NotNull
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date fecha;
 
     @NotNull

@@ -43,7 +43,10 @@ public class UsuariosController {
     @GetMapping("/api/tecnico/mis-datos")
     public String perfilTecnico(Model model) {
         UsuarioData usuario = usuarioService.findById(getUsuarioLogeadoId());
+        int valoraciones = usuarioService.getValoracionUsuario(getUsuarioLogeadoId());
+
         model.addAttribute("usuario", usuario);
+        model.addAttribute("valoraciones", valoraciones);
 
         return "perfilTecnico";
     }

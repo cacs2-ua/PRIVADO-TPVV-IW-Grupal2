@@ -39,7 +39,7 @@
           <a class="nav-link" th:href="@{/api/admin/usuarios}" style="font-weight: normal; text-decoration: none;" onclick="highlightLink(this)">Usuarios</a>
         </li>
         <li class="nav-item" th:if="${usuario != null and usuario.tipoId == 1}">
-          <a class="nav-link" th:href="@{/}" style="font-weight: normal; text-decoration: none;" onclick="highlightLink(this)">Incidencias</a>
+          <a class="nav-link" th:href="@{/api/tecnico-or-admin/incidencias}" style="font-weight: normal; text-decoration: none;" onclick="highlightLink(this)">Incidencias</a>
         </li>
         <li class="nav-item" th:if="${usuario != null and usuario.tipoId == 1}">
           <a class="nav-link" th:href="@{/api/admin/pagos}" style="font-weight: normal; text-decoration: none;" onclick="highlightLink(this)">Pagos</a>
@@ -53,7 +53,7 @@
           <a class="nav-link" th:href="@{/api/tecnico-or-admin/comercios}" style="font-weight: normal; text-decoration: none;" onclick="highlightLink(this)">Comercios</a>
         </li>
         <li class="nav-item" th:if="${usuario != null and usuario.tipoId == 2}">
-          <a class="nav-link" th:href="@{/}" style="font-weight: normal; text-decoration: none;" onclick="highlightLink(this)">Incidencias</a>
+          <a class="nav-link" th:href="@{/api/tecnico-or-admin/incidencias}" style="font-weight: normal; text-decoration: none;" onclick="highlightLink(this)">Incidencias</a>
         </li>
         <li class="nav-item" th:if="${usuario != null and usuario.tipoId == 2}">
           <a class="nav-link" th:href="@{/api/tecnico/mis-datos}" style="font-weight: normal; text-decoration: none;" onclick="highlightLink(this)">Nombre</a>
@@ -61,7 +61,7 @@
 
         <!-- Comercio User -->
         <li class="nav-item" th:if="${usuario != null and usuario.tipoId == 3}">
-          <a class="nav-link" th:href="@{/}" style="font-weight: normal; text-decoration: none;" onclick="highlightLink(this)">Incidencias</a>
+          <a class="nav-link" th:href="@{/api/comercio/incidencias}" style="font-weight: normal; text-decoration: none;" onclick="highlightLink(this)">Incidencias</a>
         </li>
         <li class="nav-item" th:if="${usuario != null and usuario.tipoId == 3}">
           <a class="nav-link" th:href="@{'/api/comercio/' + ${usuario.id} + '/pagos'}" style="font-weight: normal; text-decoration: none;" onclick="highlightLink(this)">Pagos</a>
