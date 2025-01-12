@@ -10,7 +10,9 @@ import tpvv.authentication.ManagerUserSession;
 import tpvv.controller.exception.UsuarioNoLogeadoException;
 import tpvv.dto.ComercioData;
 import tpvv.dto.PagoRecursoData;
+import tpvv.dto.UsuarioData;
 import tpvv.service.PagoService;
+import tpvv.service.UsuarioService;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat; // <-- NUEVO
@@ -22,6 +24,8 @@ public class PagoRecursoController {
 
     @Autowired
     ManagerUserSession managerUserSession;
+    @Autowired
+    private UsuarioService usuarioService;
 
     private Long devolverIdUsuarioLogeado() {
         Long idUsuarioLogeado = managerUserSession.usuarioLogeado();
@@ -185,6 +189,7 @@ public class PagoRecursoController {
     public String detallesPagoAdmin(@PathVariable(value="id") Long idPago,
                                     Model model) {
         PagoRecursoData pago = pagoService.obtenerPagoPorId(idPago);
+        UsuarioData usuario = usuarioService.findById(devolverIdUsuarioLogeado());
 
         if (pago.getTarjetaPagoData() != null && pago.getTarjetaPagoData().getNumeroTarjeta() != null) {
             String numeroTarjeta = pago.getTarjetaPagoData().getNumeroTarjeta();

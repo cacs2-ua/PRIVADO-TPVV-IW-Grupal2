@@ -73,12 +73,25 @@
                     </div>
                 </div>
 
-                <div class="section" style="margin-top: 20px;">
+                <div th:if="${pago.getIncidenciaData() == null}" class="section" style="margin-top: 20px;">
                     <h2 class="section-title">Incidencia</h2>
                     <div class="incident-section">
                         <p>Este pago no tiene una incidencia asociada</p>
                         <button onclick="crearIncidencia()" class="create-button">Crear</button>
                     </div>
+                </div>
+                <div th:if="${pago.getIncidenciaData() != null}" class="section" style="margin-top: 20px;">
+                    <h2 class="section-title">Incidencia</h2>
+                    <div class="details-grid">
+                        <span class="label">Título:</span>
+                        <p class="value"
+                           th:text="${pago.getIncidenciaData().getTitulo()}">
+                        </p>
+                    </div>
+                    <div class="incident-section">
+                        <a th:href="@{'/api/comercio/incidencia/' + ${pago.getIncidenciaData().getId()}}" class="btn btn-info">Detalles</a>
+                    </div>
+
                 </div>
             </div>
         </div>

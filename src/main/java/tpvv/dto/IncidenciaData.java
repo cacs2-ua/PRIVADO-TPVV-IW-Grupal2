@@ -1,7 +1,12 @@
 package tpvv.dto;
 
+import tpvv.model.Mensaje;
+
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 public class IncidenciaData {
 
@@ -15,6 +20,7 @@ public class IncidenciaData {
     private UsuarioData usuarioTecnico;
     private Long pago_id;
     private EstadoIncidenciaData estado;
+    private Set<MensajeData> mensajes = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -26,6 +32,11 @@ public class IncidenciaData {
 
     public Date getFecha() {
         return fecha;
+    }
+
+    public String  getFechaFormatted() {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yy HH:mm:ss");
+        return formatter.format(fecha);
     }
 
     public void setFecha(Date fecha) {
@@ -79,7 +90,14 @@ public class IncidenciaData {
     public EstadoIncidenciaData getEstado() {return estado;}
 
     public void setEstado(EstadoIncidenciaData estado_incidencia) {this.estado = estado_incidencia;}
+    public Set<MensajeData> getMensajes() {
+        return mensajes;
+    }
 
+    public void setMensajes(MensajeData mensaje) {
+        if (mensajes.contains(mensaje)) return;
+        mensajes.add(mensaje);
+    }
 
     @Override
     public boolean equals(Object o) {

@@ -1,0 +1,63 @@
+body.cuerpo-registro {
+    background-color: #89A8B2;
+
+}
+
+.terceracolumna {
+    display:grid;
+    grid-template-columns: 3fr 7fr 3fr;
+}
+
+.contenedor {
+    height: auto;
+    padding: 20px;
+    background-color: #B3C8CF;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    grid-column: 2;
+    padding-left: 40px;
+    margin-top: 20px;
+
+}
+
+.textarea-desc {
+    min-height: 200px;
+    border-radius: 0.5rem;
+    border: none;
+    padding: 0.75rem;
+    box-sizing: border-box;
+    resize: none;
+    margin-bottom: 1rem;
+}
+
+.cuerpo-registro label + input {
+    display: block;
+    margin-bottom: 10px;
+    max-width: 400px;
+    min-width: 100px;
+}
+
+.content-grid {
+    display: grid;
+    grid-template-columns:  1fr 1fr;
+    gap: 20px;
+}
+
+.value {
+    margin: 0;
+}
+.labelPago {
+    font-weight: bold;
+    text-align: right;
+    padding-right: 10px;
+}
+
+.cuerpo-registro h1 {
+    color: #F1F0E8;
+    text-decoration: underline;
+    grid-column: 2;
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 30px;
+    margin-top: 20px;
+}

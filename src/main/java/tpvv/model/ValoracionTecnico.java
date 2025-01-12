@@ -19,7 +19,7 @@ public class ValoracionTecnico implements Serializable {
     private double valoracion;
 
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "tecnico_id")
     private Usuario tecnico;
 

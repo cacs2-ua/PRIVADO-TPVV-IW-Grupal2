@@ -10,6 +10,7 @@ import tpvv.dto.UsuarioData;
 import tpvv.model.Comercio;
 import tpvv.model.TipoUsuario;
 import tpvv.model.Usuario;
+import tpvv.model.ValoracionTecnico;
 import tpvv.repository.ComercioRepository;
 import tpvv.repository.TipoUsuarioRepository;
 import tpvv.repository.UsuarioRepository;
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tpvv.repository.ValoracionTecnicoRepository;
 import tpvv.service.exception.UsuarioServiceException;
 
 import java.sql.Timestamp;
@@ -35,6 +37,8 @@ public class UsuarioService {
     Logger logger = LoggerFactory.getLogger(UsuarioService.class);
     @Autowired
     private ComercioService comercioService;
+    @Autowired
+    private ValoracionTecnicoRepository valoracionTecnicoRepository;
 
     public enum LoginStatus {LOGIN_OK, USER_NOT_FOUND, ERROR_PASSWORD}
 
@@ -149,6 +153,19 @@ public class UsuarioService {
         Usuario usuario = usuarioRepository.findById(usuarioId).orElse(null);
         if (usuario == null) return null;
         return usuario.getComercio().getId();
+    }
+
+    @Transactional(readOnly = true)
+    public int getValoracionUsuario(Long usuarioId) {
+        List<ValoracionTecnico> valoraciones = valoracionTecnicoRepository.findValoracionTecnicosByTecnicoId(usuarioId);
+        int numValoraciones= 0;
+        int totalValoraciones = 0;
+        for (ValoracionTecnico valoracion : valoraciones) {
+            totalValoraciones += valoracion.getValoracion();
+            numValoraciones++;
+        }
+        int resultado = numValoraciones >0 ? totalValoraciones / numValoraciones : 0;
+        return resultado;
     }
 
     @Transactional(readOnly = true)
