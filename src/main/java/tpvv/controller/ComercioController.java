@@ -66,7 +66,7 @@ public class ComercioController {
     @PostMapping("/api/admin/crearcomercio")
     public String registrarComercio(ComercioData comercio, PersonaContactoData personaContacto, Model model) {
         ComercioData nuevoComercio = comercioService.crearComercio(comercio);
-        if (personaContacto.getNombreContacto() != null) {
+        if (personaContacto.getNombreContacto() != null && personaContacto.getNombreContacto() != "") {
             PersonaContactoData contacto = comercioService.crearPersonaContacto(personaContacto);
             comercioService.asignarPersonaDeContactoAComercio(nuevoComercio.getId(), contacto.getId());
         }

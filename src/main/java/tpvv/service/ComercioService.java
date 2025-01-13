@@ -152,6 +152,7 @@ public class ComercioService {
             throw new ComercioServiceException("El comercio " + id + " no existe");
         }
         PersonaContacto persona = comercio.getPersonaContacto();
+        if (persona == null) return null;
         return modelMapper.map(persona, PersonaContactoData.class);
     }
 
