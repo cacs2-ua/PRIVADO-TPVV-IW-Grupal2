@@ -1,5 +1,6 @@
 package tpvv.dto;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
 
@@ -9,6 +10,7 @@ public class MensajeData {
     private Long id;
     private Date fecha;
     private String contenido;
+    private UsuarioData usuario;
 
     // Getters y Setters
     public Long getId() {
@@ -19,8 +21,9 @@ public class MensajeData {
         this.id = id;
     }
 
-    public Date getFecha() {
-        return fecha;
+    public String  getFecha() {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yy HH:mm:ss");
+        return formatter.format(fecha);
     }
 
     public void setFecha(Date fecha) {
@@ -34,6 +37,10 @@ public class MensajeData {
     public void setContenido(String contenido) {
         this.contenido = contenido;
     }
+
+    public void setUsuario(UsuarioData usuario) {this.usuario = usuario;}
+
+    public UsuarioData getUsuario() {return usuario;}
 
     // Sobreescribimos equals y hashCode para que dos mensajes sean iguales
     // si tienen el mismo ID (ignoramos el resto de atributos)

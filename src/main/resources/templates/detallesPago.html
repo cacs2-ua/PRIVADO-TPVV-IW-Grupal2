@@ -12,7 +12,7 @@
 <div th:replace="fragments::menuBar" class="navbar-container"></div>
 <div class="container">
     <br>
-
+    <input type="hidden" id="pagoId" th:value="${pago.id}">
     <h1 class="title">
         Detalle pago nº <span th:text="${pago.id}">0000000002</span>
     </h1>
@@ -73,12 +73,25 @@
                     </div>
                 </div>
 
-                <div class="section" style="margin-top: 20px;">
+                <div th:if="${pago.getIncidenciaData() == null}" class="section" style="margin-top: 20px;">
                     <h2 class="section-title">Incidencia</h2>
                     <div class="incident-section">
                         <p>Este pago no tiene una incidencia asociada</p>
-                        <button class="create-button">Crear</button>
+                        <button onclick="crearIncidencia()" class="create-button">Crear</button>
                     </div>
+                </div>
+                <div th:if="${pago.getIncidenciaData() != null}" class="section" style="margin-top: 20px;">
+                    <h2 class="section-title">Incidencia</h2>
+                    <div class="details-grid">
+                        <span class="label">Título:</span>
+                        <p class="value"
+                           th:text="${pago.getIncidenciaData().getTitulo()}">
+                        </p>
+                    </div>
+                    <div class="incident-section">
+                        <a th:href="@{'/api/comercio/incidencia/' + ${pago.getIncidenciaData().getId()}}" class="btn btn-info">Detalles</a>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -87,4 +100,12 @@
 
 <div th:replace="fragments::javascript"></div>
 </body>
+
+<script>
+    function crearIncidencia(){
+        const pagoId = document.getElementById('pagoId').value;
+        const url = '/tpvv/boardalo/api/comercio/crear-incidencia?pago_id='+pagoId;
+        window.location.href=url;
+    }
+</script>
 </html>

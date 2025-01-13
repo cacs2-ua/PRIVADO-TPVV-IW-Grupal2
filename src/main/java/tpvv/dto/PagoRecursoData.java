@@ -24,6 +24,9 @@ public class PagoRecursoData {
 
     private String formatedCardNumber;
 
+
+    private IncidenciaData incidenciaData;
+
     // Constructor vacío
     public PagoRecursoData() {}
 
@@ -100,6 +103,10 @@ public class PagoRecursoData {
     public void setFormatedCardNumber(String formatedCardNumber) {
         this.formatedCardNumber = formatedCardNumber;
     }
+
+    public IncidenciaData getIncidenciaData() {return incidenciaData;}
+
+    public void setIncidenciaData(IncidenciaData incidenciaData) {this.incidenciaData = incidenciaData;}
 
     // Equals y HashCode
     @Override
