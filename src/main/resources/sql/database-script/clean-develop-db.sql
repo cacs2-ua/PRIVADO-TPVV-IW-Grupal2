@@ -1,8 +1,8 @@
 DELETE FROM parametros;
 DELETE FROM mensajes;
 DELETE FROM valoraciones_tecnico;
-DELETE FROM usuarios;
 DELETE FROM incidencias;
+DELETE FROM usuarios;
 DELETE FROM estados_incidencia;
 DELETE FROM tipos_usuario;
 DELETE FROM pagos;
