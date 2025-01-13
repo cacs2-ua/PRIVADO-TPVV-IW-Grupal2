@@ -121,4 +121,6 @@ INSERT INTO public.usuarios (id, activo, contrasenya, email, fecha_alta, nombre,
 INSERT INTO public.usuarios (id, activo, contrasenya, email, fecha_alta, nombre, comercio_id, tipo_id) VALUES (2, true, '$2a$10$r/UwgDJHaNd1iJoKHwh9we3q3YxXQlcHDqSJVzIR00sRtwrlRytfy', 'tecnico-default@gmail.com', null, 'tecnico-default', 1, 2);
 INSERT INTO public.usuarios (id, activo, contrasenya, email, fecha_alta, nombre, comercio_id, tipo_id) VALUES (3, true, '$2a$10$SeXSpZ0tRIRkWUf7gBeN1u7ykt7x3n0ndNq5Mc4OLlwkQAuOb3SRa', 'comercio-default@gmail.com', null, 'comercio-default', 2, 3);
 
-
+INSERT INTO public.estados_incidencia (id, nombre) VALUES (1, 'NUEVA');
+INSERT INTO public.estados_incidencia (id, nombre) VALUES (2, 'ASIGN');
+INSERT INTO public.estados_incidencia (id, nombre) VALUES (3, 'RESUELTA');
