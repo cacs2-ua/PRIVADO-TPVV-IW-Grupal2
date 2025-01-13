@@ -55,6 +55,9 @@ public class LoginController {
             // Redirigir a la página de bienvenida
             return "redirect:/api/general/bienvenida";
 
+        } else if (loginStatus == UsuarioService.LoginStatus.USER_DISABLED) {
+            model.addAttribute("error", "No puedes iniciar sesión. Tu usuario está deshabilitado");
+            return "formLogin";
         } else {
             model.addAttribute("error", "Ha habido algún error al iniciar sesión");
             return "formLogin";

@@ -40,7 +40,7 @@ public class UsuarioService {
     @Autowired
     private ValoracionTecnicoRepository valoracionTecnicoRepository;
 
-    public enum LoginStatus {LOGIN_OK, USER_NOT_FOUND, ERROR_PASSWORD}
+    public enum LoginStatus {LOGIN_OK, USER_NOT_FOUND,USER_DISABLED, ERROR_PASSWORD}
 
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -68,7 +68,11 @@ public class UsuarioService {
             return LoginStatus.USER_NOT_FOUND;
         } else if (!encoder.matches(password, usuario.get().getContrasenya())) {
             return LoginStatus.ERROR_PASSWORD;
-        } else {
+        }
+          else if (usuario.get().getActivo() == false) {
+            return LoginStatus.USER_DISABLED;
+        }
+        else {
             return LoginStatus.LOGIN_OK;
         }
     }
@@ -142,6 +146,7 @@ public class UsuarioService {
         List<Usuario> usuarios = usuarioRepository.findAll();
 
         return usuarios.stream()
+                .filter(usuario -> usuario.getTipo().getId() != 1)
                 .sorted(Comparator.comparing(Usuario::getId))
                 .map(usuario -> modelMapper.map(usuario, UsuarioData.class))
                 .collect(Collectors.toList());
