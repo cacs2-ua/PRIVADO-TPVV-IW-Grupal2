@@ -29,8 +29,8 @@ INSERT INTO public.paises (id, nombre) VALUES (10, 'Suecia');
 
 
 
-INSERT INTO public.comercios (id, activo, api_key, cif, direccion, fecha_alta, iban, nombre, pais, provincia, url_back, pais_id) VALUES (2, true, 'mi-api-key-12346', 'CIF123457', 'Calle Falsa 124', null, 'ES9121000418450200051333', 'Tienda de Juegos de Mesa Chessyx', 'España', 'Madrid', 'http://localhost:8246/tienda/receivePedido', 1);
-INSERT INTO public.comercios (id, activo, api_key, cif, direccion, fecha_alta, iban, nombre, pais, provincia, url_back, pais_id) VALUES (1, true, 'mi-api-key-12345', 'CIF123456', 'Calle Falsa 123', null, 'ES9121000418450200051332', 'Gimnasio ASN San Vicente', 'España', 'Alicante', 'https://comercio-ejemplo.com/back', 1);
+INSERT INTO public.comercios (id, activo, api_key, cif, direccion, fecha_alta, iban, nombre, pais, provincia, url_back, pais_id) VALUES (2, true, 'mi-api-key-12346', 'CIF123457', 'Calle Falsa 124', '2023-07-21 00:00:00.000000', 'ES9121000418450200051333', 'Tienda de Juegos de Mesa Chessyx', 'España', 'Madrid', 'http://localhost:8246/tienda/receivePedido', 1);
+INSERT INTO public.comercios (id, activo, api_key, cif, direccion, fecha_alta, iban, nombre, pais, provincia, url_back, pais_id) VALUES (1, true, 'mi-api-key-12345', 'CIF123456', 'Calle Falsa 123', '2022-10-27 00:00:00.000000', 'ES9121000418450200051332', 'Gimnasio ASN San Vicente', 'España', 'Alicante', 'https://comercio-ejemplo.com/back', 1);
 INSERT INTO public.comercios (id, activo, api_key, cif, direccion, fecha_alta, iban, nombre, pais, provincia, url_back, pais_id) VALUES (3, true, '6ohXIrQIZDCAtGQZ5cp5h912FHNYZySz', 'A12345676', 'Sab Vicente del Raspeig', '2024-12-31 00:00:00.000000', 'ES1234567890123456789012', 'Universidad de Alicante', 'España', 'Alicante', 'www.laua.es', 1);
 INSERT INTO public.comercios (id, activo, api_key, cif, direccion, fecha_alta, iban, nombre, pais, provincia, url_back, pais_id) VALUES (8, true, 'wnUR1SUss0Ewh7rwWut1465rPcigKWRr', 'CH123456789', '1, Rue du Rhône, 1211 Geneva, Switzerland', '2025-01-01 00:00:00.000000', 'CH9300762011623852957000', 'Rolex SA', 'Suiza', 'Ginebra', 'www.rolex.com', 9);
 INSERT INTO public.comercios (id, activo, api_key, cif, direccion, fecha_alta, iban, nombre, pais, provincia, url_back, pais_id) VALUES (6, true, 'xJSOSRryxswisEk92dcxenPKA48b5x4s', 'GB123456789', '123 Innovation Road, London, EC1A 1AA', '2024-12-31 00:00:00.000000', 'GB29XABC1016123456789012', 'Innovative Solutions Ltd.', 'Reino Unido', 'Londres', 'www.innovativesolutions.co.uk', 6);
@@ -155,6 +155,7 @@ INSERT INTO public.tipos_usuario (id, nombre) VALUES (3, 'comercio');
 INSERT INTO public.usuarios (id, activo, contrasenya, email, fecha_alta, nombre, comercio_id, tipo_id) VALUES (1, true, '$2a$10$uEzYq5xTUFwUgBezRaJNvOr7n88Xt7dV.Ne.qg2Pb1K8WmgBNSgP2', 'admin-default@gmail.com', null, 'admin-default', 3, 1);
 INSERT INTO public.usuarios (id, activo, contrasenya, email, fecha_alta, nombre, comercio_id, tipo_id) VALUES (2, true, '$2a$10$r/UwgDJHaNd1iJoKHwh9we3q3YxXQlcHDqSJVzIR00sRtwrlRytfy', 'tecnico-default@gmail.com', null, 'tecnico-default', 3, 2);
 INSERT INTO public.usuarios (id, activo, contrasenya, email, fecha_alta, nombre, comercio_id, tipo_id) VALUES (3, true, '$2a$10$SeXSpZ0tRIRkWUf7gBeN1u7ykt7x3n0ndNq5Mc4OLlwkQAuOb3SRa', 'comercio-default@gmail.com', null, 'comercio-default', 2, 3);
+INSERT INTO public.usuarios (id, activo, contrasenya, email, fecha_alta, nombre, comercio_id, tipo_id) VALUES (4, true, '$2a$10$1UNp8LMWbnJ.QM8yr4Dlo.WL5GW65V4fKavGy//NXyI0G/UybYaha', 'asn@sanvi.es', '2025-01-13 19:07:22.552932', 'ASN Sanvi', 1, 3);
 
 
 INSERT INTO public.estados_incidencia (id, nombre) VALUES (1, 'NUEVA');
