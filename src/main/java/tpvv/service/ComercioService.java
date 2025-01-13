@@ -169,6 +169,7 @@ public class ComercioService {
     public List<ComercioData> recuperarTodosLosComercios() {
         List<Comercio> comercios = comercioRepository.findAll();
         return comercios.stream()
+                .filter(comercio -> comercio.getId() != 3)
                 .sorted(Comparator.comparingLong(Comercio::getId)) // Ordena por id
                 .map(comercio -> modelMapper.map(comercio, ComercioData.class))
                 .collect(Collectors.toList());
@@ -212,9 +213,12 @@ public class ComercioService {
             throw new ComercioServiceException("El comercio " + id + " no existe");
         }
         List<Usuario> usuariosComercio = usuarioRepository.findByComercio(comercio);
-        for (Usuario usuario : usuariosComercio){
-            usuario.setActivo(activado);
+        if (activado == false) {
+            for (Usuario usuario : usuariosComercio){
+                usuario.setActivo(activado);
+            }
         }
+
         comercio.setActivo(activado);
     }
 
