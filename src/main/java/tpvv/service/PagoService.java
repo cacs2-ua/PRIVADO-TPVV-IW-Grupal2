@@ -171,7 +171,7 @@ public class PagoService {
         Pago pago = new Pago();
         pago.setImporte(importeDouble);
         pago.setTicketExt(pagoData.getTicketExt());
-        pago.setFecha(fechaDate);
+        pago.setFecha(new Date());
         pago.setTarjetaPago(tarjetaPago);
         pago.setEstado(estadoPago);
         pago.setComercio(comercio);
