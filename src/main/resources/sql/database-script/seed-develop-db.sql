@@ -31,7 +31,7 @@ INSERT INTO public.paises (id, nombre) VALUES (10, 'Suecia');
 
 INSERT INTO public.comercios (id, activo, api_key, cif, direccion, fecha_alta, iban, nombre, pais, provincia, url_back, pais_id) VALUES (2, true, 'mi-api-key-12346', 'CIF123457', 'Calle Falsa 124', '2023-07-21 00:00:00.000000', 'ES9121000418450200051333', 'Tienda de Juegos de Mesa Chessyx', 'España', 'Madrid', 'http://localhost:8246/tienda/receivePedido', 1);
 INSERT INTO public.comercios (id, activo, api_key, cif, direccion, fecha_alta, iban, nombre, pais, provincia, url_back, pais_id) VALUES (1, true, 'mi-api-key-12345', 'CIF123456', 'Calle Falsa 123', '2022-10-27 00:00:00.000000', 'ES9121000418450200051332', 'Gimnasio ASN San Vicente', 'España', 'Alicante', 'https://comercio-ejemplo.com/back', 1);
-INSERT INTO public.comercios (id, activo, api_key, cif, direccion, fecha_alta, iban, nombre, pais, provincia, url_back, pais_id) VALUES (3, true, '6ohXIrQIZDCAtGQZ5cp5h912FHNYZySz', 'A12345676', 'Sab Vicente del Raspeig', '2024-12-31 00:00:00.000000', 'ES1234567890123456789012', 'Universidad de Alicante', 'España', 'Alicante', 'www.laua.es', 1);
+INSERT INTO public.comercios (id, activo, api_key, cif, direccion, fecha_alta, iban, nombre, pais, provincia, url_back, pais_id) VALUES (3, true, '6ohXIrQIZDCAtGQZ5cp5h912FHNYZySz', 'A12345676', 'San Vicente del Raspeig', '2024-12-31 00:00:00.000000', 'ES1234567890123456789012', 'Universidad de Alicante', 'España', 'Alicante', 'www.laua.es', 1);
 INSERT INTO public.comercios (id, activo, api_key, cif, direccion, fecha_alta, iban, nombre, pais, provincia, url_back, pais_id) VALUES (8, true, 'wnUR1SUss0Ewh7rwWut1465rPcigKWRr', 'CH123456789', '1, Rue du Rhône, 1211 Geneva, Switzerland', '2025-01-01 00:00:00.000000', 'CH9300762011623852957000', 'Rolex SA', 'Suiza', 'Ginebra', 'www.rolex.com', 9);
 INSERT INTO public.comercios (id, activo, api_key, cif, direccion, fecha_alta, iban, nombre, pais, provincia, url_back, pais_id) VALUES (6, true, 'xJSOSRryxswisEk92dcxenPKA48b5x4s', 'GB123456789', '123 Innovation Road, London, EC1A 1AA', '2024-12-31 00:00:00.000000', 'GB29XABC1016123456789012', 'Innovative Solutions Ltd.', 'Reino Unido', 'Londres', 'www.innovativesolutions.co.uk', 6);
 INSERT INTO public.comercios (id, activo, api_key, cif, direccion, fecha_alta, iban, nombre, pais, provincia, url_back, pais_id) VALUES (7, false, 'W5jCkRTK1S1QnZ6EJPYyHQmuaydtlvfL', 'D87654321', 'Carrera 7 No 23-45, Bogotá, 110010', '2024-12-31 00:00:00.000000', 'CO9876543210987654321098', 'Creatividad 360 S.L.', 'Portugal', 'Bogotá', 'www.creatividad360.com', 5);
@@ -152,12 +152,48 @@ INSERT INTO public.tipos_usuario (id, nombre) VALUES (3, 'comercio');
 
 
 
-INSERT INTO public.usuarios (id, activo, contrasenya, email, fecha_alta, nombre, comercio_id, tipo_id) VALUES (1, true, '$2a$10$uEzYq5xTUFwUgBezRaJNvOr7n88Xt7dV.Ne.qg2Pb1K8WmgBNSgP2', 'admin-default@gmail.com', null, 'admin-default', 3, 1);
-INSERT INTO public.usuarios (id, activo, contrasenya, email, fecha_alta, nombre, comercio_id, tipo_id) VALUES (2, true, '$2a$10$r/UwgDJHaNd1iJoKHwh9we3q3YxXQlcHDqSJVzIR00sRtwrlRytfy', 'tecnico-default@gmail.com', null, 'tecnico-default', 3, 2);
-INSERT INTO public.usuarios (id, activo, contrasenya, email, fecha_alta, nombre, comercio_id, tipo_id) VALUES (3, true, '$2a$10$SeXSpZ0tRIRkWUf7gBeN1u7ykt7x3n0ndNq5Mc4OLlwkQAuOb3SRa', 'comercio-default@gmail.com', null, 'comercio-default', 2, 3);
+INSERT INTO public.usuarios (id, activo, contrasenya, email, fecha_alta, nombre, comercio_id, tipo_id) VALUES (1, true, '$2a$10$uEzYq5xTUFwUgBezRaJNvOr7n88Xt7dV.Ne.qg2Pb1K8WmgBNSgP2', 'admin-default@gmail.com', '2019-01-12 13:11:27.552932', 'admin-default', 3, 1);
+INSERT INTO public.usuarios (id, activo, contrasenya, email, fecha_alta, nombre, comercio_id, tipo_id) VALUES (2, true, '$2a$10$r/UwgDJHaNd1iJoKHwh9we3q3YxXQlcHDqSJVzIR00sRtwrlRytfy', 'tecnico-default@gmail.com', '2021-02-08 18:17:47.552932', 'tecnico-default', 3, 2);
+INSERT INTO public.usuarios (id, activo, contrasenya, email, fecha_alta, nombre, comercio_id, tipo_id) VALUES (3, true, '$2a$10$SeXSpZ0tRIRkWUf7gBeN1u7ykt7x3n0ndNq5Mc4OLlwkQAuOb3SRa', 'comercio-default@gmail.com', '2022-02-21 15:06:09.552932', 'comercio-default', 2, 3);
 INSERT INTO public.usuarios (id, activo, contrasenya, email, fecha_alta, nombre, comercio_id, tipo_id) VALUES (4, true, '$2a$10$1UNp8LMWbnJ.QM8yr4Dlo.WL5GW65V4fKavGy//NXyI0G/UybYaha', 'asn@sanvi.es', '2025-01-13 19:07:22.552932', 'ASN Sanvi', 1, 3);
 
 
 INSERT INTO public.estados_incidencia (id, nombre) VALUES (1, 'NUEVA');
 INSERT INTO public.estados_incidencia (id, nombre) VALUES (2, 'ASIGN');
 INSERT INTO public.estados_incidencia (id, nombre) VALUES (3, 'RESUELTA');
+
+INSERT INTO public.incidencias (id, descripcion, fecha, razon_valoracion, titulo, valoracion, estado_id, pago_id, usuario_comercio_id, usuario_tecnico_id) VALUES (4, 'Con este también he tenido problema', '2025-01-13 19:39:25.593000', null, 'También con este pago he tenido problema ', 0, 1, 2, 3, null);
+INSERT INTO public.incidencias (id, descripcion, fecha, razon_valoracion, titulo, valoracion, estado_id, pago_id, usuario_comercio_id, usuario_tecnico_id) VALUES (5, 'He vuelto a tener otro problema, perdone usted', '2025-01-13 19:39:53.549000', null, 'Otra incidencia nueva', 0, 1, null, 3, null);
+INSERT INTO public.incidencias (id, descripcion, fecha, razon_valoracion, titulo, valoracion, estado_id, pago_id, usuario_comercio_id, usuario_tecnico_id) VALUES (3, 'He tenido un problema con este pago', '2025-01-13 19:39:05.743000', 'No tenia ningun problema al final', 'Problema con este pago', 5, 3, 1, 3, 2);
+INSERT INTO public.incidencias (id, descripcion, fecha, razon_valoracion, titulo, valoracion, estado_id, pago_id, usuario_comercio_id, usuario_tecnico_id) VALUES (2, 'No he tenido problema con ningún pago, con otra cosa.', '2025-01-13 19:38:50.830000', null, 'Incidencia sin pago', 0, 2, null, 3, 2);
+INSERT INTO public.incidencias (id, descripcion, fecha, razon_valoracion, titulo, valoracion, estado_id, pago_id, usuario_comercio_id, usuario_tecnico_id) VALUES (1, 'He tenido un problema y tengo que cambiar la api_key', '2025-01-13 19:38:23.565000', 'Me ha cerrado la incidencia porque sí', 'Problema Gimnasio', 1, 3, null, 4, 2);
+INSERT INTO public.incidencias (id, descripcion, fecha, razon_valoracion, titulo, valoracion, estado_id, pago_id, usuario_comercio_id, usuario_tecnico_id) VALUES (6, 'Eso, que no me ha llegado la info', '2025-01-13 19:43:30.939000', null, 'Este pago no me ha llegado bien', 0, 1, 17, 4, null);
+INSERT INTO public.incidencias (id, descripcion, fecha, razon_valoracion, titulo, valoracion, estado_id, pago_id, usuario_comercio_id, usuario_tecnico_id) VALUES (7, 'No me llega nada a mi cuenta bancaria', '2025-01-13 19:43:51.991000', null, 'Este tampoco me ha llegado', 0, 2, 15, 4, 2);
+INSERT INTO public.incidencias (id, descripcion, fecha, razon_valoracion, titulo, valoracion, estado_id, pago_id, usuario_comercio_id, usuario_tecnico_id) VALUES (8, 'Llevo 2 dias sin saber nada de mi problema', '2025-01-13 19:44:36.036000', null, 'Cuando me vais a solucionar mi problema', 0, 1, null, 4, null);
+INSERT INTO public.incidencias (id, descripcion, fecha, razon_valoracion, titulo, valoracion, estado_id, pago_id, usuario_comercio_id, usuario_tecnico_id) VALUES (9, 'No pude crear incidencias para mi pago', '2025-01-13 19:45:01.981000', null, 'Ayer tuve otro problema al final', 0, 1, null, 4, null);
+
+INSERT INTO public.mensajes (id, contenido, fecha, incidencia_id, usuario_id) VALUES (1, 'Dime que problema has tenido', '2025-01-13 19:40:29.478000', 1, 2);
+INSERT INTO public.mensajes (id, contenido, fecha, incidencia_id, usuario_id) VALUES (2, 'Dime que te pasa', '2025-01-13 19:40:56.453000', 3, 2);
+INSERT INTO public.mensajes (id, contenido, fecha, incidencia_id, usuario_id) VALUES (3, 'Ah al final nada, perdona', '2025-01-13 19:41:05.837000', 3, 3);
+INSERT INTO public.mensajes (id, contenido, fecha, incidencia_id, usuario_id) VALUES (4, 'Ah pues cierro la incidencia. Un saludo.', '2025-01-13 19:41:16.703000', 3, 2);
+INSERT INTO public.mensajes (id, contenido, fecha, incidencia_id, usuario_id) VALUES (5, 'Ah, dime que te ha pasado', '2025-01-13 19:42:03.787000', 2, 2);
+INSERT INTO public.mensajes (id, contenido, fecha, incidencia_id, usuario_id) VALUES (6, 'No tienes la cuenta bancaria bien puesta!', '2025-01-13 19:44:09.970000', 7, 2);
+
+INSERT INTO public.valoraciones_tecnico (id, valoracion, tecnico_id) VALUES (1, 5, 2);
+INSERT INTO public.valoraciones_tecnico (id, valoracion, tecnico_id) VALUES (2, 1, 2);
+
+
+
+SELECT setval('public.parametros_id_seq', COALESCE((SELECT MAX(id) FROM public.parametros), 0) + 1, false);
+SELECT setval('public.paises_id_seq', COALESCE((SELECT MAX(id) FROM public.paises), 0) + 1, false);
+SELECT setval('public.comercios_id_seq', COALESCE((SELECT MAX(id) FROM public.comercios), 0) + 1, false);
+SELECT setval('public.personas_contacto_id_seq', COALESCE((SELECT MAX(id) FROM public.personas_contacto), 0) + 1, false);
+SELECT setval('public.estados_incidencia_id_seq', COALESCE((SELECT MAX(id) FROM public.estados_incidencia), 0) + 1, false);
+SELECT setval('public.tarjetas_pago_id_seq', COALESCE((SELECT MAX(id) FROM public.tarjetas_pago), 0) + 1, false);
+SELECT setval('public.estados_pago_id_seq', COALESCE((SELECT MAX(id) FROM public.estados_pago), 0) + 1, false);
+SELECT setval('public.pagos_id_seq', COALESCE((SELECT MAX(id) FROM public.pagos), 0) + 1, false);
+SELECT setval('public.tipos_usuario_id_seq', COALESCE((SELECT MAX(id) FROM public.tipos_usuario), 0) + 1, false);
+SELECT setval('public.incidencias_id_seq', COALESCE((SELECT MAX(id) FROM public.incidencias), 0) + 1, false);
+SELECT setval('public.usuarios_id_seq', COALESCE((SELECT MAX(id) FROM public.usuarios), 0) + 1, false);
+SELECT setval('public.valoraciones_tecnico_id_seq', COALESCE((SELECT MAX(id) FROM public.valoraciones_tecnico), 0) + 1, false);
+SELECT setval('public.mensajes_id_seq', COALESCE((SELECT MAX(id) FROM public.mensajes), 0) + 1, false);

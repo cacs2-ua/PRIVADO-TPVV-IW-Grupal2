@@ -96,7 +96,7 @@
                     </div>
                     <input type="hidden" id="valoracion" name="valoracion" value="0">
                     <label class="label">Razón:</label>
-                    <textarea class="form-control textarea-desc" name="razon_valoracion" required> </textarea>
+                    <textarea class="form-control textarea-desc" name="razon_valoracion" id="razon_val" required></textarea>
                     <button style="margin-top:10px" type="submit" class="btn btn-info">Submit Rating</button>
                 </form>
             </div>
@@ -111,11 +111,15 @@
     document.getElementById('ratingForm').addEventListener('submit', function(e) {
         e.preventDefault();
         const rating = document.querySelector('input[name="rating"]:checked');
+        const razon = document.getElementById("razon_val");
         if (rating) {
-            alert('You selected: ' + rating.value);
-            var element = document.getElementById("valoracion");
-            element.value = rating.value;
-            this.submit();
+            if(razon.value.trim()){
+                var element = document.getElementById("valoracion");
+                element.value = rating.value;
+                this.submit();
+            }else{
+                alert('Necesitas poner una razon social');
+            }
         } else {
             alert('Tienes que elegir del 1 al 5');
         }
