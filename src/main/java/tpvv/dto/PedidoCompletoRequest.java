@@ -16,6 +16,8 @@ public class PedidoCompletoRequest {
     // MODIFICADO: antes era 'Date fecha'
     private String fecha;
 
+    private String fechaPedido;
+
     // MODIFICADO: antes era 'double importe'
     private String importe;
 
