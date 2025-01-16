@@ -73,6 +73,14 @@ public class PedidoCompletoRequest {
         this.fecha = fecha;
     }
 
+    public String getFechaPedido() {
+        return fechaPedido;
+    }
+
+    public void setFechaPedido(String fechaPedido) {
+        this.fechaPedido = fechaPedido;
+    }
+
     // MODIFICADO: ahora es String
     public String getImporte() {
         return importe;

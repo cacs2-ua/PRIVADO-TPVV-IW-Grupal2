@@ -191,6 +191,9 @@ public class PagoService {
         String fechaStr = sdfOut.format(pago.getFecha());
         pedidoCompletoRequest.setFecha(fechaStr);
 
+        String fechaPedidoStr = sdfOut.format(fechaDate);
+        pedidoCompletoRequest.setFechaPedido(fechaPedidoStr);
+
         // MODIFICADO: Convertir double -> String
         pedidoCompletoRequest.setImporte(String.valueOf(pago.getImporte()));
 
