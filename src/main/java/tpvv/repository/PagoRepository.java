@@ -18,4 +18,7 @@ public interface PagoRepository extends JpaRepository<Pago, Long> {
     @Query("SELECT COUNT(p) FROM Pago p WHERE p.comercio.id = :comercioId AND p.fecha >= :fechaDesde")
     Long countPagosByComercioAndFechaDesde(Long comercioId, Date fechaDesde);
 
+    @Query("SELECT COUNT(p) FROM Pago p WHERE p.fecha >= :fechaDesde")
+    Long countPagosByFechaDesde(Date fechaDesde);
+
 }

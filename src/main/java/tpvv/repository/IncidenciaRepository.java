@@ -26,4 +26,10 @@ public interface IncidenciaRepository extends JpaRepository<Incidencia, Long> {
     @Query("SELECT COUNT(i) FROM Incidencia i WHERE i.usuarioTecnico.id = :usuarioTecnicoId AND i.fecha >= :fechaDesde AND i.estado.id = :estadoId")
     Long countIncidenciasByUsuarioTecnicoAndFechaDesdeAndEstado(Long usuarioTecnicoId, Date fechaDesde, int estadoId);
 
+    @Query("SELECT COUNT(i) FROM Incidencia i WHERE i.fecha >= :fechaDesde")
+    Long countIncidenciasByFechaDesde(Date fechaDesde);
+
+    @Query("SELECT COUNT(i) FROM Incidencia i WHERE i.fecha >= :fechaDesde AND i.estado.id = :estadoId")
+    Long countIncidenciasByFechaDesdeAndEstado(Date fechaDesde, int estadoId);
+
 }

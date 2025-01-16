@@ -32,6 +32,7 @@
         </li>
 
         <!-- Admin User -->
+        <a th:if="${usuario != null and usuario.tipoId == 1}" class="navbar-brand" th:href="@{/api/admin/dashboard}" style="font-weight: normal; text-decoration: none;" onclick="highlightLink(this)">TPVV-BoarDalo</a>
         <li class="nav-item" th:if="${usuario != null and usuario.tipoId == 1}">
           <a class="nav-link" th:href="@{/api/tecnico-or-admin/comercios}" style="font-weight: normal; text-decoration: none;" onclick="highlightLink(this)">Comercios</a>
         </li>

@@ -94,6 +94,28 @@ public class ComercioController {
 
     }
 
+    @GetMapping("/api/admin/dashboard")
+    public String dashboardAdmin(Model model) {
+        UsuarioData usuario = usuarioService.findById(getUsuarioLogeadoId());
+
+
+        LocalDate haceCincoYears = LocalDate.now().minusYears(5);
+        Date haceCincoYearsDate = Date.from(haceCincoYears.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+
+
+        Long pagos = pagoRepository.countPagosByFechaDesde(haceCincoYearsDate);
+        Long incidencias = incidenciaRepository.countIncidenciasByFechaDesde(haceCincoYearsDate);
+        Long incidenciasResueltas = incidenciaRepository.countIncidenciasByFechaDesdeAndEstado(haceCincoYearsDate, 3);
+
+        model.addAttribute("pagos", pagos);
+        model.addAttribute("incidencias", incidencias);
+        model.addAttribute("incidenciasResueltas", incidenciasResueltas);
+
+        return "dashAdmins";
+
+    }
+
     @GetMapping("/api/admin/crearcomercio")
     public String formularioComercio(Model model) {
 
