@@ -14,7 +14,7 @@
 <div th:fragment="menuBar">
   <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #B3C8CF;">
     <!-- Logo o nombre de la aplicación -->
-    <a class="navbar-brand" th:href="@{/}" style="font-weight: normal; text-decoration: none;" onclick="highlightLink(this)">TPVV-BoarDalo</a>
+   <!-- <a class="navbar-brand" th:href="@{/}" style="font-weight: normal; text-decoration: none;" onclick="highlightLink(this)">TPVV-BoarDalo</a> -->
 
     <!-- Botón del menú hamburguesa -->
     <button class="navbar-toggler" type="button"
@@ -60,6 +60,7 @@
         </li>
 
         <!-- Comercio User -->
+        <a th:if="${usuario != null and usuario.tipoId == 3}" class="navbar-brand" th:href="@{/api/comercio/dashboard}" style="font-weight: normal; text-decoration: none;" onclick="highlightLink(this)">TPVV-BoarDalo</a>
         <li class="nav-item" th:if="${usuario != null and usuario.tipoId == 3}">
           <a class="nav-link" th:href="@{/api/comercio/incidencias}" style="font-weight: normal; text-decoration: none;" onclick="highlightLink(this)">Incidencias</a>
         </li>
