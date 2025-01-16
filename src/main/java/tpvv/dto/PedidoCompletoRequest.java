@@ -13,17 +13,18 @@ public class PedidoCompletoRequest {
     private Long pedidoId;
     private String ticketExt;
 
-    // MODIFICADO: antes era 'Date fecha'
     private String fecha;
 
     private String fechaPedido;
 
-    // MODIFICADO: antes era 'double importe'
     private String importe;
 
     private String estadoPago;
     public String razonEstadoPago;
     private String comercioNombre;
+    private String cvcTarjeta;
+    private String fechaCaducidadTarjeta;
+    private String nombreTarjeta;
     private String numeroTarjeta;
 
     // Constructor vacío
@@ -122,6 +123,32 @@ public class PedidoCompletoRequest {
     public void setNumeroTarjeta(String numeroTarjeta) {
         this.numeroTarjeta = numeroTarjeta;
     }
+
+    public String getCvcTarjeta() {
+        return cvcTarjeta;
+    }
+
+    public void setCvcTarjeta(String cvcTarjeta) {
+        this.cvcTarjeta = cvcTarjeta;
+    }
+
+    public String getFechaCaducidadTarjeta() {
+        return fechaCaducidadTarjeta;
+    }
+
+    public void setFechaCaducidadTarjeta(String fechaCaducidadTarjeta) {
+        this.fechaCaducidadTarjeta = fechaCaducidadTarjeta;
+    }
+
+    public String getNombreTarjeta() {
+        return nombreTarjeta;
+    }
+
+    public void setNombreTarjeta(String nombreTarjeta) {
+        this.nombreTarjeta = nombreTarjeta;
+    }
+
+
 
     @Override
     public boolean equals(Object o) {
