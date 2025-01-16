@@ -73,6 +73,27 @@ public class ComercioController {
 
     }
 
+    @GetMapping("/api/tecnico/dashboard")
+    public String dashboardTecnico(Model model) {
+        UsuarioData usuario = usuarioService.findById(getUsuarioLogeadoId());
+
+
+        LocalDate haceCincoYears = LocalDate.now().minusYears(5);
+        Date haceCincoYearsDate = Date.from(haceCincoYears.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+
+
+        Long incidenciasAsignadas = incidenciaRepository.countIncidenciasByUsuarioTecnicoAndFechaDesde(usuario.getId(), haceCincoYearsDate);
+        Long incidenciasAsignadasResueltas = incidenciaRepository.countIncidenciasByUsuarioTecnicoAndFechaDesdeAndEstado(usuario.getId(), haceCincoYearsDate, 3);
+
+
+        model.addAttribute("incidenciasAsignadas", incidenciasAsignadas);
+        model.addAttribute("incidenciasAsignadasResueltas", incidenciasAsignadasResueltas);
+
+        return "dashTecnicos";
+
+    }
+
     @GetMapping("/api/admin/crearcomercio")
     public String formularioComercio(Model model) {
 
