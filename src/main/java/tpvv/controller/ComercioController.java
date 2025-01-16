@@ -2,7 +2,6 @@ package tpvv.controller;
 
 import jakarta.servlet.http.HttpSession;
 
-import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,20 +9,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import tpvv.authentication.ManagerUserSession;
-import tpvv.dto.ComercioData;
-import tpvv.dto.PaisData;
-import tpvv.dto.PersonaContactoData;
-import tpvv.dto.UsuarioData;
+import tpvv.dto.*;
 import org.springframework.data.domain.Page;
 
 
-
-import tpvv.service.ComercioService;
-import tpvv.service.PaisService;
-import tpvv.service.UsuarioService;
+import tpvv.repository.IncidenciaRepository;
+import tpvv.repository.PagoRepository;
+import tpvv.service.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -39,11 +35,86 @@ public class ComercioController {
     private PaisService paisService;
     @Autowired
     private ComercioService comercioService;
+    @Autowired
+    private PagoService pagoService;
+    @Autowired
+    private IncidenciaService incidenciaService;
+    @Autowired
+    private PagoRepository pagoRepository;
+    @Autowired
+    private IncidenciaRepository incidenciaRepository;
 
     private Long getUsuarioLogeadoId() {
         return managerUserSession.usuarioLogeado();
     }
 
+
+    @GetMapping("/api/comercio/dashboard")
+    public String dashboardComercio(Model model) {
+        UsuarioData usuario = usuarioService.findById(getUsuarioLogeadoId());
+        Long id_comercio = usuarioService.findComercio(usuario.getId());
+        List<UsuarioData> usuariosComercio = usuarioService.findAllByIdComercio(id_comercio);
+        List<Long> usuariosIds = usuariosComercio.stream().map(UsuarioData::getId).toList();
+
+        LocalDate haceCincoYears = LocalDate.now().minusYears(5);
+        Date haceCincoYearsDate = Date.from(haceCincoYears.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+
+        Long pagos = pagoRepository.countPagosByComercioAndFechaDesde(id_comercio, haceCincoYearsDate);
+        Long incidencias = incidenciaRepository.countIncidenciasByUsuarioIdsAndFechaDesde(usuariosIds, haceCincoYearsDate);
+        Long incidenciasResueltas = incidenciaRepository.countIncidenciasByUsuarioIdsFechaDesdeAndEstado(usuariosIds, haceCincoYearsDate, 3);
+
+
+        model.addAttribute("pagos", pagos);
+        model.addAttribute("incidencias", incidencias);
+        model.addAttribute("incidenciasResueltas", incidenciasResueltas);
+
+        return "dashComercios";
+
+    }
+
+    @GetMapping("/api/tecnico/dashboard")
+    public String dashboardTecnico(Model model) {
+        UsuarioData usuario = usuarioService.findById(getUsuarioLogeadoId());
+
+
+        LocalDate haceCincoYears = LocalDate.now().minusYears(5);
+        Date haceCincoYearsDate = Date.from(haceCincoYears.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+
+
+        Long incidenciasAsignadas = incidenciaRepository.countIncidenciasByUsuarioTecnicoAndFechaDesde(usuario.getId(), haceCincoYearsDate);
+        Long incidenciasAsignadasResueltas = incidenciaRepository.countIncidenciasByUsuarioTecnicoAndFechaDesdeAndEstado(usuario.getId(), haceCincoYearsDate, 3);
+
+
+        model.addAttribute("incidenciasAsignadas", incidenciasAsignadas);
+        model.addAttribute("incidenciasAsignadasResueltas", incidenciasAsignadasResueltas);
+
+        return "dashTecnicos";
+
+    }
+
+    @GetMapping("/api/admin/dashboard")
+    public String dashboardAdmin(Model model) {
+        UsuarioData usuario = usuarioService.findById(getUsuarioLogeadoId());
+
+
+        LocalDate haceCincoYears = LocalDate.now().minusYears(5);
+        Date haceCincoYearsDate = Date.from(haceCincoYears.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+
+
+        Long pagos = pagoRepository.countPagosByFechaDesde(haceCincoYearsDate);
+        Long incidencias = incidenciaRepository.countIncidenciasByFechaDesde(haceCincoYearsDate);
+        Long incidenciasResueltas = incidenciaRepository.countIncidenciasByFechaDesdeAndEstado(haceCincoYearsDate, 3);
+
+        model.addAttribute("pagos", pagos);
+        model.addAttribute("incidencias", incidencias);
+        model.addAttribute("incidenciasResueltas", incidenciasResueltas);
+
+        return "dashAdmins";
+
+    }
 
     @GetMapping("/api/admin/crearcomercio")
     public String formularioComercio(Model model) {

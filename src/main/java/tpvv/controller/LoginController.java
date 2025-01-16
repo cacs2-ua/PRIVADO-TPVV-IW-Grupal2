@@ -52,6 +52,15 @@ public class LoginController {
             UsuarioData usuario = usuarioService.findByEmail(loginData.getEmail());
             managerUserSession.logearUsuario(usuario.getId());
 
+            if (usuario.getTipoId() == 1){
+                return "redirect:/api/admin/dashboard";
+            }
+            if (usuario.getTipoId() == 2){
+                return "redirect:/api/tecnico/dashboard";
+            }
+            if (usuario.getTipoId() == 3){
+                return "redirect:/api/comercio/dashboard";
+            }
             // Redirigir a la página de bienvenida
             return "redirect:/api/general/bienvenida";
 
