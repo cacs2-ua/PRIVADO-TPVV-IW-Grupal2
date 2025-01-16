@@ -131,3 +131,6 @@ INSERT INTO public.usuarios (id, activo, contrasenya, email, nombre, comercio_id
 INSERT INTO public.usuarios (id, activo, contrasenya, email, nombre, comercio_id, tipo_id) VALUES (3, true, '$2a$10$SeXSpZ0tRIRkWUf7gBeN1u7ykt7x3n0ndNq5Mc4OLlwkQAuOb3SRa', 'comercio-default@gmail.com', 'comercio-default', 1, 3);
 
 
+INSERT INTO public.estados_incidencia (id, nombre) VALUES (1, 'NUEVA');
+INSERT INTO public.estados_incidencia (id, nombre) VALUES (2, 'ASIGN');
+INSERT INTO public.estados_incidencia (id, nombre) VALUES (3, 'RESUELTA');

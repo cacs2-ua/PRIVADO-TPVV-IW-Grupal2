@@ -73,8 +73,8 @@ public class IncidenciaTest {
         estadoIncidenciaRepository.save(estadoIncidencia);
 
         Incidencia incidencia = new Incidencia(titulo);
-        incidencia.setUsuario_comercio(usuario);
-        incidencia.setUsuario_tecnico(usuario2);
+        incidencia.setUsuarioComercio(usuario);
+        incidencia.setUsuarioTecnico(usuario2);
         incidencia.setEstado(estadoIncidencia);
 
         incidenciaRepository.save(incidencia);
@@ -154,8 +154,8 @@ public class IncidenciaTest {
         Usuario usuarioTecnico = new Usuario("tecnico-no-persistente@empresa.com");
         // No se guardan los usuarios en la BD
 
-        incidencia.setUsuario_comercio(usuarioComercio);
-        incidencia.setUsuario_tecnico(usuarioTecnico);
+        incidencia.setUsuarioComercio(usuarioComercio);
+        incidencia.setUsuarioTecnico(usuarioTecnico);
 
         EstadoIncidencia estadoIncidencia = new EstadoIncidencia("pendiente");
         estadoIncidenciaRepository.save(estadoIncidencia);
@@ -201,8 +201,8 @@ public class IncidenciaTest {
         Usuario usuarioTecnico = new Usuario("tecnico-no-persistente@empresa.com");
         // No se guardan los usuarios en la BD
 
-        incidencia.setUsuario_comercio(usuarioComercio);
-        incidencia.setUsuario_tecnico(usuarioTecnico);
+        incidencia.setUsuarioComercio(usuarioComercio);
+        incidencia.setUsuarioTecnico(usuarioTecnico);
 
         EstadoIncidencia estadoIncidencia = new EstadoIncidencia("pendiente");
         estadoIncidenciaRepository.save(estadoIncidencia);
@@ -270,7 +270,7 @@ public class IncidenciaTest {
         // GIVEN
         Incidencia incidencia = crearYGuardarIncidencia("Incidencia para actualizar Pago");
         Pago nuevoPago = new Pago("pago-nuevo");
-        nuevoPago.setComercio(incidencia.getUsuario_comercio().getComercio());
+        nuevoPago.setComercio(incidencia.getUsuarioComercio().getComercio());
         nuevoPago.setEstado(estadoPagoRepository.save(new EstadoPago("estado-nuevo")));
         nuevoPago.setTarjetaPago(tarjetaPagoRepository.save(new TarjetaPago("tarjeta-nueva")));
         pagoRepository.save(nuevoPago);

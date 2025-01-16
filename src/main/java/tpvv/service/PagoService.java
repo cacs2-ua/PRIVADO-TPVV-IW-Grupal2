@@ -171,7 +171,7 @@ public class PagoService {
         Pago pago = new Pago();
         pago.setImporte(importeDouble);
         pago.setTicketExt(pagoData.getTicketExt());
-        pago.setFecha(fechaDate);
+        pago.setFecha(new Date());
         pago.setTarjetaPago(tarjetaPago);
         pago.setEstado(estadoPago);
         pago.setComercio(comercio);
@@ -615,7 +615,9 @@ public class PagoService {
         pagoRecursoData.setComercioData(modelMapper.map(pago.getComercio(), ComercioData.class));
         pagoRecursoData.setEstadoPagoData(modelMapper.map(pago.getEstado(), EstadoPagoData.class));
         pagoRecursoData.setTarjetaPagoData(modelMapper.map(pago.getTarjetaPago(), TarjetaPagoData.class));
-
+        if(pago.getIncidencia()!= null){
+            pagoRecursoData.setIncidenciaData(modelMapper.map(pago.getIncidencia(), IncidenciaData.class));
+        }
         return pagoRecursoData;
     }
 

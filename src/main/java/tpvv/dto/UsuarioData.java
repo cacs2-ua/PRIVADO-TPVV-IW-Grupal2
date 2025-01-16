@@ -19,7 +19,7 @@ public class UsuarioData {
     private Long tipoId;
     private boolean activo;
     private Timestamp fechaAlta;
-    private Comercio comercio;
+    private ComercioData comercio;
 
 
     // Getters y setters
@@ -71,9 +71,9 @@ public class UsuarioData {
 
     public void setFechaAlta(Timestamp fechaAlta) { this.fechaAlta = fechaAlta; }
 
-    public Comercio getComercio() { return comercio; }
+    public ComercioData getComercio() { return comercio; }
 
-    public void setComercio(Comercio comercio) { this.comercio = comercio; }
+    public void setComercio(ComercioData comercio) { this.comercio = comercio; }
 
 
 

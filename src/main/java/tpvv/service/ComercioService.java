@@ -20,6 +20,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Page;
 import tpvv.repository.UsuarioRepository;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
@@ -151,6 +152,7 @@ public class ComercioService {
             throw new ComercioServiceException("El comercio " + id + " no existe");
         }
         PersonaContacto persona = comercio.getPersonaContacto();
+        if (persona == null) return null;
         return modelMapper.map(persona, PersonaContactoData.class);
     }
 
@@ -167,6 +169,7 @@ public class ComercioService {
     public List<ComercioData> recuperarTodosLosComercios() {
         List<Comercio> comercios = comercioRepository.findAll();
         return comercios.stream()
+                .filter(comercio -> comercio.getId() != 3)
                 .sorted(Comparator.comparingLong(Comercio::getId)) // Ordena por id
                 .map(comercio -> modelMapper.map(comercio, ComercioData.class))
                 .collect(Collectors.toList());
@@ -210,9 +213,12 @@ public class ComercioService {
             throw new ComercioServiceException("El comercio " + id + " no existe");
         }
         List<Usuario> usuariosComercio = usuarioRepository.findByComercio(comercio);
-        for (Usuario usuario : usuariosComercio){
-            usuario.setActivo(activado);
+        if (activado == false) {
+            for (Usuario usuario : usuariosComercio){
+                usuario.setActivo(activado);
+            }
         }
+
         comercio.setActivo(activado);
     }
 
@@ -229,8 +235,8 @@ public class ComercioService {
                 .filter(comercio -> nombre == null || comercio.getNombre().toLowerCase().contains(nombre.toLowerCase()))
                 .filter(comercio -> cif == null || comercio.getCif().toLowerCase().contains(cif.toLowerCase()))
                 .filter(comercio -> paisFiltrado == null || comercio.getPais().equalsIgnoreCase(paisFiltrado))
-                .filter(comercio -> fechaDesde == null || !comercio.getFechaAlta().isBefore(fechaDesde))
-                .filter(comercio -> fechaHasta == null || !comercio.getFechaAlta().isAfter(fechaHasta))
+                .filter(comercio -> fechaDesde == null || !comercio.getFechaAlta().before(Timestamp.valueOf(fechaDesde.atStartOfDay())))
+                .filter(comercio -> fechaHasta == null || !comercio.getFechaAlta().after(Timestamp.valueOf(fechaHasta.atStartOfDay())))
                 .collect(Collectors.toList());
     }
 

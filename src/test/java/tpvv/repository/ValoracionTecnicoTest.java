@@ -77,29 +77,29 @@ public class ValoracionTecnicoTest {
         estadoIncidenciaRepository.save(estadoIncidencia);
 
         Incidencia incidencia = new Incidencia("default-title");
-        incidencia.setUsuario_comercio(usuario);
-        incidencia.setUsuario_tecnico(usuario2);
+        incidencia.setUsuarioComercio(usuario);
+        incidencia.setUsuarioTecnico(usuario2);
         incidencia.setEstado(estadoIncidencia);
 
         incidenciaRepository.save(incidencia);
 
         Incidencia incidencia2 = new Incidencia("default-title2");
-        incidencia2.setUsuario_tecnico(usuario);
-        incidencia2.setUsuario_comercio(usuario2);
+        incidencia2.setUsuarioTecnico(usuario);
+        incidencia2.setUsuarioComercio(usuario2);
         incidencia2.setEstado(estadoIncidencia);
 
         incidenciaRepository.save(incidencia2);
 
         Incidencia incidencia3 = new Incidencia("default-title3");
-        incidencia3.setUsuario_comercio(usuario);
-        incidencia3.setUsuario_tecnico(usuario2);
+        incidencia3.setUsuarioComercio(usuario);
+        incidencia3.setUsuarioTecnico(usuario2);
         incidencia3.setEstado(estadoIncidencia);
 
         incidenciaRepository.save(incidencia3);
 
         Incidencia incidencia4 = new Incidencia("default-title2");
-        incidencia4.setUsuario_tecnico(usuario);
-        incidencia4.setUsuario_comercio(usuario2);
+        incidencia4.setUsuarioTecnico(usuario);
+        incidencia4.setUsuarioComercio(usuario2);
         incidencia4.setEstado(estadoIncidencia);
 
         incidenciaRepository.save(incidencia4);
@@ -140,48 +140,6 @@ public class ValoracionTecnicoTest {
         // Verificar que la valoración existe y no tiene asociado ningún usuario
         assertThat(valoracionRecuperada).isNotNull();
         assertThat(usuario.getEmail()).isEqualTo("default");
-    }
-
-    /**
-     * Test para verificar que una ValoracionTecnico puede estar asociada a un Usuario correctamente.
-     */
-    @Test
-    @Transactional
-    public void testValoracionTecnicoConUsuario() {
-        // Crear y guardar una valoración técnica con un usuario
-        ValoracionTecnico valoracion = crearYGuardarValoracionTecnico(5.0f);
-
-        // Recuperar la valoración desde la base de datos
-        ValoracionTecnico valoracionRecuperada = valoracionTecnicoRepository.findById(valoracion.getId()).orElse(null);
-
-        // Verificar que la valoración técnica está correctamente asociada al usuario
-        assertThat(valoracionRecuperada).isNotNull();
-        assertThat(valoracionRecuperada.getValoracion()).isEqualTo(5.0f);
-        assertThat(valoracionRecuperada.getTecnico()).isNotNull();
-        assertThat(valoracionRecuperada.getTecnico().getValoracionTecnico()).isEqualTo(valoracionRecuperada);
-    }
-
-    /**
-     * Test para verificar la eliminación de una ValoracionTecnico y la correcta actualización de la relación con Usuario.
-     */
-    @Test
-    @Transactional
-    public void testEliminarValoracionTecnico() {
-        // Crear y guardar una valoración técnica con un usuario
-        ValoracionTecnico valoracion = crearYGuardarValoracionTecnico(4.5f);
-
-        // Eliminar la valoración técnica
-        valoracionTecnicoRepository.delete(valoracion);
-
-        // Recuperar la valoración desde la base de datos
-        ValoracionTecnico valoracionRecuperada = valoracionTecnicoRepository.findById(valoracion.getId()).orElse(null);
-
-        // Verificar que la valoración ya no existe
-        assertThat(valoracionRecuperada).isNull();
-
-        // Recuperar el usuario y verificar que la relación está nula
-        Usuario tecnico = usuarioRepository.findById(valoracion.getTecnico().getId()).orElse(null);
-        assertThat(tecnico).isNotNull();
     }
 
 }

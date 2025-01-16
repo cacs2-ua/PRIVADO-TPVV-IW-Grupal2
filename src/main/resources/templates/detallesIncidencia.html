@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalles incidencia</title>
+    <link rel="stylesheet" th:href="@{/css/custom/detallesIncidenciaStyle.css}">
+    <div th:include="fragments :: head (titulo='Detalles incidencia')"></div>
+</head>
+<body class="body-background">
+
+<div th:replace="fragments::menuBar"></div>
+<div  class="container">
+    <div class="ticket-header container">
+        <div class="header-info row d-flex justify-content-center align-items-center">
+            <span class="col-1" th:text=" 'ID: '+${incidencia.id}">   </span>
+            <span class="col-2"  th:text=" 'Emisión: '+${incidencia.getFechaFormatted()}">   </span>
+            <span class="col-2"  th:text=" 'Estado: '+${incidencia.estado.getNombre() == 'NUEVA' ? 'Nueva' :
+                    (incidencia.estado.getNombre() == 'ASIGN' ? 'Asignada' :
+                        'Resuelta')}"
+                  th:classappend="${incidencia.estado.getNombre() == 'NUEVA' ? 'status-active' :
+                    (incidencia.estado.getNombre() == 'ASIGN' ? 'status-pending' :
+                    'status-inactive')}">   </span>
+            <span class="col-3"  th:text=" 'Comercio: '+${incidencia.getUsuarioComercio().getComercio().getNombre()}">   </span>
+            <span class="col-3" th:if="${incidencia.getPago_id()}"  th:text=" 'Pago ID: '+${incidencia.getPago_id()}">   </span>
+      </div>
+    </div>
+
+    <div class="message-box">
+        <p class="message-content" th:text="${incidencia.descripcion}">
+          </p>
+        <p class="usuario-comercio" th:text="${incidencia.getUsuarioComercio().getNombre()} +'   '+${incidencia.getFechaFormatted()}"></p>
+    </div>
+
+    <div th:each="m : ${incidencia.getMensajes()}">
+        <div th:classappend="${m.usuario.getTipoId() == 2 ? 'message-boxT' : 'message-box'}">
+            <p class="message-content" th:text="${m.contenido}">
+            </p>
+            <p th:classappend="${m.usuario.getTipoId() == 2 ? 'usuario-tecnico' : 'usuario-comercio'}"
+               th:text="${m.getUsuario().getNombre()} +'   '+${m.getFecha()}"></p>
+        </div>
+    </div>
+    <form th:if="${canAddMessage}"
+          th:action="@{{id}/addMensaje(id=${incidencia.id})}"  method="post">
+        <div class="reply-section">
+            <input type="hidden" th:value="${incidencia.id}" name="id">
+            <label for="mensaje" class="reply-label">* Nuevo mensaje</label>
+            <textarea required id="mensaje" name="mensaje" class="reply-textarea"></textarea>
+            <div class="reply-footer">
+                <button class="send-button">Enviar</button>
+            </div>
+        </div>
+    </form>
+    <form th:if="${incidencia.getEstado().getNombre() == 'NUEVA' && usuario.getTipoId() == 2}"th:action="@{asignarme}" method="post" style="display: inline;">
+        <input type="hidden" name="incidenciaId" th:value="${incidencia.id}" />
+        <div class="reply-footer">
+            <p class="reply-text" >
+                No puedes responder a esta incidencia.
+                <a href="#" class="reply-link" onclick="this.closest('form').submit();">Pulsa aquí para asignarte.</a>
+            </p>
+        </div>
+    </form>
+    <form th:if="${usuario.getTipoId()==2 && incidencia.getUsuarioTecnico() != null &&
+     incidencia.getUsuarioTecnico().getId() == usuario.getTipoId() &&
+     incidencia.getEstado().getNombre() == 'ASIGN'}"
+          th:action="@{{id}/cerrar(id=${incidencia.id})}" method="post">
+
+        <input type="hidden" th:value="${incidencia.id}" name="id">
+        <button type="submit" class=" botonEstado btn btn-danger">Cerrar incidencia</button>
+
+    </form>
+
+    <form th:if="${usuario.getTipoId()==2 && incidencia.getUsuarioTecnico() != null &&
+     incidencia.getUsuarioTecnico().getId() == usuario.getTipoId() &&
+     incidencia.getEstado().getNombre() == 'RESUELTA'}"
+          th:action="@{{id}/abrir(id=${incidencia.id})}" method="post">
+        <input type="hidden" th:value="${incidencia.id}" name="id">
+        <button type="submit" class="botonEstado btn btn-warning">Reabrir incidencia</button>
+
+    </form>
+    <div th:if="${canValorar}" class="container">
+        <div class="d-flex justify-content-center align-items-center">
+            <div class="section">
+                <h2 class="section-title">Valoracion</h2>
+                <form  th:action="@{{id}/valorar(id=${incidencia.id})}"  method="post" id="ratingForm">
+                    <div class="rating">
+                        <input type="radio" id="star5" name="rating" value="5" />
+                        <label for="star5">5</label>
+                        <input type="radio" id="star4" name="rating" value="4" />
+                        <label for="star4">4</label>
+                        <input type="radio" id="star3" name="rating" value="3" />
+                        <label for="star3">3</label>
+                        <input type="radio" id="star2" name="rating" value="2" />
+                        <label for="star2">2</label>
+                        <input type="radio" id="star1" name="rating" value="1" />
+                        <label for="star1">1</label>
+                    </div>
+                    <input type="hidden" id="valoracion" name="valoracion" value="0">
+                    <label class="label">Razón:</label>
+                    <textarea class="form-control textarea-desc" name="razon_valoracion" id="razon_val" required></textarea>
+                    <button style="margin-top:10px" type="submit" class="btn btn-info">Submit Rating</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+</body>
+<script>
+    document.getElementById('ratingForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const rating = document.querySelector('input[name="rating"]:checked');
+        const razon = document.getElementById("razon_val");
+        if (rating) {
+            if(razon.value.trim()){
+                var element = document.getElementById("valoracion");
+                element.value = rating.value;
+                this.submit();
+            }else{
+                alert('Necesitas poner una razon social');
+            }
+        } else {
+            alert('Tienes que elegir del 1 al 5');
+        }
+    });
+</script>
+</html>

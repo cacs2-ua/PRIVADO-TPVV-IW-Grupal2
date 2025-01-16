@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Incidencias</title>
+
+    <link rel="stylesheet" th:href="@{/css/custom/listadoIncidenciasStyle.css}">
+    <div th:include="fragments :: head (titulo='Pagos del Comercio')"></div>
+</head>
+<body class="body-background">
+<div th:replace="fragments::menuBar"></div>
+<div class="container">
+    <h1 class="title">Incidencias del Comercio</h1>
+        <form class="busqueda" th:action="@{incidencias}" method="get">
+            <label>Id</label>
+            <label >Estados</label>
+            <label th:if="${!isUsuarioComercio}" >CIF del comercio</label>
+            <label>Fecha Desde</label>
+            <label>Fecha Hasta</label>
+            <label style="text-align: center" th:if="${isUsuarioTecnico}" >Asignadas a mi</label>
+            <label></label>
+            <label th:if="${isUsuarioComercio}"></label>
+            <label th:if="${isUsuarioComercio}"></label>
+            <label th:if="${!isUsuarioComercio && !isUsuarioTecnico}"></label>
+
+            <input type="text" class="search-input" name="id" th:value="${idFilter}">
+            <select class="search-select" name="estado">
+                <option th:selected="${estadoFilter == null or estadoFilter=='Todos'}">Todos</option>
+                <option th:selected="${estadoFilter=='NUEVA'}" value="NUEVA">Nueva</option>
+                <option th:selected="${estadoFilter=='ASIGN'}" value="ASIGN">Asignada</option>
+                <option th:selected="${estadoFilter=='RESUELTA'}" value="RESUELTA">Resuelta</option>
+            </select>
+            <input  th:if="${!isUsuarioComercio}" type="text" class="search-input" name="cif" th:value="${cifFilter}">
+
+            <input type="date" class="search-input" name="fechaDesde" th:value="${fechaDesdeStr}">
+            <input type="date" class="search-input" name="fechaHasta" th:value="${fechaHastaStr}">
+            <input th:if="${isUsuarioTecnico}"  type="checkbox"
+                   class="search-input" name="asignado" th:checked="${asignado}">
+            <button type="submit" class="btn btn-light">Aplicar filtros</button>
+            <button th:if="${isUsuarioComercio}"  type="button" class="btn btn-success"
+                    onclick="crearIncidencia()">Crear incidencia</button>
+
+
+        </form>
+
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Fecha</th>
+                <th>Técnico</th>
+                <th>Título</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- NUEVO o MODIFICADO: Borrar o comentar las filas estáticas y usar Thymeleaf para iterar. -->
+            <tr th:each="i : ${listIncidencias}">  <!-- NUEVO o MODIFICADO -->
+                <!-- NUEVO o MODIFICADO: Se muestra el ID -->
+                <td th:text="${i.id}"></td>
+
+                <!-- NUEVO o MODIFICADO:
+                     Se formatea la fecha usando #temporals.format(p.fecha, 'dd/MM/yyyy HH:mm').
+                     Asegúrate de que tu config de Thymeleaf incluya las utilidades de fecha
+                     o ajusta este formato a tu conveniencia.
+                -->
+                <td th:text="${i.fecha}"></td>
+
+
+                <!-- NUEVO o MODIFICADO: Importe, añadiendo el símbolo de euro -->
+                <td th:text="${i.usuarioTecnico == null ? '-' : i.usuarioTecnico.nombre}"></td>
+
+                <td th:text="${i.titulo}"></td>
+                <td th:text="${i.estado.getNombre() == 'NUEVA' ? 'Nueva' :
+                    (i.estado.getNombre() == 'ASIGN' ? 'Asignada' :
+                        'Resuelta')}"
+                    th:classappend="${i.estado.getNombre() == 'NUEVA' ? 'status-active' :
+                    (i.estado.getNombre() == 'ASIGN' ? 'status-pending' :
+                    'status-inactive')}">
+                </td>
+                <td>
+                    <a th:href="@{'incidencia/' + ${i.id}}" class="btn btn-info">Detalles</a>
+                    <form th:if="${ isUsuarioTecnico && i.estado.getNombre() == 'NUEVA'}" th:action="@{incidencia/asignarme}" method="post" style="display: inline;">
+                        <input type="hidden" name="incidenciaId" th:value="${i.id}" />
+                        <button type="submit" class="btn btn-success">Asignarme</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div th:if="${!isUsuarioComercio}" class="pagination">
+    <a th:if="${currentPage > 0}"
+       th:href="@{/api/tecnico-or-admin/incidencias(
+         page=${currentPage - 1},
+         id=${idFilter},
+         asignado=${asignado},
+         cif=${cif},
+         estado=${estadoFilter},
+         fechaDesde=${fechaDesdeStr},
+         fechaHasta=${fechaHastaStr}
+       )}"
+       th:text="${currentPage}">&lsaquo; Anterior</a>
+
+    <span class="page-item active">
+        <span th:text="${currentPage + 1}"></span>
+    </span>
+    <a th:if="${currentPage < totalPages - 1}"
+       th:href="@{/api/tecnico-or-admin/incidencias(
+         page=${currentPage + 1},
+         id=${idFilter},
+         asignado=${asignado},
+         cif=${cif},
+         estado=${estadoFilter},
+         fechaDesde=${fechaDesdeStr},
+         fechaHasta=${fechaHastaStr}
+       )}"
+       th:text="${currentPage + 2}">
+        Siguiente &rsaquo;
+    </a>
+</div>
+<div th:if="${isUsuarioComercio}" class="pagination">
+    <a th:if="${currentPage > 0}"
+       th:href="@{/api/comercio/incidencias(
+         page=${currentPage - 1},
+         id=${idFilter},
+         asignado=${asignado},
+         cif=${cif},
+         estado=${estadoFilter},
+         fechaDesde=${fechaDesdeStr},
+         fechaHasta=${fechaHastaStr}
+       )}"
+       th:text="${currentPage}">&lsaquo; Anterior</a>
+
+    <span class="page-item active">
+        <span th:text="${currentPage + 1}"></span>
+    </span>
+    <a th:if="${currentPage < totalPages - 1}"
+       th:href="@{/api/comercio/incidencias(
+         page=${currentPage + 1},
+         id=${idFilter},
+         asignado=${asignado},
+         cif=${cif},
+         estado=${estadoFilter},
+         fechaDesde=${fechaDesdeStr},
+         fechaHasta=${fechaHastaStr}
+       )}"
+       th:text="${currentPage + 2}">
+        Siguiente &rsaquo;
+    </a>
+</div>
+
+<div th:replace="fragments::javascript"></div>
+</body>
+<script>
+    function crearIncidencia(){
+        window.location.href='/tpvv/boardalo/api/comercio/crear-incidencia';
+    }
+    function asignarIncidencia(incidenciaId){
+
+    }
+</script>
+</html>

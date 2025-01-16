@@ -1,7 +1,12 @@
 package tpvv.dto;
 
+import tpvv.model.Mensaje;
+
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 public class IncidenciaData {
 
@@ -11,7 +16,11 @@ public class IncidenciaData {
     private String descripcion;
     private int valoracion;
     private String razon_valoracion;
-
+    private UsuarioData usuarioComercio;
+    private UsuarioData usuarioTecnico;
+    private Long pago_id;
+    private EstadoIncidenciaData estado;
+    private Set<MensajeData> mensajes = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -23,6 +32,11 @@ public class IncidenciaData {
 
     public Date getFecha() {
         return fecha;
+    }
+
+    public String  getFechaFormatted() {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yy HH:mm:ss");
+        return formatter.format(fecha);
     }
 
     public void setFecha(Date fecha) {
@@ -61,6 +75,29 @@ public class IncidenciaData {
         this.razon_valoracion = razon_valoracion;
     }
 
+    public UsuarioData getUsuarioComercio() {return usuarioComercio;}
+
+    public void setUsuarioComercio(UsuarioData usuarioComercio) {this.usuarioComercio = usuarioComercio;}
+
+    public UsuarioData getUsuarioTecnico() {return usuarioTecnico;}
+
+    public void setUsuarioTecnico(UsuarioData usuarioTecnico) {this.usuarioTecnico = usuarioTecnico;}
+
+    public Long getPago_id() {return pago_id;}
+
+    public void setPago_id(Long pago_id) {this.pago_id = pago_id;}
+
+    public EstadoIncidenciaData getEstado() {return estado;}
+
+    public void setEstado(EstadoIncidenciaData estado_incidencia) {this.estado = estado_incidencia;}
+    public Set<MensajeData> getMensajes() {
+        return mensajes;
+    }
+
+    public void setMensajes(MensajeData mensaje) {
+        if (mensajes.contains(mensaje)) return;
+        mensajes.add(mensaje);
+    }
 
     @Override
     public boolean equals(Object o) {

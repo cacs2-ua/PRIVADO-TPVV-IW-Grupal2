@@ -70,14 +70,38 @@
         </table>
     </div>
 </div>
+
 <div class="pagination">
-    <a th:text="${currentPage}" th:href="@{'/api/admin/usuarios?page=' + ${currentPage - 1}}" th:if="${currentPage > 0}">&lsaquo; Anterior</a>
+    <!-- Link "Anterior" -->
+    <a th:if="${currentPage > 0}"
+       th:href="@{/api/admin/usuarios(
+         page=${currentPage - 1},
+         id=${idFilter},
+         comercio=${comercioFilter},
+         estado=${estadoFilter},
+         fechaDesde=${fechaDesdeStr},
+         fechaHasta=${fechaHastaStr}
+       )}"
+       th:text="${currentPage}">&lsaquo; Anterior</a>
+
     <span class="page-item active">
         <span th:text="${currentPage + 1}"></span>
     </span>
-    <a th:text="${currentPage +2}" th:href="@{'/api/admin/usuarios?page=' + ${currentPage + 1}}" th:if="${currentPage < totalPages - 1}">Siguiente &rsaquo;</a>
-</div>
 
+    <!-- Link "Siguiente" -->
+    <a th:if="${currentPage < totalPages - 1}"
+       th:href="@{/api/admin/usuarios(
+         page=${currentPage + 1},
+         id=${idFilter},
+         comercio=${comercioFilter},
+         estado=${estadoFilter},
+         fechaDesde=${fechaDesdeStr},
+         fechaHasta=${fechaHastaStr}
+       )}"
+       th:text="${currentPage + 2}">
+        Siguiente &rsaquo;
+    </a>
+</div>
 
 <script type="text/javascript">
 

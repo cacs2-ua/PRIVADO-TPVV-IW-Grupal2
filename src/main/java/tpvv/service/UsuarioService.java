@@ -10,6 +10,7 @@ import tpvv.dto.UsuarioData;
 import tpvv.model.Comercio;
 import tpvv.model.TipoUsuario;
 import tpvv.model.Usuario;
+import tpvv.model.ValoracionTecnico;
 import tpvv.repository.ComercioRepository;
 import tpvv.repository.TipoUsuarioRepository;
 import tpvv.repository.UsuarioRepository;
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tpvv.repository.ValoracionTecnicoRepository;
 import tpvv.service.exception.UsuarioServiceException;
 
 import java.sql.Timestamp;
@@ -35,8 +37,10 @@ public class UsuarioService {
     Logger logger = LoggerFactory.getLogger(UsuarioService.class);
     @Autowired
     private ComercioService comercioService;
+    @Autowired
+    private ValoracionTecnicoRepository valoracionTecnicoRepository;
 
-    public enum LoginStatus {LOGIN_OK, USER_NOT_FOUND, ERROR_PASSWORD}
+    public enum LoginStatus {LOGIN_OK, USER_NOT_FOUND,USER_DISABLED, ERROR_PASSWORD}
 
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -64,7 +68,11 @@ public class UsuarioService {
             return LoginStatus.USER_NOT_FOUND;
         } else if (!encoder.matches(password, usuario.get().getContrasenya())) {
             return LoginStatus.ERROR_PASSWORD;
-        } else {
+        }
+          else if (usuario.get().getActivo() == false) {
+            return LoginStatus.USER_DISABLED;
+        }
+        else {
             return LoginStatus.LOGIN_OK;
         }
     }
@@ -138,6 +146,7 @@ public class UsuarioService {
         List<Usuario> usuarios = usuarioRepository.findAll();
 
         return usuarios.stream()
+                .filter(usuario -> usuario.getTipo().getId() != 1)
                 .sorted(Comparator.comparing(Usuario::getId))
                 .map(usuario -> modelMapper.map(usuario, UsuarioData.class))
                 .collect(Collectors.toList());
@@ -149,6 +158,19 @@ public class UsuarioService {
         Usuario usuario = usuarioRepository.findById(usuarioId).orElse(null);
         if (usuario == null) return null;
         return usuario.getComercio().getId();
+    }
+
+    @Transactional(readOnly = true)
+    public int getValoracionUsuario(Long usuarioId) {
+        List<ValoracionTecnico> valoraciones = valoracionTecnicoRepository.findValoracionTecnicosByTecnicoId(usuarioId);
+        int numValoraciones= 0;
+        int totalValoraciones = 0;
+        for (ValoracionTecnico valoracion : valoraciones) {
+            totalValoraciones += valoracion.getValoracion();
+            numValoraciones++;
+        }
+        int resultado = numValoraciones >0 ? totalValoraciones / numValoraciones : 0;
+        return resultado;
     }
 
     @Transactional(readOnly = true)
