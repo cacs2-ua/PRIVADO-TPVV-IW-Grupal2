@@ -191,13 +191,20 @@ public class PagoService {
         String fechaStr = sdfOut.format(pago.getFecha());
         pedidoCompletoRequest.setFecha(fechaStr);
 
+        String fechaPedidoStr = sdfOut.format(fechaDate);
+        pedidoCompletoRequest.setFechaPedido(fechaPedidoStr);
+
         // MODIFICADO: Convertir double -> String
         pedidoCompletoRequest.setImporte(String.valueOf(pago.getImporte()));
 
         pedidoCompletoRequest.setEstadoPago(pago.getEstado().getNombre());
         pedidoCompletoRequest.setRazonEstadoPago(estadoPago.getRazonEstado());
         pedidoCompletoRequest.setComercioNombre(pago.getComercio().getNombre());
-        pedidoCompletoRequest.setNumeroTarjeta(pago.getTarjetaPago().getNumeroTarjeta());
+
+        pedidoCompletoRequest.setCvcTarjeta(request.getTarjetaPagoData().getCvc());
+        pedidoCompletoRequest.setFechaCaducidadTarjeta(request.getTarjetaPagoData().getFechaCaducidad());
+        pedidoCompletoRequest.setNombreTarjeta(request.getTarjetaPagoData().getNombre());
+        pedidoCompletoRequest.setNumeroTarjeta(request.getTarjetaPagoData().getNumeroTarjeta());
 
         return pedidoCompletoRequest;
     }
