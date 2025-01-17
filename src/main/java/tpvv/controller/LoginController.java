@@ -81,37 +81,6 @@ public class LoginController {
         return "debug/bienvenida";
     }
 
-    @GetMapping("/registro")
-    public String registroForm(Model model) {
-        RegistroData registroData = new RegistroData();
-        model.addAttribute("registroData", registroData);
-
-        // Si quisieras cargar dinámicamente los tipos desde la DB, harías algo así:
-        // model.addAttribute("tiposUsuario", tipoUsuarioRepository.findAll());
-
-        return "formRegistro";
-    }
-
-    @PostMapping("/registro")
-    public String registroSubmit(@Valid RegistroData registroData, BindingResult result, Model model) {
-        if (result.hasErrors()) {
-            return "formRegistro";
-        }
-
-        if (usuarioService.findByEmail(registroData.getEmail()) != null) {
-            model.addAttribute("registroData", registroData);
-            model.addAttribute("error", "El usuario " + registroData.getEmail() + " ya existe");
-            return "formRegistro";
-        }
-
-        try {
-            UsuarioData nuevoUsuario = usuarioService.registrar(registroData);
-            return "redirect:/login";
-        } catch (UsuarioServiceException e) {
-            model.addAttribute("error", e.getMessage());
-            return "formRegistro";
-        }
-    }
 
     @GetMapping("/logout")
     public String logout() {

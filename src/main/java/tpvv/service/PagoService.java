@@ -200,7 +200,11 @@ public class PagoService {
         pedidoCompletoRequest.setEstadoPago(pago.getEstado().getNombre());
         pedidoCompletoRequest.setRazonEstadoPago(estadoPago.getRazonEstado());
         pedidoCompletoRequest.setComercioNombre(pago.getComercio().getNombre());
-        pedidoCompletoRequest.setNumeroTarjeta(pago.getTarjetaPago().getNumeroTarjeta());
+
+        pedidoCompletoRequest.setCvcTarjeta(request.getTarjetaPagoData().getCvc());
+        pedidoCompletoRequest.setFechaCaducidadTarjeta(request.getTarjetaPagoData().getFechaCaducidad());
+        pedidoCompletoRequest.setNombreTarjeta(request.getTarjetaPagoData().getNombre());
+        pedidoCompletoRequest.setNumeroTarjeta(request.getTarjetaPagoData().getNumeroTarjeta());
 
         return pedidoCompletoRequest;
     }
