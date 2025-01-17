@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard técnico</title>
+    <link rel="stylesheet" th:href="@{/css/custom/perfil-tecnico-style.css}">
+    <div th:include="fragments :: head (titulo='Iniciar sesión')"></div>
+</head>
+<body class="perfil-tecnico">
+<div th:replace="fragments::menuBar" class="navbar-container"></div>
+<div class="container">
+    <div class="profile-card">
+        <h1>Resumen</h1>
+        <table class="data-table table table-striped table-bordered table-hover">
+            <thead class="thead-dark">
+            <tr>
+                <th>Elementos</th>
+                <th>Nº Elementos en los últimos 5 años</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Incidencias asignadas</td>
+                <td th:text="${incidenciasAsignadas}"></td>
+            </tr>
+            <tr>
+                <td>Incidencias asignadas resueltas</td>
+                <td th:text="${incidenciasAsignadasResueltas}"></td>
+            </tr>
+
+
+            </tbody>
+        </table>
+        <form th:action="@{/logout}" method="get">
+            <button class="btn btn-dark" type="submit">Cerrar sesión</button>
+        </form>
+    </div>
+
+
+</div>
+<div th:replace="fragments::javascript"></div>
+</body>
+</html>
+
